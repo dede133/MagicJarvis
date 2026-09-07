@@ -1,0 +1,64 @@
+import { normalizeCommandText } from '../../../commands/parser/normalizeText'
+import { ACTIVE_VOICE_LANGUAGE_PACK } from '../../languages'
+
+const grammar = ACTIVE_VOICE_LANGUAGE_PACK.v3
+
+export const DISCOURSE_PREFIXES = grammar.discoursePrefixes
+export const DECLARATION_PREFIXES = grammar.declarationPrefixes
+
+const stripOnePrefix = (input: string, prefixes: readonly string[]): string => {
+  for (const prefix of prefixes) {
+    if (input === prefix) return ''
+    if (input.startsWith(`${prefix} `)) return input.slice(prefix.length).trim()
+  }
+  return input
+}
+
+export const stripDiscourse = (input: string): string => {
+  let current = normalizeCommandText(input)
+  let previous = ''
+  while (current && current !== previous) {
+    previous = current
+    current = stripOnePrefix(current, DISCOURSE_PREFIXES)
+  }
+  return current
+}
+
+export const stripCommandFraming = (input: string): string => {
+  let current = stripDiscourse(input)
+  let previous = ''
+  while (current && current !== previous) {
+    previous = current
+    current = stripOnePrefix(current, DECLARATION_PREFIXES)
+    current = stripDiscourse(current)
+  }
+  return current
+}
+
+export const PLAY_VERBS = grammar.verbs.play
+export const TAP_VERBS = grammar.verbs.tap
+export const UNTAP_VERBS = grammar.verbs.untap
+export const DRAW_VERBS = grammar.verbs.draw
+export const DISCARD_VERBS = grammar.verbs.discard
+export const ACTIVATE_VERBS = grammar.verbs.activate
+export const CHANNEL_VERBS = grammar.verbs.channel
+export const WATERBEND_VERBS = grammar.verbs.waterbend
+export const EQUIP_VERBS = grammar.verbs.equip
+export const MOVE_VERBS = grammar.verbs.move
+export const RETURN_VERBS = grammar.verbs.return
+export const EXILE_VERBS = grammar.verbs.exile
+export const ATTACK_VERBS = grammar.verbs.attack
+export const BLOCK_VERBS = ['bloqueo', 'bloquear'] as const
+
+export const leadingVerbRemainder = (
+  input: string,
+  verbs: readonly string[],
+): string | undefined => {
+  const normalized = stripCommandFraming(input)
+  const verb = verbs.find(
+    (candidate) =>
+      normalized === candidate || normalized.startsWith(`${candidate} `),
+  )
+  if (!verb) return undefined
+  return normalized.slice(verb.length).trim()
+}

@@ -1,0 +1,2211 @@
+{
+  "deck": "Cute",
+  "cards": [
+    {
+      "section": "commander",
+      "quantity": 1,
+      "name": "Ishai, Ojutai Dragonspeaker",
+      "setCode": "BLC",
+      "collectorNumber": "89",
+      "foil": true,
+      "card": {
+        "scryfallId": "8acdce6e-ca27-4b4a-b4d9-a4ceed3bf0e3",
+        "layout": "normal",
+        "oracleId": "4aae7102-301a-429d-b169-4f462384d55d",
+        "name": "Ishai, Ojutai Dragonspeaker",
+        "manaCost": "{2}{W}{U}",
+        "cmc": 4,
+        "typeLine": "Legendary Creature — Bird Monk",
+        "oracleText": "Flying\nWhenever an opponent casts a spell, put a +1/+1 counter on Ishai.\nPartner (You can have two commanders if both have partner.)",
+        "colors": [
+          "U",
+          "W"
+        ],
+        "colorIdentity": [
+          "U",
+          "W"
+        ],
+        "power": "1",
+        "toughness": "1",
+        "image": "https://cards.scryfall.io/normal/front/8/a/8acdce6e-ca27-4b4a-b4d9-a4ceed3bf0e3.jpg?1783910710"
+      }
+    },
+    {
+      "section": "commander",
+      "quantity": 1,
+      "name": "Yoshimaru, Ever Faithful",
+      "setCode": "SLD",
+      "collectorNumber": "794",
+      "foil": true,
+      "card": {
+        "scryfallId": "f15c8803-f33a-4530-9882-bff1bf810c19",
+        "layout": "normal",
+        "oracleId": "963834c8-42df-4ee6-9b45-b9de88ce2eac",
+        "name": "Yoshimaru, Ever Faithful",
+        "manaCost": "{W}",
+        "cmc": 1,
+        "typeLine": "Legendary Creature — Dog",
+        "oracleText": "Whenever another legendary permanent you control enters, put a +1/+1 counter on Yoshimaru.\nPartner (You can have two commanders if both have partner.)",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "power": "1",
+        "toughness": "1",
+        "image": "https://cards.scryfall.io/normal/front/f/1/f15c8803-f33a-4530-9882-bff1bf810c19.jpg?1783913149"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Aang, Swift Savior",
+      "setCode": "TLA",
+      "collectorNumber": "347",
+      "card": {
+        "scryfallId": "077a1ad2-6317-4271-b86c-cc999776251d",
+        "layout": "transform",
+        "oracleId": "cbf09050-39d0-463b-96db-9e22011ae0d8",
+        "name": "Aang, Swift Savior",
+        "manaCost": "{1}{W}{U}",
+        "cmc": 3,
+        "typeLine": "Legendary Creature — Human Avatar Ally",
+        "oracleText": "Flash\nFlying\nWhen Aang enters, airbend up to one other target creature or spell. (Exile it. While it's exiled, its owner may cast it for {2} rather than its mana cost.)\nWaterbend {8}: Transform Aang.",
+        "colors": [
+          "U",
+          "W"
+        ],
+        "colorIdentity": [
+          "U",
+          "W"
+        ],
+        "power": "2",
+        "toughness": "3",
+        "image": "https://cards.scryfall.io/normal/front/0/7/077a1ad2-6317-4271-b86c-cc999776251d.jpg?1783904885",
+        "cardFaces": [
+          {
+            "name": "Aang, Swift Savior",
+            "manaCost": "{1}{W}{U}",
+            "typeLine": "Legendary Creature — Human Avatar Ally",
+            "oracleText": "Flash\nFlying\nWhen Aang enters, airbend up to one other target creature or spell. (Exile it. While it's exiled, its owner may cast it for {2} rather than its mana cost.)\nWaterbend {8}: Transform Aang.",
+            "image": "https://cards.scryfall.io/normal/front/0/7/077a1ad2-6317-4271-b86c-cc999776251d.jpg?1783904885",
+            "power": "2",
+            "toughness": "3",
+            "colors": [
+              "U",
+              "W"
+            ]
+          },
+          {
+            "name": "Aang and La, Ocean's Fury",
+            "manaCost": "",
+            "typeLine": "Legendary Creature — Avatar Spirit Ally",
+            "oracleText": "Reach, trample\nWhenever Aang and La attack, put a +1/+1 counter on each tapped creature you control.",
+            "image": "https://cards.scryfall.io/normal/back/0/7/077a1ad2-6317-4271-b86c-cc999776251d.jpg?1783904885",
+            "power": "5",
+            "toughness": "5",
+            "colors": []
+          }
+        ]
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Aang, the Last Airbender",
+      "setCode": "TLA",
+      "collectorNumber": "4",
+      "card": {
+        "scryfallId": "245e008c-e073-443f-9592-6f628c0026ec",
+        "layout": "normal",
+        "oracleId": "70564c3a-858f-498e-8b92-acb3ca54ae7e",
+        "name": "Aang, the Last Airbender",
+        "manaCost": "{3}{W}",
+        "cmc": 4,
+        "typeLine": "Legendary Creature — Human Avatar Ally",
+        "oracleText": "Flying\nWhen Aang enters, airbend up to one other target nonland permanent. (Exile it. While it's exiled, its owner may cast it for {2} rather than its mana cost.)\nWhenever you cast a Lesson spell, Aang gains lifelink until end of turn.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "power": "3",
+        "toughness": "2",
+        "image": "https://cards.scryfall.io/normal/front/2/4/245e008c-e073-443f-9592-6f628c0026ec.jpg?1783905008"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Abandoned Air Temple",
+      "setCode": "TLA",
+      "collectorNumber": "263",
+      "card": {
+        "scryfallId": "9c0433f9-8f1e-4a19-a83f-a41925f1b1a9",
+        "layout": "normal",
+        "oracleId": "9575d7ce-f26d-4b90-87a3-6329e9799572",
+        "name": "Abandoned Air Temple",
+        "manaCost": "",
+        "cmc": 0,
+        "typeLine": "Land",
+        "oracleText": "This land enters tapped unless you control a basic land.\n{T}: Add {W}.\n{3}{W}, {T}: Put a +1/+1 counter on each creature you control.",
+        "colors": [],
+        "colorIdentity": [
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/9/c/9c0433f9-8f1e-4a19-a83f-a41925f1b1a9.jpg?1783904914"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Aerith Gainsborough",
+      "setCode": "FIN",
+      "collectorNumber": "374",
+      "card": {
+        "scryfallId": "fa316d6e-9ea7-4496-a3f3-5023a6952473",
+        "layout": "normal",
+        "oracleId": "dd9a6f6b-f9b7-4292-bc80-b7da326de032",
+        "name": "Aerith Gainsborough",
+        "manaCost": "{2}{W}",
+        "cmc": 3,
+        "typeLine": "Legendary Creature — Human Cleric",
+        "oracleText": "Lifelink\nWhenever you gain life, put a +1/+1 counter on Aerith Gainsborough.\nWhen Aerith Gainsborough dies, put X +1/+1 counters on each legendary creature you control, where X is the number of +1/+1 counters on Aerith Gainsborough.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "power": "2",
+        "toughness": "2",
+        "image": "https://cards.scryfall.io/normal/front/f/a/fa316d6e-9ea7-4496-a3f3-5023a6952473.jpg?1783906513"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Agna Qel'a",
+      "setCode": "TLA",
+      "collectorNumber": "264",
+      "card": {
+        "scryfallId": "6b885829-a323-4f7d-87c9-aa4615dcbe5c",
+        "layout": "normal",
+        "oracleId": "22d0a848-2126-48f0-9050-38daaf93b1d0",
+        "name": "Agna Qel'a",
+        "manaCost": "",
+        "cmc": 0,
+        "typeLine": "Land",
+        "oracleText": "This land enters tapped unless you control a basic land.\n{T}: Add {U}.\n{2}{U}, {T}: Draw a card, then discard a card.",
+        "colors": [],
+        "colorIdentity": [
+          "U"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/6/b/6b885829-a323-4f7d-87c9-aa4615dcbe5c.jpg?1783904914"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "An Offer You Can't Refuse",
+      "setCode": "SLP",
+      "collectorNumber": "7",
+      "card": {
+        "scryfallId": "134200c4-88af-4772-9031-a59669e8c2ec",
+        "layout": "normal",
+        "oracleId": "234a734b-ba28-4f1b-9d01-3c3e7d516590",
+        "name": "An Offer You Can't Refuse",
+        "manaCost": "{U}",
+        "cmc": 1,
+        "typeLine": "Instant",
+        "oracleText": "Counter target noncreature spell. Its controller creates two Treasure tokens. (They're artifacts with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+        "colors": [
+          "U"
+        ],
+        "colorIdentity": [
+          "U"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/1/3/134200c4-88af-4772-9031-a59669e8c2ec.jpg?1783914809"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Animal Sanctuary",
+      "setCode": "PLST",
+      "collectorNumber": "M21-242",
+      "card": {
+        "scryfallId": "902f2a7a-566e-4388-a280-4f68e5f6c1d5",
+        "layout": "normal",
+        "oracleId": "f3c40943-1d7c-4ea2-b34f-8df8b6775701",
+        "name": "Animal Sanctuary",
+        "manaCost": "",
+        "cmc": 0,
+        "typeLine": "Land",
+        "oracleText": "{T}: Add {C}.\n{2}, {T}: Put a +1/+1 counter on target Bird, Cat, Dog, Goat, Ox, or Snake.",
+        "colors": [],
+        "colorIdentity": [],
+        "image": "https://cards.scryfall.io/normal/front/9/0/902f2a7a-566e-4388-a280-4f68e5f6c1d5.jpg?1783913094"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Aqueous Form",
+      "setCode": "CMR",
+      "collectorNumber": "56",
+      "card": {
+        "scryfallId": "c859f7cb-ac12-490e-b769-6f019791f2a5",
+        "layout": "normal",
+        "oracleId": "3378fef3-4d8c-4d9e-a338-4abb6f70d410",
+        "name": "Aqueous Form",
+        "manaCost": "{U}",
+        "cmc": 1,
+        "typeLine": "Enchantment — Aura",
+        "oracleText": "Enchant creature\nEnchanted creature can't be blocked.\nWhenever enchanted creature attacks, scry 1. (Look at the top card of your library. You may put that card on the bottom.)",
+        "colors": [
+          "U"
+        ],
+        "colorIdentity": [
+          "U"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/c/8/c859f7cb-ac12-490e-b769-6f019791f2a5.jpg?1783928870"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Arcane Signet",
+      "setCode": "TLE",
+      "collectorNumber": "315",
+      "card": {
+        "scryfallId": "89ac0b50-8c64-46b0-b670-cd2321153502",
+        "layout": "normal",
+        "oracleId": "0bc7f093-bef0-4f1a-852c-4b75ebf54838",
+        "name": "Arcane Signet",
+        "manaCost": "{2}",
+        "cmc": 2,
+        "typeLine": "Artifact",
+        "oracleText": "{T}: Add one mana of any color in your commander's color identity.",
+        "colors": [],
+        "colorIdentity": [],
+        "image": "https://cards.scryfall.io/normal/front/8/9/89ac0b50-8c64-46b0-b670-cd2321153502.jpg?1783904750"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Bender's Waterskin",
+      "setCode": "TLA",
+      "collectorNumber": "255",
+      "card": {
+        "scryfallId": "6d4a1712-d19e-4475-9614-a0b1af4da610",
+        "layout": "normal",
+        "oracleId": "3bc46467-323f-4cbf-9d0a-f3d2ae3c3a34",
+        "name": "Bender's Waterskin",
+        "manaCost": "{3}",
+        "cmc": 3,
+        "typeLine": "Artifact",
+        "oracleText": "Untap this artifact during each other player's untap step.\n{T}: Add one mana of any color.",
+        "colors": [],
+        "colorIdentity": [],
+        "image": "https://cards.scryfall.io/normal/front/6/d/6d4a1712-d19e-4475-9614-a0b1af4da610.jpg?1783904915"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Blackblade Reforged",
+      "setCode": "SS2",
+      "collectorNumber": "8",
+      "card": {
+        "scryfallId": "9dccac19-a915-4189-beb8-5d279a15a54e",
+        "layout": "normal",
+        "oracleId": "dca51281-fb21-45b6-beb4-1f13397caee2",
+        "name": "Blackblade Reforged",
+        "manaCost": "{2}",
+        "cmc": 2,
+        "typeLine": "Legendary Artifact — Equipment",
+        "oracleText": "Equipped creature gets +1/+1 for each land you control.\nEquip legendary creature {3}\nEquip {7}",
+        "colors": [],
+        "colorIdentity": [],
+        "image": "https://cards.scryfall.io/normal/front/9/d/9dccac19-a915-4189-beb8-5d279a15a54e.jpg?1783933056"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Brotherhood Regalia",
+      "setCode": "ACR",
+      "collectorNumber": "71",
+      "card": {
+        "scryfallId": "8a6439a6-288d-427e-b14b-a99e8ef8c5cd",
+        "layout": "normal",
+        "oracleId": "d169738e-af0b-4488-a399-3aa1d1933aa1",
+        "name": "Brotherhood Regalia",
+        "manaCost": "{2}",
+        "cmc": 2,
+        "typeLine": "Artifact — Equipment",
+        "oracleText": "Equipped creature has ward {2}, is an Assassin in addition to its other types, and can't be blocked.\nEquip legendary creature {1}\nEquip {3} ({3}: Attach to target creature you control. Equip only as a sorcery.)",
+        "colors": [],
+        "colorIdentity": [],
+        "image": "https://cards.scryfall.io/normal/front/8/a/8a6439a6-288d-427e-b14b-a99e8ef8c5cd.jpg?1783910968"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Caduceus, Staff of Hermes",
+      "setCode": "ACR",
+      "collectorNumber": "2",
+      "card": {
+        "scryfallId": "2b60f18e-4709-4b91-a342-74eb3fca71e1",
+        "layout": "normal",
+        "oracleId": "7cea5b12-9483-4142-9efa-735305581e73",
+        "name": "Caduceus, Staff of Hermes",
+        "manaCost": "{2}{W}",
+        "cmc": 3,
+        "typeLine": "Legendary Artifact — Equipment",
+        "oracleText": "Equipped creature has lifelink.\nAs long as you have 30 or more life, equipped creature gets +5/+5 and has indestructible and \"Prevent all damage that would be dealt to this creature.\"\nEquip {W}{W}",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/2/b/2b60f18e-4709-4b91-a342-74eb3fca71e1.jpg?1783910988"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Command Tower",
+      "setCode": "SLD",
+      "collectorNumber": "7012",
+      "foil": true,
+      "card": {
+        "scryfallId": "1e947092-c153-410c-bd81-30142c662459",
+        "layout": "normal",
+        "oracleId": "0895c9b7-ae7d-4bb3-af17-3b75deb50a25",
+        "name": "Command Tower",
+        "manaCost": "",
+        "cmc": 0,
+        "typeLine": "Land",
+        "oracleText": "{T}: Add one mana of any color in your commander's color identity.",
+        "colors": [],
+        "colorIdentity": [],
+        "image": "https://cards.scryfall.io/normal/front/1/e/1e947092-c153-410c-bd81-30142c662459.jpg?1783907440"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Counterspell",
+      "setCode": "SLD",
+      "collectorNumber": "1933",
+      "foil": true,
+      "card": {
+        "scryfallId": "053f724c-c88d-44c0-9902-6400c064640b",
+        "layout": "normal",
+        "oracleId": "cc187110-1148-4090-bbb8-e205694a39f5",
+        "name": "Counterspell",
+        "manaCost": "{U}{U}",
+        "cmc": 2,
+        "typeLine": "Instant",
+        "oracleText": "Counter target spell.",
+        "colors": [
+          "U"
+        ],
+        "colorIdentity": [
+          "U"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/0/5/053f724c-c88d-44c0-9902-6400c064640b.jpg?1783907458"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Crashing Wave",
+      "setCode": "TLA",
+      "collectorNumber": "47",
+      "card": {
+        "scryfallId": "9fd02eb4-1ef5-4a14-89a8-b25e720e8016",
+        "layout": "normal",
+        "oracleId": "c8d3936f-4c08-4ffe-83c9-7ed26fb8f9cd",
+        "name": "Crashing Wave",
+        "manaCost": "{U}{U}",
+        "cmc": 2,
+        "typeLine": "Sorcery",
+        "oracleText": "As an additional cost to cast this spell, waterbend {X}. (While paying a waterbend cost, you can tap your artifacts and creatures to help. Each one pays for {1}.)\nTap up to X target creatures, then distribute three stun counters among any number of tapped creatures your opponents control. (If a permanent with a stun counter would become untapped, remove one from it instead.)",
+        "colors": [
+          "U"
+        ],
+        "colorIdentity": [
+          "U"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/9/f/9fd02eb4-1ef5-4a14-89a8-b25e720e8016.jpg?1783904989"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Crumb and Get It",
+      "setCode": "BLB",
+      "collectorNumber": "8",
+      "card": {
+        "scryfallId": "3c7b3b25-d4b3-4451-9f5c-6eb369541175",
+        "layout": "normal",
+        "oracleId": "93596258-bb44-4aa3-833d-9a0ab16b5ec1",
+        "name": "Crumb and Get It",
+        "manaCost": "{W}",
+        "cmc": 1,
+        "typeLine": "Instant",
+        "oracleText": "Gift a Food (You may promise an opponent a gift as you cast this spell. If you do, they create a Food token before its other effects. It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nTarget creature you control gets +2/+2 until end of turn. If the gift was promised, that creature also gains indestructible until end of turn.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/3/c/3c7b3b25-d4b3-4451-9f5c-6eb369541175.jpg?1783910863"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Curious Farm Animals",
+      "setCode": "TLA",
+      "collectorNumber": "14",
+      "card": {
+        "scryfallId": "2402d759-84b6-41d2-ad78-9333974e9222",
+        "layout": "normal",
+        "oracleId": "e451b5aa-5832-42b3-8d72-f67e126a529f",
+        "name": "Curious Farm Animals",
+        "manaCost": "{W}",
+        "cmc": 1,
+        "typeLine": "Creature — Boar Elk Bird Ox",
+        "oracleText": "When this creature dies, you gain 3 life.\n{2}, Sacrifice this creature: Destroy up to one target artifact or enchantment.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "power": "1",
+        "toughness": "1",
+        "image": "https://cards.scryfall.io/normal/front/2/4/2402d759-84b6-41d2-ad78-9333974e9222.jpg?1783905002"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Dawn's Truce",
+      "setCode": "BLB",
+      "collectorNumber": "9",
+      "card": {
+        "scryfallId": "8f72bfa0-efef-48ce-aff8-d5818ed71ba6",
+        "layout": "normal",
+        "oracleId": "37c06f89-db36-4937-9404-2b07cd22e1a6",
+        "name": "Dawn's Truce",
+        "manaCost": "{1}{W}",
+        "cmc": 2,
+        "typeLine": "Instant",
+        "oracleText": "Gift a card (You may promise an opponent a gift as you cast this spell. If you do, they draw a card before its other effects.)\nYou and permanents you control gain hexproof until end of turn. If the gift was promised, permanents you control also gain indestructible until end of turn.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/8/f/8f72bfa0-efef-48ce-aff8-d5818ed71ba6.jpg?1783910863"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Day of Destiny",
+      "setCode": "BOK",
+      "collectorNumber": "1",
+      "card": {
+        "scryfallId": "99f49ff1-54f6-4825-987b-c50a152f7275",
+        "layout": "normal",
+        "oracleId": "64247fcb-0e1b-48c9-bdac-769d7edd8d1d",
+        "name": "Day of Destiny",
+        "manaCost": "{3}{W}",
+        "cmc": 4,
+        "typeLine": "Legendary Enchantment",
+        "oracleText": "Legendary creatures you control get +2/+2.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/9/9/99f49ff1-54f6-4825-987b-c50a152f7275.jpg?1783944216"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Desynchronization",
+      "setCode": "ACR",
+      "collectorNumber": "159",
+      "card": {
+        "scryfallId": "5096632a-a156-4aa5-9b09-f222939ab574",
+        "layout": "normal",
+        "oracleId": "dab64d0f-1246-4a4d-9a79-6db2ca0c8882",
+        "name": "Desynchronization",
+        "manaCost": "{2}{U}{U}",
+        "cmc": 4,
+        "typeLine": "Instant",
+        "oracleText": "Return each nonland permanent that's not historic to its owner's hand. (Artifacts, legendaries, and Sagas are historic.)",
+        "colors": [
+          "U"
+        ],
+        "colorIdentity": [
+          "U"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/5/0/5096632a-a156-4aa5-9b09-f222939ab574.jpg?1783910937"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Dovin's Veto",
+      "setCode": "FCA",
+      "collectorNumber": "51",
+      "card": {
+        "scryfallId": "ba332954-ed8c-48d7-8d85-971c7b71dccf",
+        "layout": "normal",
+        "oracleId": "1b388371-f9ef-45b4-82a3-ca20a8cd7807",
+        "name": "Dovin's Veto",
+        "manaCost": "{W}{U}",
+        "cmc": 2,
+        "typeLine": "Instant",
+        "oracleText": "This spell can't be countered.\nCounter target noncreature spell.",
+        "colors": [
+          "U",
+          "W"
+        ],
+        "colorIdentity": [
+          "U",
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/b/a/ba332954-ed8c-48d7-8d85-971c7b71dccf.jpg?1783906378"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Eiganjo Castle",
+      "setCode": "SLD",
+      "collectorNumber": "2230",
+      "card": {
+        "scryfallId": "b3bc5f0b-81d8-461b-9b0a-ee2e8acc6bf5",
+        "layout": "normal",
+        "oracleId": "895a0e00-20a9-44f8-9215-66edcdf016b7",
+        "name": "Eiganjo Castle",
+        "manaCost": "",
+        "cmc": 0,
+        "typeLine": "Legendary Land",
+        "oracleText": "{T}: Add {W}.\n{W}, {T}: Prevent the next 2 damage that would be dealt to target legendary creature this turn.",
+        "colors": [],
+        "colorIdentity": [
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/b/3/b3bc5f0b-81d8-461b-9b0a-ee2e8acc6bf5.jpg?1783905127"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Eiganjo, Seat of the Empire",
+      "setCode": "NEO",
+      "collectorNumber": "502",
+      "card": {
+        "scryfallId": "ecb53f59-d89b-481c-af98-75c11c30ee17",
+        "layout": "normal",
+        "oracleId": "7edb3d15-4f70-4ebe-8c5e-caf6a225076d",
+        "name": "Eiganjo, Seat of the Empire",
+        "manaCost": "",
+        "cmc": 0,
+        "typeLine": "Legendary Land",
+        "oracleText": "{T}: Add {W}.\nChannel — {2}{W}, Discard this card: It deals 4 damage to target attacking or blocking creature. This ability costs {1} less to activate for each legendary creature you control.",
+        "colors": [],
+        "colorIdentity": [
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/e/c/ecb53f59-d89b-481c-af98-75c11c30ee17.jpg?1783923724"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Eight-and-a-Half-Tails",
+      "setCode": "CLB",
+      "collectorNumber": "692",
+      "card": {
+        "scryfallId": "ef722374-0305-4c30-ab45-cb772b252faf",
+        "layout": "normal",
+        "oracleId": "01c8d29f-4924-4d55-80bc-0c0c06bcb733",
+        "name": "Eight-and-a-Half-Tails",
+        "manaCost": "{W}{W}",
+        "cmc": 2,
+        "typeLine": "Legendary Creature — Fox Cleric",
+        "oracleText": "{1}{W}: Target permanent you control gains protection from white until end of turn.\n{1}: Target spell or permanent becomes white until end of turn.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "power": "2",
+        "toughness": "2",
+        "image": "https://cards.scryfall.io/normal/front/e/f/ef722374-0305-4c30-ab45-cb772b252faf.jpg?1783922494"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Empty City Ruse",
+      "setCode": "TLE",
+      "collectorNumber": "3",
+      "card": {
+        "scryfallId": "3a2f358d-93a9-4cd7-a846-3cc55042e4fe",
+        "layout": "normal",
+        "oracleId": "b0391ea4-e37d-48c9-91df-79aefe376bcc",
+        "name": "Empty City Ruse",
+        "manaCost": "{W}",
+        "cmc": 1,
+        "typeLine": "Sorcery",
+        "oracleText": "Target opponent skips all combat phases of their next turn.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/3/a/3a2f358d-93a9-4cd7-a846-3cc55042e4fe.jpg?1783904863"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Enter the Avatar State",
+      "setCode": "TLA",
+      "collectorNumber": "18",
+      "card": {
+        "scryfallId": "a8f3d2cb-d073-4df8-8769-49612628a377",
+        "layout": "normal",
+        "oracleId": "4e552be1-0702-4e18-822f-98611f8a8e70",
+        "name": "Enter the Avatar State",
+        "manaCost": "{W}",
+        "cmc": 1,
+        "typeLine": "Instant — Lesson",
+        "oracleText": "Until end of turn, target creature you control becomes an Avatar in addition to its other types and gains flying, first strike, lifelink, and hexproof. (A creature with hexproof can't be the target of spells or abilities your opponents control.)",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/a/8/a8f3d2cb-d073-4df8-8769-49612628a377.jpg?1783905001"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Esior, Wardwing Familiar",
+      "setCode": "CMR",
+      "collectorNumber": "67",
+      "card": {
+        "scryfallId": "86958821-76eb-43a5-974b-7c945e826a66",
+        "layout": "normal",
+        "oracleId": "ddf38a32-302a-4658-9eaf-b813ebe275c9",
+        "name": "Esior, Wardwing Familiar",
+        "manaCost": "{1}{U}",
+        "cmc": 2,
+        "typeLine": "Legendary Creature — Bird",
+        "oracleText": "Flying\nSpells your opponents cast that target one or more commanders you control cost {3} more to cast.\nPartner (You can have two commanders if both have partner.)",
+        "colors": [
+          "U"
+        ],
+        "colorIdentity": [
+          "U"
+        ],
+        "power": "1",
+        "toughness": "3",
+        "image": "https://cards.scryfall.io/normal/front/8/6/86958821-76eb-43a5-974b-7c945e826a66.jpg?1783928863"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Everybody Lives!",
+      "setCode": "WHO",
+      "collectorNumber": "18",
+      "card": {
+        "scryfallId": "9dab0052-7f0c-4b56-847f-20552666a271",
+        "layout": "normal",
+        "oracleId": "39213de3-6a4a-4879-a7f9-70f45013765e",
+        "name": "Everybody Lives!",
+        "manaCost": "{1}{W}",
+        "cmc": 2,
+        "typeLine": "Instant",
+        "oracleText": "All creatures gain hexproof and indestructible until end of turn. Players gain hexproof until end of turn. Players can't lose life this turn and players can't lose the game or win the game this turn.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/9/d/9dab0052-7f0c-4b56-847f-20552666a271.jpg?1783914680"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Fabled Passage",
+      "setCode": "BLB",
+      "collectorNumber": "252",
+      "card": {
+        "scryfallId": "8809830f-d8e1-4603-9652-0ad8b00234e9",
+        "layout": "normal",
+        "oracleId": "0c85b8f7-0bd0-4680-9ec5-d4b110460a54",
+        "name": "Fabled Passage",
+        "manaCost": "",
+        "cmc": 0,
+        "typeLine": "Land",
+        "oracleText": "{T}, Sacrifice this land: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle. Then if you control four or more lands, untap that land.",
+        "colors": [],
+        "colorIdentity": [],
+        "image": "https://cards.scryfall.io/normal/front/8/8/8809830f-d8e1-4603-9652-0ad8b00234e9.jpg?1783910785"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Flaming Fist",
+      "setCode": "CLB",
+      "collectorNumber": "474",
+      "etched": true,
+      "card": {
+        "scryfallId": "80415872-e35d-4798-a021-b4690d9f78a0",
+        "layout": "normal",
+        "oracleId": "cdaefc96-4560-43bb-9514-bf87657bd481",
+        "name": "Flaming Fist",
+        "manaCost": "{2}{W}",
+        "cmc": 3,
+        "typeLine": "Legendary Enchantment — Background",
+        "oracleText": "Commander creatures you own have \"Whenever this creature attacks, it gains double strike until end of turn.\"",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/8/0/80415872-e35d-4798-a021-b4690d9f78a0.jpg?1783922605"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Flowering of the White Tree",
+      "setCode": "LTR",
+      "collectorNumber": "15",
+      "card": {
+        "scryfallId": "2203b2cd-48e5-471a-85fe-dc81012e5d61",
+        "layout": "normal",
+        "oracleId": "3cda958a-f777-433d-850e-a6c8f581db4e",
+        "name": "Flowering of the White Tree",
+        "manaCost": "{W}{W}",
+        "cmc": 2,
+        "typeLine": "Legendary Enchantment",
+        "oracleText": "Legendary creatures you control get +2/+1 and have ward {1}.\nNonlegendary creatures you control get +1/+1.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/2/2/2203b2cd-48e5-471a-85fe-dc81012e5d61.jpg?1783916332"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Glacial Fortress",
+      "setCode": "DRC",
+      "collectorNumber": "159",
+      "card": {
+        "scryfallId": "11bee1bf-bc75-4d4f-8f41-a9a3c0cdd19e",
+        "layout": "normal",
+        "oracleId": "027dd013-baa7-4111-b3c9-f4d1414e9c45",
+        "name": "Glacial Fortress",
+        "manaCost": "",
+        "cmc": 0,
+        "typeLine": "Land",
+        "oracleText": "This land enters tapped unless you control a Plains or an Island.\n{T}: Add {W} or {U}.",
+        "colors": [],
+        "colorIdentity": [
+          "U",
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/1/1/11bee1bf-bc75-4d4f-8f41-a9a3c0cdd19e.jpg?1783907703"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Grand Arbiter Augustin IV",
+      "setCode": "2X2",
+      "collectorNumber": "221",
+      "card": {
+        "scryfallId": "f43748ea-1d65-4ee8-9c66-221412a284c0",
+        "layout": "normal",
+        "oracleId": "1f8d4d5f-e82f-45f3-823e-1bb6b536eb18",
+        "name": "Grand Arbiter Augustin IV",
+        "manaCost": "{2}{W}{U}",
+        "cmc": 4,
+        "typeLine": "Legendary Creature — Human Advisor",
+        "oracleText": "White spells you cast cost {1} less to cast.\nBlue spells you cast cost {1} less to cast.\nSpells your opponents cast cost {1} more to cast.",
+        "colors": [
+          "U",
+          "W"
+        ],
+        "colorIdentity": [
+          "U",
+          "W"
+        ],
+        "power": "2",
+        "toughness": "3",
+        "image": "https://cards.scryfall.io/normal/front/f/4/f43748ea-1d65-4ee8-9c66-221412a284c0.jpg?1783921832"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Hammer of Nazahn",
+      "setCode": "2XM",
+      "collectorNumber": "260",
+      "card": {
+        "scryfallId": "fbce79af-968a-481b-8cd7-a323c083851d",
+        "layout": "normal",
+        "oracleId": "e3955573-3db5-490e-903e-65e0172a9202",
+        "name": "Hammer of Nazahn",
+        "manaCost": "{4}",
+        "cmc": 4,
+        "typeLine": "Legendary Artifact — Equipment",
+        "oracleText": "Whenever Hammer of Nazahn or another Equipment you control enters, you may attach that Equipment to target creature you control.\nEquipped creature gets +2/+0 and has indestructible.\nEquip {4}",
+        "colors": [],
+        "colorIdentity": [],
+        "image": "https://cards.scryfall.io/normal/front/f/b/fbce79af-968a-481b-8cd7-a323c083851d.jpg?1783930109"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Herald of Secret Streams",
+      "setCode": "LCC",
+      "collectorNumber": "158",
+      "card": {
+        "scryfallId": "e6e1f2ab-e437-444e-9edb-73278d9c7616",
+        "layout": "normal",
+        "oracleId": "366a218e-84d3-4cf9-bbc8-f2f8ecce92a3",
+        "name": "Herald of Secret Streams",
+        "manaCost": "{3}{U}",
+        "cmc": 4,
+        "typeLine": "Creature — Merfolk Warrior",
+        "oracleText": "Creatures you control with +1/+1 counters on them can't be blocked.",
+        "colors": [
+          "U"
+        ],
+        "colorIdentity": [
+          "U"
+        ],
+        "power": "2",
+        "toughness": "3",
+        "image": "https://cards.scryfall.io/normal/front/e/6/e6e1f2ab-e437-444e-9edb-73278d9c7616.jpg?1783913886"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Heroes' Podium",
+      "setCode": "DMC",
+      "collectorNumber": "185",
+      "card": {
+        "scryfallId": "1b2bee5c-7ea0-4713-a60b-dccaf89c5d48",
+        "layout": "normal",
+        "oracleId": "85292bfb-32d7-449e-9ebb-5be828e8ecf6",
+        "name": "Heroes' Podium",
+        "manaCost": "{5}",
+        "cmc": 5,
+        "typeLine": "Legendary Artifact",
+        "oracleText": "Each legendary creature you control gets +1/+1 for each other legendary creature you control.\n{X}, {T}: Look at the top X cards of your library. You may reveal a legendary creature card from among them and put it into your hand. Put the rest on the bottom of your library in a random order.",
+        "colors": [],
+        "colorIdentity": [],
+        "image": "https://cards.scryfall.io/normal/front/1/b/1b2bee5c-7ea0-4713-a60b-dccaf89c5d48.jpg?1783921397"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Honest Work",
+      "setCode": "TLA",
+      "collectorNumber": "55",
+      "card": {
+        "scryfallId": "57e0ccb0-22f0-4e4d-9a47-c4fec2c7f251",
+        "layout": "normal",
+        "oracleId": "12956c07-e679-471b-8dcb-2a2d15b0be55",
+        "name": "Honest Work",
+        "manaCost": "{U}",
+        "cmc": 1,
+        "typeLine": "Enchantment — Aura",
+        "oracleText": "Enchant creature an opponent controls\nWhen this Aura enters, tap enchanted creature and remove all counters from it.\nEnchanted creature loses all abilities and is a Citizen with base power and toughness 1/1 and \"{T}: Add {C}\" named Humble Merchant. (It loses all other creature types and names.)",
+        "colors": [
+          "U"
+        ],
+        "colorIdentity": [
+          "U"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/5/7/57e0ccb0-22f0-4e4d-9a47-c4fec2c7f251.jpg?1783904988"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Into the Flood Maw",
+      "setCode": "BLB",
+      "collectorNumber": "52",
+      "card": {
+        "scryfallId": "50b9575a-53d9-4df7-b86c-cda021107d3f",
+        "layout": "normal",
+        "oracleId": "8cb36a67-9206-4665-a03f-64f52ba559c4",
+        "name": "Into the Flood Maw",
+        "manaCost": "{U}",
+        "cmc": 1,
+        "typeLine": "Instant",
+        "oracleText": "Gift a tapped Fish (You may promise an opponent a gift as you cast this spell. If you do, they create a tapped 1/1 blue Fish creature token before its other effects.)\nReturn target creature an opponent controls to its owner's hand. If the gift was promised, instead return target nonland permanent an opponent controls to its owner's hand.",
+        "colors": [
+          "U"
+        ],
+        "colorIdentity": [
+          "U"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/5/0/50b9575a-53d9-4df7-b86c-cda021107d3f.jpg?1783910850"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 7,
+      "name": "Island",
+      "setCode": "EOE",
+      "collectorNumber": "269",
+      "card": {
+        "scryfallId": "aaa212be-1db5-4493-86c8-c01d29348e31",
+        "layout": "normal",
+        "oracleId": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+        "name": "Island",
+        "manaCost": "",
+        "cmc": 0,
+        "typeLine": "Basic Land — Island",
+        "oracleText": "({T}: Add {U}.)",
+        "colors": [],
+        "colorIdentity": [
+          "U"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/a/a/aaa212be-1db5-4493-86c8-c01d29348e31.jpg?1783905909"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "K-9, Mark I",
+      "setCode": "WHO",
+      "collectorNumber": "537",
+      "card": {
+        "scryfallId": "f51905ce-9146-46e4-8d7f-643843d48edb",
+        "layout": "normal",
+        "oracleId": "413bc18b-1579-41b5-a778-3a29def52bb0",
+        "name": "K-9, Mark I",
+        "manaCost": "{U}",
+        "cmc": 1,
+        "typeLine": "Legendary Artifact Creature — Robot Dog",
+        "oracleText": "Negative — As long as K-9 is untapped, other legendary creatures you control have ward {1}.\nAffirmative — {1}{U}, {T}: Target legendary creature can't be blocked this turn.\nDoctor's companion (You can have two commanders if the other is the Doctor.)",
+        "colors": [
+          "U"
+        ],
+        "colorIdentity": [
+          "U"
+        ],
+        "power": "1",
+        "toughness": "1",
+        "image": "https://cards.scryfall.io/normal/front/f/5/f51905ce-9146-46e4-8d7f-643843d48edb.jpg?1783914496"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Katara, Water Tribe's Hope",
+      "setCode": "TLA",
+      "collectorNumber": "231",
+      "card": {
+        "scryfallId": "9ec03308-59a2-417a-938f-bdda75080e43",
+        "layout": "normal",
+        "oracleId": "234fb291-0b62-4092-9071-81311c71bd53",
+        "name": "Katara, Water Tribe's Hope",
+        "manaCost": "{2}{W}{U}{U}",
+        "cmc": 5,
+        "typeLine": "Legendary Creature — Human Warrior Ally",
+        "oracleText": "Vigilance\nWhen Katara enters, create a 1/1 white Ally creature token.\nWaterbend {X}: Creatures you control have base power and toughness X/X until end of turn. X can't be 0. Activate only during your turn. (While paying a waterbend cost, you can tap your artifacts and creatures to help. Each one pays for {1}.)",
+        "colors": [
+          "U",
+          "W"
+        ],
+        "colorIdentity": [
+          "U",
+          "W"
+        ],
+        "power": "3",
+        "toughness": "3",
+        "image": "https://cards.scryfall.io/normal/front/9/e/9ec03308-59a2-417a-938f-bdda75080e43.jpg?1783904925"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Kitnap",
+      "setCode": "BLB",
+      "collectorNumber": "53",
+      "card": {
+        "scryfallId": "085be5d1-fd85-46d1-ad39-a8aa75a06a96",
+        "layout": "normal",
+        "oracleId": "a1bd1e83-40ac-449f-838c-ef308f275a5d",
+        "name": "Kitnap",
+        "manaCost": "{2}{U}{U}",
+        "cmc": 4,
+        "typeLine": "Enchantment — Aura",
+        "oracleText": "Gift a card (You may promise an opponent a gift as you cast this spell. If you do, when it enters, they draw a card.)\nEnchant creature\nWhen this Aura enters, tap enchanted creature. If the gift wasn't promised, put three stun counters on it.\nYou control enchanted creature.",
+        "colors": [
+          "U"
+        ],
+        "colorIdentity": [
+          "U"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/0/8/085be5d1-fd85-46d1-ad39-a8aa75a06a96.jpg?1783910850"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Kwain, Itinerant Meddler",
+      "setCode": "BLC",
+      "collectorNumber": "90",
+      "card": {
+        "scryfallId": "941f5231-5620-45e5-9f00-a7f64f0385dc",
+        "layout": "normal",
+        "oracleId": "ce6a85b5-e249-4582-a6be-ce200da5fd53",
+        "name": "Kwain, Itinerant Meddler",
+        "manaCost": "{W}{U}",
+        "cmc": 2,
+        "typeLine": "Legendary Creature — Rabbit Wizard",
+        "oracleText": "{T}: Each player may draw a card, then each player who drew a card this way gains 1 life.",
+        "colors": [
+          "U",
+          "W"
+        ],
+        "colorIdentity": [
+          "U",
+          "W"
+        ],
+        "power": "1",
+        "toughness": "3",
+        "image": "https://cards.scryfall.io/normal/front/9/4/941f5231-5620-45e5-9f00-a7f64f0385dc.jpg?1783910708"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Lavinia, Azorius Renegade",
+      "setCode": "SLD",
+      "collectorNumber": "1685",
+      "foil": true,
+      "card": {
+        "scryfallId": "b96ef600-a96c-4563-bc4e-157ea62d14d4",
+        "layout": "normal",
+        "oracleId": "81ba3a33-0e04-4f68-9a42-1dd717733b57",
+        "name": "Lavinia, Azorius Renegade",
+        "manaCost": "{W}{U}",
+        "cmc": 2,
+        "typeLine": "Legendary Creature — Human Soldier",
+        "oracleText": "Each opponent can't cast noncreature spells with mana value greater than the number of lands that player controls.\nWhenever an opponent casts a spell, if no mana was spent to cast it, counter that spell.",
+        "colors": [
+          "U",
+          "W"
+        ],
+        "colorIdentity": [
+          "U",
+          "W"
+        ],
+        "power": "2",
+        "toughness": "2",
+        "image": "https://cards.scryfall.io/normal/front/b/9/b96ef600-a96c-4563-bc4e-157ea62d14d4.jpg?1783909743"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Ledger Shredder",
+      "setCode": "SPG",
+      "collectorNumber": "55",
+      "card": {
+        "scryfallId": "c0564116-24c1-4b5d-bb9e-a0828fe164b7",
+        "layout": "normal",
+        "oracleId": "e9117015-1050-44dd-a46b-e7ffe2085fae",
+        "name": "Ledger Shredder",
+        "manaCost": "{1}{U}",
+        "cmc": 2,
+        "typeLine": "Creature — Bird Advisor",
+        "oracleText": "Flying\nWhenever a player casts their second spell each turn, this creature connives. (Draw a card, then discard a card. If you discarded a nonland card, put a +1/+1 counter on this creature.)",
+        "colors": [
+          "U"
+        ],
+        "colorIdentity": [
+          "U"
+        ],
+        "power": "1",
+        "toughness": "3",
+        "image": "https://cards.scryfall.io/normal/front/c/0/c0564116-24c1-4b5d-bb9e-a0828fe164b7.jpg?1783909912"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Lilypad Village",
+      "setCode": "BLB",
+      "collectorNumber": "255",
+      "card": {
+        "scryfallId": "7e95a7cc-ed77-4ca4-80db-61c0fc68bf50",
+        "layout": "normal",
+        "oracleId": "5bb06e6f-e3af-4caa-b66d-77248ad46b61",
+        "name": "Lilypad Village",
+        "manaCost": "",
+        "cmc": 0,
+        "typeLine": "Land",
+        "oracleText": "{T}: Add {C}.\n{T}: Add {U}. Spend this mana only to cast a creature spell.\n{U}, {T}: Surveil 2. Activate only if a Bird, Frog, Otter, or Rat entered the battlefield under your control this turn.",
+        "colors": [],
+        "colorIdentity": [
+          "U"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/7/e/7e95a7cc-ed77-4ca4-80db-61c0fc68bf50.jpg?1783910783"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Long River's Pull",
+      "setCode": "BLB",
+      "collectorNumber": "58",
+      "card": {
+        "scryfallId": "1c81d0fa-81a1-4f9b-a5fd-5a648fd01dea",
+        "layout": "normal",
+        "oracleId": "f1993767-1d07-49c8-b8dc-04ec9840a999",
+        "name": "Long River's Pull",
+        "manaCost": "{U}{U}",
+        "cmc": 2,
+        "typeLine": "Instant",
+        "oracleText": "Gift a card (You may promise an opponent a gift as you cast this spell. If you do, they draw a card before its other effects.)\nCounter target creature spell. If the gift was promised, instead counter target spell.",
+        "colors": [
+          "U"
+        ],
+        "colorIdentity": [
+          "U"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/1/c/1c81d0fa-81a1-4f9b-a5fd-5a648fd01dea.jpg?1783910847"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Lupinflower Village",
+      "setCode": "BLB",
+      "collectorNumber": "256",
+      "card": {
+        "scryfallId": "8ab9d56f-9178-4ec9-a5f6-b934f50d8d9d",
+        "layout": "normal",
+        "oracleId": "b6c7c708-5212-4100-b954-b77855b27915",
+        "name": "Lupinflower Village",
+        "manaCost": "",
+        "cmc": 0,
+        "typeLine": "Land",
+        "oracleText": "{T}: Add {C}.\n{T}: Add {W}. Spend this mana only to cast a creature spell.\n{1}{W}, {T}, Sacrifice this land: Look at the top six cards of your library. You may reveal a Bat, Bird, Mouse, or Rabbit card from among them and put it into your hand. Put the rest on the bottom of your library in a random order.",
+        "colors": [],
+        "colorIdentity": [
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/8/a/8ab9d56f-9178-4ec9-a5f6-b934f50d8d9d.jpg?1783910784"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Luxior, Giada's Gift",
+      "setCode": "SNC",
+      "collectorNumber": "240",
+      "card": {
+        "scryfallId": "1833662b-ccf3-4c16-9767-666d6407aa65",
+        "layout": "normal",
+        "oracleId": "2f9263d7-916f-4535-95d2-888ab73cf339",
+        "name": "Luxior, Giada's Gift",
+        "manaCost": "{1}",
+        "cmc": 1,
+        "typeLine": "Legendary Artifact — Equipment",
+        "oracleText": "Equipped creature gets +1/+1 for each counter on it.\nEquipped permanent isn't a planeswalker and is a creature in addition to its other types. (Loyalty abilities can still be activated.)\nEquip planeswalker {1}\nEquip {3}",
+        "colors": [],
+        "colorIdentity": [],
+        "image": "https://cards.scryfall.io/normal/front/1/8/1833662b-ccf3-4c16-9767-666d6407aa65.jpg?1783923061"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "March of Otherworldly Light",
+      "setCode": "NEO",
+      "collectorNumber": "369",
+      "card": {
+        "scryfallId": "a400cd7d-b004-4310-9787-bbec0fe36fd8",
+        "layout": "normal",
+        "oracleId": "ed06e421-480c-40c8-8c3e-1e466e5327b2",
+        "name": "March of Otherworldly Light",
+        "manaCost": "{X}{W}",
+        "cmc": 1,
+        "typeLine": "Instant",
+        "oracleText": "As an additional cost to cast this spell, you may exile any number of white cards from your hand. This spell costs {2} less to cast for each card exiled this way.\nExile target artifact, creature, or enchantment with mana value X or less.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/a/4/a400cd7d-b004-4310-9787-bbec0fe36fd8.jpg?1783923776"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "March of Swirling Mist",
+      "setCode": "NEO",
+      "collectorNumber": "447",
+      "card": {
+        "scryfallId": "3a5e72c2-e229-43c9-9e5a-df4754732d19",
+        "layout": "normal",
+        "oracleId": "debc69ea-372a-4720-838a-16856cd50b07",
+        "name": "March of Swirling Mist",
+        "manaCost": "{X}{U}",
+        "cmc": 1,
+        "typeLine": "Instant",
+        "oracleText": "As an additional cost to cast this spell, you may exile any number of blue cards from your hand. This spell costs {2} less to cast for each card exiled this way.\nUp to X target creatures phase out. (While they're phased out, they're treated as though they don't exist. Each one phases in before its controller untaps during their next untap step.)",
+        "colors": [
+          "U"
+        ],
+        "colorIdentity": [
+          "U"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/3/a/3a5e72c2-e229-43c9-9e5a-df4754732d19.jpg?1783923747"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Minas Tirith",
+      "setCode": "LTR",
+      "collectorNumber": "341",
+      "card": {
+        "scryfallId": "82e8a91c-74ee-411b-9d74-4e72df24258b",
+        "layout": "normal",
+        "oracleId": "7b0d7e62-0287-454a-8702-b0bfa7b41245",
+        "name": "Minas Tirith",
+        "manaCost": "",
+        "cmc": 0,
+        "typeLine": "Legendary Land",
+        "oracleText": "Minas Tirith enters tapped unless you control a legendary creature.\n{T}: Add {W}.\n{1}{W}, {T}: Draw a card. Activate only if you attacked with two or more creatures this turn.",
+        "colors": [],
+        "colorIdentity": [
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/8/2/82e8a91c-74ee-411b-9d74-4e72df24258b.jpg?1783916193"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Mithril Coat",
+      "setCode": "LTR",
+      "collectorNumber": "245",
+      "card": {
+        "scryfallId": "0fd1fc09-a09d-45e6-8a07-3a8a83b4e6ec",
+        "layout": "normal",
+        "oracleId": "3dc364f3-3094-4660-80ca-9418588c7fde",
+        "name": "Mithril Coat",
+        "manaCost": "{3}",
+        "cmc": 3,
+        "typeLine": "Legendary Artifact — Equipment",
+        "oracleText": "Flash\nIndestructible\nWhen Mithril Coat enters, attach it to target legendary creature you control.\nEquipped creature has indestructible.\nEquip {3}",
+        "colors": [],
+        "colorIdentity": [],
+        "image": "https://cards.scryfall.io/normal/front/0/f/0fd1fc09-a09d-45e6-8a07-3a8a83b4e6ec.jpg?1783916237"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Momo, Friendly Flier",
+      "setCode": "TLA",
+      "collectorNumber": "29",
+      "card": {
+        "scryfallId": "c472ef84-a632-4ad7-853c-60588a7a4b12",
+        "layout": "normal",
+        "oracleId": "a3c56e71-0de6-447a-a9b4-0971f56c2362",
+        "name": "Momo, Friendly Flier",
+        "manaCost": "{W}",
+        "cmc": 1,
+        "typeLine": "Legendary Creature — Lemur Bat Ally",
+        "oracleText": "Flying\nThe first non-Lemur creature spell with flying you cast during each of your turns costs {1} less to cast.\nWhenever another creature you control with flying enters, Momo gets +1/+1 until end of turn.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "power": "1",
+        "toughness": "1",
+        "image": "https://cards.scryfall.io/normal/front/c/4/c472ef84-a632-4ad7-853c-60588a7a4b12.jpg?1783904997"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Momo, Playful Pet",
+      "setCode": "TLA",
+      "collectorNumber": "30",
+      "card": {
+        "scryfallId": "9350bf4a-fa12-4867-b31f-1f1394d99571",
+        "layout": "normal",
+        "oracleId": "85ee8ab6-8db5-45d7-85ae-64838771146a",
+        "name": "Momo, Playful Pet",
+        "manaCost": "{W}",
+        "cmc": 1,
+        "typeLine": "Legendary Creature — Lemur Bat Ally",
+        "oracleText": "Flying, vigilance\nWhen Momo leaves the battlefield, choose one —\n• Create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\n• Put a +1/+1 counter on target creature you control.\n• Scry 2.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "power": "1",
+        "toughness": "1",
+        "image": "https://cards.scryfall.io/normal/front/9/3/9350bf4a-fa12-4867-b31f-1f1394d99571.jpg?1783904996"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Narset, Parter of Veils",
+      "setCode": "BLC",
+      "collectorNumber": "76",
+      "card": {
+        "scryfallId": "a609f37f-4466-45eb-93b1-01b649f8a0a1",
+        "layout": "normal",
+        "oracleId": "ab26fbe2-e808-48b9-8d0d-3fbb6c3d554f",
+        "name": "Narset, Parter of Veils",
+        "manaCost": "{1}{U}{U}",
+        "cmc": 3,
+        "typeLine": "Legendary Planeswalker — Narset",
+        "oracleText": "Each opponent can't draw more than one card each turn.\n−2: Look at the top four cards of your library. You may reveal a noncreature, nonland card from among them and put it into your hand. Put the rest on the bottom of your library in a random order.",
+        "colors": [
+          "U"
+        ],
+        "colorIdentity": [
+          "U"
+        ],
+        "loyalty": "5",
+        "image": "https://cards.scryfall.io/normal/front/a/6/a609f37f-4466-45eb-93b1-01b649f8a0a1.jpg?1783910714"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Paliano, the High City",
+      "setCode": "CNS",
+      "collectorNumber": "65",
+      "card": {
+        "scryfallId": "eac8649b-b892-4854-8422-fd117ccac39a",
+        "layout": "normal",
+        "oracleId": "cf682012-de36-4ab4-ad94-c3c0fd7bce3f",
+        "name": "Paliano, the High City",
+        "manaCost": "",
+        "cmc": 0,
+        "typeLine": "Legendary Land",
+        "oracleText": "Reveal this card as you draft it. The player to your right chooses a color, you choose another color, then the player to your left chooses a third color.\n{T}: Add one mana of any color chosen as you drafted cards named Paliano, the High City.",
+        "colors": [],
+        "colorIdentity": [],
+        "image": "https://cards.scryfall.io/normal/front/e/a/eac8649b-b892-4854-8422-fd117ccac39a.jpg?1783939367"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Path to Redemption",
+      "setCode": "TLA",
+      "collectorNumber": "31",
+      "card": {
+        "scryfallId": "f936d64a-0db4-49c1-8a57-6d99e012a555",
+        "layout": "normal",
+        "oracleId": "ac94860b-70b8-4624-9758-4bb024a56f60",
+        "name": "Path to Redemption",
+        "manaCost": "{1}{W}",
+        "cmc": 2,
+        "typeLine": "Enchantment — Aura",
+        "oracleText": "Enchant creature\nEnchanted creature can't attack or block.\n{5}, Sacrifice this Aura: Exile enchanted creature. Create a 1/1 white Ally creature token. Activate only during your turn.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/f/9/f936d64a-0db4-49c1-8a57-6d99e012a555.jpg?1783904996"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Phelia, Exuberant Shepherd",
+      "setCode": "MH3",
+      "collectorNumber": "40",
+      "card": {
+        "scryfallId": "55707746-da6e-46e5-a5ca-7ac843fdc38e",
+        "layout": "normal",
+        "oracleId": "5d86a59a-ba1f-45f7-b829-dca6f9f3e624",
+        "name": "Phelia, Exuberant Shepherd",
+        "manaCost": "{1}{W}",
+        "cmc": 2,
+        "typeLine": "Legendary Creature — Dog",
+        "oracleText": "Flash\nWhenever Phelia attacks, exile up to one other target nonland permanent. At the beginning of the next end step, return that card to the battlefield under its owner's control. If it entered under your control, put a +1/+1 counter on Phelia.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "power": "2",
+        "toughness": "2",
+        "image": "https://cards.scryfall.io/normal/front/5/5/55707746-da6e-46e5-a5ca-7ac843fdc38e.jpg?1783911298"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Pippin, Guard of the Citadel",
+      "setCode": "LTR",
+      "collectorNumber": "326",
+      "foil": true,
+      "card": {
+        "scryfallId": "25630509-c9ba-4faf-b154-32be8649d9fa",
+        "layout": "normal",
+        "oracleId": "25afddd2-6e48-4742-b34e-e3b5def7c0fd",
+        "name": "Pippin, Guard of the Citadel",
+        "manaCost": "{W}{U}",
+        "cmc": 2,
+        "typeLine": "Legendary Creature — Halfling Soldier",
+        "oracleText": "Vigilance, ward {1}\n{T}: Another target creature you control gains protection from the card type of your choice until end of turn. (It can't be blocked, targeted, dealt damage, enchanted, or equipped by anything of that type.)",
+        "colors": [
+          "U",
+          "W"
+        ],
+        "colorIdentity": [
+          "U",
+          "W"
+        ],
+        "power": "2",
+        "toughness": "2",
+        "image": "https://cards.scryfall.io/normal/front/2/5/25630509-c9ba-4faf-b154-32be8649d9fa.jpg?1783916203"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 6,
+      "name": "Plains",
+      "setCode": "EOE",
+      "collectorNumber": "267",
+      "card": {
+        "scryfallId": "df31f72c-076e-4d8e-9975-6d6281ab71f6",
+        "layout": "normal",
+        "oracleId": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+        "name": "Plains",
+        "manaCost": "",
+        "cmc": 0,
+        "typeLine": "Basic Land — Plains",
+        "oracleText": "({T}: Add {W}.)",
+        "colors": [],
+        "colorIdentity": [
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/d/f/df31f72c-076e-4d8e-9975-6d6281ab71f6.jpg?1783905908"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Prairie Stream",
+      "setCode": "DRC",
+      "collectorNumber": "167",
+      "card": {
+        "scryfallId": "5babbc79-ad36-4088-a456-8acf64cfe9f6",
+        "layout": "normal",
+        "oracleId": "5330e24a-8568-446e-840a-594cd08bd1bc",
+        "name": "Prairie Stream",
+        "manaCost": "",
+        "cmc": 0,
+        "typeLine": "Land — Plains Island",
+        "oracleText": "({T}: Add {W} or {U}.)\nThis land enters tapped unless you control two or more basic lands.",
+        "colors": [],
+        "colorIdentity": [
+          "U",
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/5/b/5babbc79-ad36-4088-a456-8acf64cfe9f6.jpg?1783907700"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Repel Calamity",
+      "setCode": "SOA",
+      "collectorNumber": "8",
+      "card": {
+        "scryfallId": "1c2cf02f-97f3-47f0-9382-c580f3033635",
+        "layout": "normal",
+        "oracleId": "ba58f508-8036-496c-8a2f-c1e410165e93",
+        "name": "Repel Calamity",
+        "manaCost": "{1}{W}",
+        "cmc": 2,
+        "typeLine": "Instant",
+        "oracleText": "Destroy target creature with power or toughness 4 or greater.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/1/c/1c2cf02f-97f3-47f0-9382-c580f3033635.jpg?1783903934"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Resourceful Defense",
+      "setCode": "NCC",
+      "collectorNumber": "120",
+      "card": {
+        "scryfallId": "d8477b30-cf8c-4396-9ba6-66228a7fc2e9",
+        "layout": "normal",
+        "oracleId": "83e78565-e61f-4bbc-b834-f47941f7e3ec",
+        "name": "Resourceful Defense",
+        "manaCost": "{2}{W}",
+        "cmc": 3,
+        "typeLine": "Enchantment",
+        "oracleText": "Whenever a permanent you control leaves the battlefield, if it had counters on it, put those counters on target permanent you control.\n{4}{W}: Move any number of counters from target permanent you control onto a second target permanent you control.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/d/8/d8477b30-cf8c-4396-9ba6-66228a7fc2e9.jpg?1783923329"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Rivendell",
+      "setCode": "LTR",
+      "collectorNumber": "344",
+      "card": {
+        "scryfallId": "650fa2f4-2916-427c-a0f9-37e2dbe8e1fc",
+        "layout": "normal",
+        "oracleId": "2550099d-b3e2-4eb6-9f36-0fc412828ca6",
+        "name": "Rivendell",
+        "manaCost": "",
+        "cmc": 0,
+        "typeLine": "Legendary Land",
+        "oracleText": "Rivendell enters tapped unless you control a legendary creature.\n{T}: Add {U}.\n{1}{U}, {T}: Scry 2. Activate only if you control a legendary creature.",
+        "colors": [],
+        "colorIdentity": [
+          "U"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/6/5/650fa2f4-2916-427c-a0f9-37e2dbe8e1fc.jpg?1783916193"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Rosa, Resolute White Mage",
+      "setCode": "FIN",
+      "collectorNumber": "555",
+      "card": {
+        "scryfallId": "c44e0ad6-9f44-4e4c-8c3b-3ee99409a740",
+        "layout": "normal",
+        "oracleId": "9c4fdd20-0396-40b7-8687-43b1035b6956",
+        "name": "Rosa, Resolute White Mage",
+        "manaCost": "{3}{W}",
+        "cmc": 4,
+        "typeLine": "Legendary Creature — Human Noble Cleric",
+        "oracleText": "Reach (This creature can block creatures with flying.)\nAt the beginning of combat on your turn, put a +1/+1 counter on target creature you control. It gains lifelink until end of turn. (Damage dealt by the creature also causes you to gain that much life.)",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "power": "2",
+        "toughness": "3",
+        "image": "https://cards.scryfall.io/normal/front/c/4/c44e0ad6-9f44-4e4c-8c3b-3ee99409a740.jpg?1783906436"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Secret Tunnel",
+      "setCode": "TLA",
+      "collectorNumber": "278",
+      "card": {
+        "scryfallId": "2d39a0e1-6484-409c-ab05-5b276925a949",
+        "layout": "normal",
+        "oracleId": "632e2979-d88a-482e-9bb8-57b683c5310f",
+        "name": "Secret Tunnel",
+        "manaCost": "",
+        "cmc": 0,
+        "typeLine": "Land — Cave",
+        "oracleText": "This land can't be blocked.\n{T}: Add {C}.\n{4}, {T}: Two target creatures you control that share a creature type can't be blocked this turn.",
+        "colors": [],
+        "colorIdentity": [],
+        "image": "https://cards.scryfall.io/normal/front/2/d/2d39a0e1-6484-409c-ab05-5b276925a949.jpg?1783904909"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Senu, Keen-Eyed Protector",
+      "setCode": "ACR",
+      "collectorNumber": "128",
+      "card": {
+        "scryfallId": "94f9ff05-8a97-425e-b556-cc658630c869",
+        "layout": "normal",
+        "oracleId": "bf2dc318-7b51-451e-ac4d-0f1b756dc860",
+        "name": "Senu, Keen-Eyed Protector",
+        "manaCost": "{1}{W}",
+        "cmc": 2,
+        "typeLine": "Legendary Creature — Bird Scout",
+        "oracleText": "Flying, vigilance\n{T}, Exile Senu: You gain 2 life and scry 2.\nWhen a legendary creature you control attacks and isn't blocked, if this card is exiled, put it onto the battlefield attacking.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "power": "2",
+        "toughness": "1",
+        "image": "https://cards.scryfall.io/normal/front/9/4/94f9ff05-8a97-425e-b556-cc658630c869.jpg?1783910946"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Sol Ring",
+      "setCode": "TLE",
+      "collectorNumber": "316",
+      "card": {
+        "scryfallId": "c1f93f78-645b-4f21-a80b-5542f3328111",
+        "layout": "normal",
+        "oracleId": "6ad8011d-3471-4369-9d68-b264cc027487",
+        "name": "Sol Ring",
+        "manaCost": "{1}",
+        "cmc": 1,
+        "typeLine": "Artifact",
+        "oracleText": "{T}: Add {C}{C}.",
+        "colors": [],
+        "colorIdentity": [],
+        "image": "https://cards.scryfall.io/normal/front/c/1/c1f93f78-645b-4f21-a80b-5542f3328111.jpg?1783904751"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Swiftfoot Boots",
+      "setCode": "TLE",
+      "collectorNumber": "317",
+      "card": {
+        "scryfallId": "aff074f2-6ad9-4c0c-88e2-fc622772d2a1",
+        "layout": "normal",
+        "oracleId": "c8b143ad-43ec-4e0d-a440-e348daa31391",
+        "name": "Swiftfoot Boots",
+        "manaCost": "{2}",
+        "cmc": 2,
+        "typeLine": "Artifact — Equipment",
+        "oracleText": "Equipped creature has hexproof and haste. (It can't be the target of spells or abilities your opponents control. It can attack and {T} no matter when it came under your control.)\nEquip {1} ({1}: Attach to target creature you control. Equip only as a sorcery.)",
+        "colors": [],
+        "colorIdentity": [],
+        "image": "https://cards.scryfall.io/normal/front/a/f/aff074f2-6ad9-4c0c-88e2-fc622772d2a1.jpg?1783904750"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Sword Coast Sailor",
+      "setCode": "CLB",
+      "collectorNumber": "98",
+      "card": {
+        "scryfallId": "704f8ab7-63fd-4963-bacd-0076fffb34a1",
+        "layout": "normal",
+        "oracleId": "71248bf6-a6a2-440e-9313-a7abce05a84b",
+        "name": "Sword Coast Sailor",
+        "manaCost": "{1}{U}",
+        "cmc": 2,
+        "typeLine": "Legendary Enchantment — Background",
+        "oracleText": "Commander creatures you own have \"Whenever this creature attacks a player, if no opponent has more life than that player, this creature can't be blocked this turn.\"",
+        "colors": [
+          "U"
+        ],
+        "colorIdentity": [
+          "U"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/7/0/704f8ab7-63fd-4963-bacd-0076fffb34a1.jpg?1783922775"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Sygg, Wanderwine Wisdom",
+      "setCode": "ECL",
+      "collectorNumber": "288",
+      "card": {
+        "scryfallId": "62b5ab41-7a85-49aa-8669-8a09a09d02fa",
+        "layout": "transform",
+        "oracleId": "9cc91ac5-6f2b-4fc0-b810-cdc92eebe6de",
+        "name": "Sygg, Wanderwine Wisdom",
+        "manaCost": "{1}{U}",
+        "cmc": 2,
+        "typeLine": "Legendary Creature — Merfolk Wizard",
+        "oracleText": "Sygg can't be blocked.\nWhenever this creature enters or transforms into Sygg, Wanderwine Wisdom, target creature gains \"Whenever this creature deals combat damage to a player or planeswalker, draw a card\" until end of turn.\nAt the beginning of your first main phase, you may pay {W}. If you do, transform Sygg.",
+        "colors": [
+          "U"
+        ],
+        "colorIdentity": [
+          "U",
+          "W"
+        ],
+        "power": "2",
+        "toughness": "2",
+        "image": "https://cards.scryfall.io/normal/front/6/2/62b5ab41-7a85-49aa-8669-8a09a09d02fa.jpg?1783904389",
+        "cardFaces": [
+          {
+            "name": "Sygg, Wanderwine Wisdom",
+            "manaCost": "{1}{U}",
+            "typeLine": "Legendary Creature — Merfolk Wizard",
+            "oracleText": "Sygg can't be blocked.\nWhenever this creature enters or transforms into Sygg, Wanderwine Wisdom, target creature gains \"Whenever this creature deals combat damage to a player or planeswalker, draw a card\" until end of turn.\nAt the beginning of your first main phase, you may pay {W}. If you do, transform Sygg.",
+            "image": "https://cards.scryfall.io/normal/front/6/2/62b5ab41-7a85-49aa-8669-8a09a09d02fa.jpg?1783904389",
+            "power": "2",
+            "toughness": "2",
+            "colors": [
+              "U"
+            ]
+          },
+          {
+            "name": "Sygg, Wanderbrine Shield",
+            "manaCost": "",
+            "typeLine": "Legendary Creature — Merfolk Rogue",
+            "oracleText": "Sygg can't be blocked.\nWhenever this creature transforms into Sygg, Wanderbrine Shield, target creature you control gains protection from each color until your next turn.\nAt the beginning of your first main phase, you may pay {U}. If you do, transform Sygg.",
+            "image": "https://cards.scryfall.io/normal/back/6/2/62b5ab41-7a85-49aa-8669-8a09a09d02fa.jpg?1783904389",
+            "power": "2",
+            "toughness": "2",
+            "colors": [
+              "W"
+            ],
+            "colorIndicator": [
+              "W"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Teferi's Protection",
+      "setCode": "2X2",
+      "collectorNumber": "32",
+      "card": {
+        "scryfallId": "483fa1cb-1e35-44f2-a143-98c0f107f5ca",
+        "layout": "normal",
+        "oracleId": "0d4ecdb1-ec90-497f-a7a4-1c68092b8757",
+        "name": "Teferi's Protection",
+        "manaCost": "{2}{W}",
+        "cmc": 3,
+        "typeLine": "Instant",
+        "oracleText": "Until your next turn, your life total can't change and you gain protection from everything. All permanents you control phase out. (While they're phased out, they're treated as though they don't exist. They phase in before you untap during your untap step.)\nExile Teferi's Protection.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/4/8/483fa1cb-1e35-44f2-a143-98c0f107f5ca.jpg?1783921926"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Teshar, Ancestor's Apostle",
+      "setCode": "SOC",
+      "collectorNumber": "180",
+      "card": {
+        "scryfallId": "6e80198c-cfae-46f9-84cb-584d091014c5",
+        "layout": "normal",
+        "oracleId": "d4193f50-33b5-4201-ba03-eb135eced7ff",
+        "name": "Teshar, Ancestor's Apostle",
+        "manaCost": "{3}{W}",
+        "cmc": 4,
+        "typeLine": "Legendary Creature — Bird Cleric",
+        "oracleText": "Flying\nWhenever you cast a historic spell, return target creature card with mana value 3 or less from your graveyard to the battlefield. (Artifacts, legendaries, and Sagas are historic.)",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "power": "2",
+        "toughness": "2",
+        "image": "https://cards.scryfall.io/normal/front/6/e/6e80198c-cfae-46f9-84cb-584d091014c5.jpg?1783903797"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Thalia, Heretic Cathar",
+      "setCode": "INR",
+      "collectorNumber": "300",
+      "card": {
+        "scryfallId": "8521750a-95c1-4bed-817e-96dae01c2c38",
+        "layout": "normal",
+        "oracleId": "13be47e4-9da2-4f9e-baf0-db96f7777ccb",
+        "name": "Thalia, Heretic Cathar",
+        "manaCost": "{2}{W}",
+        "cmc": 3,
+        "typeLine": "Legendary Creature — Human Soldier",
+        "oracleText": "First strike\nCreatures and nonbasic lands your opponents control enter tapped.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "power": "3",
+        "toughness": "2",
+        "image": "https://cards.scryfall.io/normal/front/8/5/8521750a-95c1-4bed-817e-96dae01c2c38.jpg?1783908046"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Thassa, God of the Sea",
+      "setCode": "THS",
+      "collectorNumber": "66",
+      "card": {
+        "scryfallId": "d6876c7a-8bbe-484e-b733-70229fa336cd",
+        "layout": "normal",
+        "oracleId": "69e5df2f-be1f-4608-a90f-3e2f51e2fea4",
+        "name": "Thassa, God of the Sea",
+        "manaCost": "{2}{U}",
+        "cmc": 3,
+        "typeLine": "Legendary Enchantment Creature — God",
+        "oracleText": "Indestructible\nAs long as your devotion to blue is less than five, Thassa isn't a creature. (Each {U} in the mana costs of permanents you control counts toward your devotion to blue.)\nAt the beginning of your upkeep, scry 1.\n{1}{U}: Target creature you control can't be blocked this turn.",
+        "colors": [
+          "U"
+        ],
+        "colorIdentity": [
+          "U"
+        ],
+        "power": "5",
+        "toughness": "5",
+        "image": "https://cards.scryfall.io/normal/front/d/6/d6876c7a-8bbe-484e-b733-70229fa336cd.jpg?1783939788"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "The Grey Havens",
+      "setCode": "LTR",
+      "collectorNumber": "443",
+      "card": {
+        "scryfallId": "9714aa30-1db2-4670-9a0b-72acfc3f703c",
+        "layout": "normal",
+        "oracleId": "a1a9695e-073b-4a65-b3ec-2cfddc23202a",
+        "name": "The Grey Havens",
+        "manaCost": "",
+        "cmc": 0,
+        "typeLine": "Legendary Land",
+        "oracleText": "When The Grey Havens enters, scry 1.\n{T}: Add {C}.\n{T}: Add one mana of any color among legendary creature cards in your graveyard.",
+        "colors": [],
+        "colorIdentity": [],
+        "image": "https://cards.scryfall.io/normal/front/9/7/9714aa30-1db2-4670-9a0b-72acfc3f703c.jpg?1783916146"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "The Ooze",
+      "setCode": "TMT",
+      "collectorNumber": "177",
+      "card": {
+        "scryfallId": "1f9bd4da-4626-40ba-95f4-14e3de36f989",
+        "layout": "normal",
+        "oracleId": "82a6fa6f-13c2-4ea3-bec2-c51b56b2783b",
+        "name": "The Ooze",
+        "manaCost": "{2}",
+        "cmc": 2,
+        "typeLine": "Legendary Artifact",
+        "oracleText": "Whenever a creature you control with a +1/+1 counter on it leaves the battlefield, create a Mutagen token for each +1/+1 counter on it. (A Mutagen token is an artifact with \"{1}, {T}, Sacrifice this token: Put a +1/+1 counter on target creature. Activate only as a sorcery.\")\n{T}: Exile target card from a graveyard. Create a Mutagen token.",
+        "colors": [],
+        "colorIdentity": [],
+        "image": "https://cards.scryfall.io/normal/front/1/f/1f9bd4da-4626-40ba-95f4-14e3de36f989.jpg?1783904067"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Trenzalore Clocktower",
+      "setCode": "WHO",
+      "collectorNumber": "190",
+      "card": {
+        "scryfallId": "64444549-1198-4465-91d5-02a7903691dc",
+        "layout": "normal",
+        "oracleId": "69143645-97b6-4c7c-9fa2-844fb3b99822",
+        "name": "Trenzalore Clocktower",
+        "manaCost": "",
+        "cmc": 0,
+        "typeLine": "Legendary Land",
+        "oracleText": "{T}: Add {U}. Put a time counter on Trenzalore Clocktower.\n{1}{U}, {T}, Remove twelve time counters from Trenzalore Clocktower and exile it: Shuffle your graveyard and hand into your library, then draw seven cards. Activate only if you control a Time Lord.",
+        "colors": [],
+        "colorIdentity": [
+          "U"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/6/4/64444549-1198-4465-91d5-02a7903691dc.jpg?1783914609"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Ty Lee, Chi Blocker",
+      "setCode": "TLA",
+      "collectorNumber": "76",
+      "card": {
+        "scryfallId": "308cc687-9cb2-4e3a-98db-c5ba2a7da115",
+        "layout": "normal",
+        "oracleId": "081ad4e3-cda3-41cc-890f-412611dc9ea0",
+        "name": "Ty Lee, Chi Blocker",
+        "manaCost": "{2}{U}",
+        "cmc": 3,
+        "typeLine": "Legendary Creature — Human Performer Ally",
+        "oracleText": "Flash\nProwess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)\nWhen Ty Lee enters, tap up to one target creature. It doesn't untap during its controller's untap step for as long as you control Ty Lee.",
+        "colors": [
+          "U"
+        ],
+        "colorIdentity": [
+          "U"
+        ],
+        "power": "2",
+        "toughness": "1",
+        "image": "https://cards.scryfall.io/normal/front/3/0/308cc687-9cb2-4e3a-98db-c5ba2a7da115.jpg?1783904981"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Unbreakable Formation",
+      "setCode": "LTC",
+      "collectorNumber": "179",
+      "card": {
+        "scryfallId": "d5da52b2-cc09-49ac-8091-737f23a77165",
+        "layout": "normal",
+        "oracleId": "97435e03-2fff-4fe0-8fa9-69ab0a046a33",
+        "name": "Unbreakable Formation",
+        "manaCost": "{2}{W}",
+        "cmc": 3,
+        "typeLine": "Instant",
+        "oracleText": "Creatures you control gain indestructible until end of turn.\nAddendum — If you cast this spell during your main phase, put a +1/+1 counter on each of those creatures and they gain vigilance until end of turn.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/d/5/d5da52b2-cc09-49ac-8091-737f23a77165.jpg?1783915958"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Urdnan, Dromoka Warrior",
+      "setCode": "J25",
+      "collectorNumber": "34",
+      "card": {
+        "scryfallId": "f239682a-2b81-4f62-a474-60e8db343200",
+        "layout": "normal",
+        "oracleId": "adc1f850-9217-4a90-8e6a-02ed226ef8df",
+        "name": "Urdnan, Dromoka Warrior",
+        "manaCost": "{1}{W}",
+        "cmc": 2,
+        "typeLine": "Legendary Creature — Human Warrior",
+        "oracleText": "When Urdnan enters, put a +1/+1 counter on target creature.\nWhenever you attack, target attacking creature with a +1/+1 counter on it gains first strike until end of turn. If that creature has two or more +1/+1 counters on it, it gains double strike until end of turn instead.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "power": "1",
+        "toughness": "1",
+        "image": "https://cards.scryfall.io/normal/front/f/2/f239682a-2b81-4f62-a474-60e8db343200.jpg?1783908860"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Venat, Heart of Hydaelyn",
+      "setCode": "FIN",
+      "collectorNumber": "329",
+      "card": {
+        "scryfallId": "a9a432dc-6e53-48d2-8fbe-b01bd2cab6dd",
+        "layout": "transform",
+        "oracleId": "2e5adbcf-6b5c-4ded-a339-8757040ef878",
+        "name": "Venat, Heart of Hydaelyn",
+        "manaCost": "{1}{W}{W}",
+        "cmc": 3,
+        "typeLine": "Legendary Creature — Elder Wizard",
+        "oracleText": "Whenever you cast a legendary spell, draw a card. This ability triggers only once each turn.\nHero's Sundering — {7}, {T}: Exile target nonland permanent. Transform Venat. Activate only as a sorcery.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "power": "3",
+        "toughness": "3",
+        "image": "https://cards.scryfall.io/normal/front/a/9/a9a432dc-6e53-48d2-8fbe-b01bd2cab6dd.jpg?1783906536",
+        "cardFaces": [
+          {
+            "name": "Venat, Heart of Hydaelyn",
+            "manaCost": "{1}{W}{W}",
+            "typeLine": "Legendary Creature — Elder Wizard",
+            "oracleText": "Whenever you cast a legendary spell, draw a card. This ability triggers only once each turn.\nHero's Sundering — {7}, {T}: Exile target nonland permanent. Transform Venat. Activate only as a sorcery.",
+            "image": "https://cards.scryfall.io/normal/front/a/9/a9a432dc-6e53-48d2-8fbe-b01bd2cab6dd.jpg?1783906536",
+            "power": "3",
+            "toughness": "3",
+            "colors": [
+              "W"
+            ]
+          },
+          {
+            "name": "Hydaelyn, the Mothercrystal",
+            "manaCost": "",
+            "typeLine": "Legendary Creature — God",
+            "oracleText": "Indestructible\nBlessing of Light — At the beginning of combat on your turn, put a +1/+1 counter on another target creature you control. Until your next turn, it gains indestructible. If that creature is legendary, draw a card.",
+            "image": "https://cards.scryfall.io/normal/back/a/9/a9a432dc-6e53-48d2-8fbe-b01bd2cab6dd.jpg?1783906536",
+            "power": "4",
+            "toughness": "4",
+            "colors": [
+              "W"
+            ],
+            "colorIndicator": [
+              "W"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Watery Grasp",
+      "setCode": "TLA",
+      "collectorNumber": "82",
+      "card": {
+        "scryfallId": "26bcff57-428e-4f30-a153-a778fbfc437d",
+        "layout": "normal",
+        "oracleId": "520b2799-66bd-40bf-9bc0-9cd3aed321f5",
+        "name": "Watery Grasp",
+        "manaCost": "{U}",
+        "cmc": 1,
+        "typeLine": "Enchantment — Aura",
+        "oracleText": "Enchant creature\nEnchanted creature doesn't untap during its controller's untap step.\nWaterbend {5}: Enchanted creature's owner shuffles it into their library. (While paying a waterbend cost, you can tap your artifacts and creatures to help. Each one pays for {1}.)",
+        "colors": [
+          "U"
+        ],
+        "colorIdentity": [
+          "U"
+        ],
+        "image": "https://cards.scryfall.io/normal/front/2/6/26bcff57-428e-4f30-a153-a778fbfc437d.jpg?1783904978"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Windborn Muse",
+      "setCode": "C21",
+      "collectorNumber": "111",
+      "card": {
+        "scryfallId": "357a838a-80af-42ec-8e33-27beec5ce140",
+        "layout": "normal",
+        "oracleId": "75e09ac6-d789-4c4d-9aca-845d68f3899f",
+        "name": "Windborn Muse",
+        "manaCost": "{3}{W}",
+        "cmc": 4,
+        "typeLine": "Creature — Spirit",
+        "oracleText": "Flying\nCreatures can't attack you unless their controller pays {2} for each creature they control that's attacking you.",
+        "colors": [
+          "W"
+        ],
+        "colorIdentity": [
+          "W"
+        ],
+        "power": "2",
+        "toughness": "3",
+        "image": "https://cards.scryfall.io/normal/front/3/5/357a838a-80af-42ec-8e33-27beec5ce140.jpg?1783927569"
+      }
+    },
+    {
+      "section": "mainboard",
+      "quantity": 1,
+      "name": "Wrecking Ball Arm",
+      "setCode": "FIC",
+      "collectorNumber": "128",
+      "card": {
+        "scryfallId": "c934a62e-d327-44ce-9155-7dc424daec36",
+        "layout": "normal",
+        "oracleId": "9f48cb32-46be-4c47-b558-2ea359efdd9b",
+        "name": "Wrecking Ball Arm",
+        "manaCost": "{2}",
+        "cmc": 2,
+        "typeLine": "Legendary Artifact — Equipment",
+        "oracleText": "Equipped creature has base power and toughness 7/7 and can't be blocked by creatures with power 2 or less.\nEquip legendary creature {3}\nEquip {7}",
+        "colors": [],
+        "colorIdentity": [],
+        "image": "https://cards.scryfall.io/normal/front/c/9/c934a62e-d327-44ce-9155-7dc424daec36.jpg?1783906329"
+      }
+    }
+  ]
+}

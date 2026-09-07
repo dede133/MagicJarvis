@@ -1,0 +1,2456 @@
+{
+  "schemaVersion": 1,
+  "runtimeDslVersion": "2.5",
+  "deckName": "Tritones",
+  "loadPolicy": "READY_ONLY",
+  "definitions": {
+    "Arcane Signet": [
+      {
+        "id": "tritones-arcane-signet-mana",
+        "sourceCardName": "Arcane Signet",
+        "kind": "ACTIVATED",
+        "costs": [
+          {
+            "type": "TAP_SOURCE"
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_MANA",
+            "color": "U",
+            "amount": 1
+          }
+        ],
+        "automation": "AUTO",
+        "isManaAbility": true
+      }
+    ],
+    "Cosi's Trickster": [
+      {
+        "id": "tritones-cosi-s-trickster-shuffle",
+        "sourceCardName": "Cosi's Trickster",
+        "kind": "TRIGGERED",
+        "trigger": {
+          "type": "PLAYER_SHUFFLED"
+        },
+        "conditions": [
+          {
+            "type": "EVENT_CONTROLLER_IS",
+            "value": "OPPONENT"
+          }
+        ],
+        "effects": [
+          {
+            "type": "OPTIONAL_EFFECT",
+            "prompt": "¿Poner un contador +1/+1 sobre Cosi's Trickster?",
+            "effects": [
+              {
+                "type": "ADD_COUNTER",
+                "target": "SOURCE",
+                "counterType": "+1/+1",
+                "amount": {
+                  "type": "LITERAL",
+                  "value": 1
+                }
+              }
+            ]
+          }
+        ],
+        "automation": "ASSISTED"
+      }
+    ],
+    "Counterspell": [
+      {
+        "id": "tritones-counterspell-counter",
+        "sourceCardName": "Counterspell",
+        "kind": "SPELL_EFFECT",
+        "effects": [
+          {
+            "type": "TARGET_SELECTION",
+            "prompt": "Elige el hechizo objetivo a contrarrestar",
+            "constraints": {
+              "stackKind": "SPELL"
+            },
+            "effects": [
+              {
+                "type": "COUNTER_SPELL",
+                "target": "SELECTED_STACK_OBJECT"
+              }
+            ]
+          }
+        ],
+        "automation": "ASSISTED"
+      }
+    ],
+    "Island": [],
+    "Lotus Petal": [
+      {
+        "id": "tritones-lotus-petal-mana",
+        "sourceCardName": "Lotus Petal",
+        "kind": "ACTIVATED",
+        "costs": [
+          {
+            "type": "TAP_SOURCE"
+          },
+          {
+            "type": "SACRIFICE_SOURCE"
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_MANA_CHOICE",
+            "player": "SOURCE_CONTROLLER",
+            "allowedColors": ["W", "U", "B", "R", "G"],
+            "amount": {
+              "type": "LITERAL",
+              "value": 1
+            }
+          }
+        ],
+        "automation": "ASSISTED",
+        "isManaAbility": true
+      }
+    ],
+    "Merfolk Looter": [
+      {
+        "id": "tritones-merfolk-looter-loot",
+        "sourceCardName": "Merfolk Looter",
+        "kind": "ACTIVATED",
+        "costs": [
+          {
+            "type": "TAP_SOURCE"
+          }
+        ],
+        "effects": [
+          {
+            "type": "DRAW_CARD",
+            "amount": {
+              "type": "LITERAL",
+              "value": 1
+            }
+          },
+          {
+            "type": "DISCARD_CARD",
+            "player": "YOU",
+            "amount": {
+              "type": "LITERAL",
+              "value": 1
+            }
+          }
+        ],
+        "automation": "ASSISTED"
+      }
+    ],
+    "Merrow Commerce": [
+      {
+        "id": "tritones-merrow-commerce-end-step",
+        "sourceCardName": "Merrow Commerce",
+        "kind": "TRIGGERED",
+        "trigger": {
+          "type": "END_STEP_STARTED"
+        },
+        "conditions": [
+          {
+            "type": "EVENT_ACTIVE_PLAYER_IS_SOURCE_CONTROLLER"
+          }
+        ],
+        "effects": [
+          {
+            "type": "FOR_EACH",
+            "query": {
+              "zones": ["battlefield"],
+              "controller": "SOURCE_CONTROLLER",
+              "subtypes": ["Merfolk"]
+            },
+            "effects": [
+              {
+                "type": "UNTAP_PERMANENT",
+                "target": "CURRENT_OBJECT"
+              }
+            ]
+          }
+        ],
+        "automation": "AUTO"
+      }
+    ],
+    "Mind Spring": [
+      {
+        "id": "tritones-mind-spring-draw",
+        "sourceCardName": "Mind Spring",
+        "kind": "SPELL_EFFECT",
+        "effects": [
+          {
+            "type": "DRAW_CARD",
+            "amount": {
+              "type": "VARIABLE",
+              "name": "X"
+            }
+          }
+        ],
+        "automation": "AUTO"
+      }
+    ],
+    "Mystic Remora": [
+      {
+        "id": "tritones-mystic-remora-cumulative-upkeep",
+        "sourceCardName": "Mystic Remora",
+        "kind": "TRIGGERED",
+        "trigger": {
+          "type": "UPKEEP_STARTED"
+        },
+        "conditions": [
+          {
+            "type": "EVENT_ACTIVE_PLAYER_IS_SOURCE_CONTROLLER"
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_COUNTER",
+            "target": "SOURCE",
+            "counterType": "AGE",
+            "amount": {
+              "type": "LITERAL",
+              "value": 1
+            }
+          },
+          {
+            "type": "PAYMENT_BRANCH",
+            "payer": "SOURCE_CONTROLLER",
+            "cost": {
+              "type": "GENERIC_FROM_VALUE",
+              "value": {
+                "type": "MULTIPLY",
+                "values": [
+                  {
+                    "type": "LITERAL",
+                    "value": 1
+                  },
+                  {
+                    "type": "COUNTER_COUNT",
+                    "target": "SOURCE",
+                    "counterType": "AGE"
+                  }
+                ]
+              }
+            },
+            "ifPaid": [],
+            "ifNotPaid": [
+              {
+                "type": "SACRIFICE",
+                "target": "SOURCE"
+              }
+            ],
+            "prompt": "¿Pagar el cumulative upkeep de Mystic Remora?"
+          }
+        ],
+        "automation": "ASSISTED"
+      },
+      {
+        "id": "tritones-mystic-remora-opponent-noncreature",
+        "sourceCardName": "Mystic Remora",
+        "kind": "TRIGGERED",
+        "trigger": {
+          "type": "SPELL_CAST"
+        },
+        "conditions": [
+          {
+            "type": "EVENT_CONTROLLER_IS",
+            "value": "OPPONENT"
+          },
+          {
+            "type": "SPELL_IS_CREATURE",
+            "value": false
+          }
+        ],
+        "effects": [
+          {
+            "type": "PAYMENT_BRANCH",
+            "payer": "EVENT_PLAYER",
+            "cost": {
+              "type": "FIXED_MANA",
+              "cost": "{4}"
+            },
+            "ifPaid": [],
+            "ifNotPaid": [
+              {
+                "type": "OPTIONAL_EFFECT",
+                "prompt": "¿Robar una carta por Mystic Remora?",
+                "effects": [
+                  {
+                    "type": "DRAW_CARD",
+                    "amount": {
+                      "type": "LITERAL",
+                      "value": 1
+                    }
+                  }
+                ]
+              }
+            ],
+            "prompt": "¿El jugador que lanzó el hechizo paga {4}?"
+          }
+        ],
+        "automation": "ASSISTED"
+      }
+    ],
+    "Rhystic Study": [
+      {
+        "id": "tritones-rhystic-study-opponent-spell",
+        "sourceCardName": "Rhystic Study",
+        "kind": "TRIGGERED",
+        "trigger": {
+          "type": "SPELL_CAST"
+        },
+        "conditions": [
+          {
+            "type": "EVENT_CONTROLLER_IS",
+            "value": "OPPONENT"
+          }
+        ],
+        "effects": [
+          {
+            "type": "PAYMENT_BRANCH",
+            "payer": "EVENT_PLAYER",
+            "cost": {
+              "type": "FIXED_MANA",
+              "cost": "{1}"
+            },
+            "ifPaid": [],
+            "ifNotPaid": [
+              {
+                "type": "OPTIONAL_EFFECT",
+                "prompt": "¿Robar una carta por Rhystic Study?",
+                "effects": [
+                  {
+                    "type": "DRAW_CARD",
+                    "amount": {
+                      "type": "LITERAL",
+                      "value": 1
+                    }
+                  }
+                ]
+              }
+            ],
+            "prompt": "¿El jugador que lanzó el hechizo paga {1}?"
+          }
+        ],
+        "automation": "ASSISTED"
+      }
+    ],
+    "Sapphire Medallion": [
+      {
+        "id": "tritones-sapphire-medallion-cost-reduction",
+        "sourceCardName": "Sapphire Medallion",
+        "kind": "STATIC",
+        "effects": [
+          {
+            "type": "MODIFY_COST",
+            "operation": "REDUCE_GENERIC_COST",
+            "amount": 1,
+            "filter": {
+              "controller": "YOU",
+              "colors": ["U"]
+            }
+          }
+        ]
+      }
+    ],
+    "Sol Ring": [
+      {
+        "id": "tritones-sol-ring-mana",
+        "sourceCardName": "Sol Ring",
+        "kind": "ACTIVATED",
+        "costs": [
+          {
+            "type": "TAP_SOURCE"
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_MANA",
+            "color": "C",
+            "amount": 2
+          }
+        ],
+        "automation": "AUTO",
+        "isManaAbility": true
+      }
+    ],
+    "Patchwork Banner": [
+      {
+        "id": "tritones-patchwork-banner-as-enters",
+        "sourceCardName": "Patchwork Banner",
+        "kind": "AS_ENTERS",
+        "effects": [
+          {
+            "type": "CHOOSE_VALUE",
+            "prompt": "Choose a creature type.",
+            "variableName": "chosenType",
+            "allowCustomValue": true,
+            "customValueLabel": "Creature type"
+          },
+          {
+            "type": "STORE_SOURCE_VALUE",
+            "key": "chosenType",
+            "value": {
+              "type": "VARIABLE",
+              "name": "chosenType"
+            }
+          }
+        ],
+        "automation": "ASSISTED"
+      },
+      {
+        "id": "tritones-patchwork-banner-buff",
+        "sourceCardName": "Patchwork Banner",
+        "kind": "STATIC",
+        "effects": [
+          {
+            "type": "MODIFY_POWER_TOUGHNESS",
+            "power": 1,
+            "toughness": 1,
+            "filter": {
+              "controller": "YOU",
+              "cardType": "Creature",
+              "subtype": {
+                "type": "SOURCE_VALUE",
+                "key": "chosenType"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "tritones-patchwork-banner-mana",
+        "sourceCardName": "Patchwork Banner",
+        "kind": "ACTIVATED",
+        "costs": [
+          {
+            "type": "TAP_SOURCE"
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_MANA_CHOICE",
+            "player": "SOURCE_CONTROLLER",
+            "allowedColors": ["W", "U", "B", "R", "G"],
+            "amount": {
+              "type": "LITERAL",
+              "value": 1
+            }
+          }
+        ],
+        "automation": "ASSISTED",
+        "isManaAbility": true
+      }
+    ],
+    "Kindred Discovery": [
+      {
+        "id": "tritones-kindred-discovery-as-enters",
+        "sourceCardName": "Kindred Discovery",
+        "kind": "AS_ENTERS",
+        "effects": [
+          {
+            "type": "CHOOSE_VALUE",
+            "prompt": "Choose a creature type.",
+            "variableName": "chosenType",
+            "allowCustomValue": true,
+            "customValueLabel": "Creature type"
+          },
+          {
+            "type": "STORE_SOURCE_VALUE",
+            "key": "chosenType",
+            "value": {
+              "type": "VARIABLE",
+              "name": "chosenType"
+            }
+          }
+        ],
+        "automation": "ASSISTED"
+      },
+      {
+        "id": "tritones-kindred-discovery-enters",
+        "sourceCardName": "Kindred Discovery",
+        "kind": "TRIGGERED",
+        "trigger": {
+          "type": "CARD_ENTERED_BATTLEFIELD"
+        },
+        "conditions": [
+          {
+            "type": "EVENT_CONTROLLER_IS",
+            "value": "YOU"
+          },
+          {
+            "type": "EVENT_HAS_TYPE",
+            "value": "Creature"
+          },
+          {
+            "type": "EVENT_HAS_SUBTYPE",
+            "value": {
+              "type": "SOURCE_VALUE",
+              "key": "chosenType"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "type": "DRAW_CARD",
+            "amount": {
+              "type": "LITERAL",
+              "value": 1
+            }
+          }
+        ],
+        "automation": "AUTO"
+      },
+      {
+        "id": "tritones-kindred-discovery-attacks",
+        "sourceCardName": "Kindred Discovery",
+        "kind": "TRIGGERED",
+        "trigger": {
+          "type": "CREATURE_ATTACKED"
+        },
+        "conditions": [
+          {
+            "type": "EVENT_CONTROLLER_IS",
+            "value": "YOU"
+          },
+          {
+            "type": "EVENT_HAS_TYPE",
+            "value": "Creature"
+          },
+          {
+            "type": "EVENT_HAS_SUBTYPE",
+            "value": {
+              "type": "SOURCE_VALUE",
+              "key": "chosenType"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "type": "DRAW_CARD",
+            "amount": {
+              "type": "LITERAL",
+              "value": 1
+            }
+          }
+        ],
+        "automation": "AUTO"
+      }
+    ],
+    "Mana Drain": [
+      {
+        "id": "tritones-mana-drain-counter-delayed-mana",
+        "sourceCardName": "Mana Drain",
+        "kind": "SPELL_EFFECT",
+        "effects": [
+          {
+            "type": "TARGET_SELECTION",
+            "prompt": "Elige el hechizo objetivo a contrarrestar",
+            "constraints": {
+              "stackKind": "SPELL"
+            },
+            "effects": [
+              {
+                "type": "SET_VARIABLE",
+                "variableName": "drainedManaValue",
+                "value": {
+                  "type": "MANA_VALUE",
+                  "target": "SELECTED_STACK_OBJECT"
+                }
+              },
+              {
+                "type": "COUNTER_SPELL",
+                "target": "SELECTED_STACK_OBJECT"
+              },
+              {
+                "type": "DELAYED_EFFECT",
+                "trigger": {
+                  "type": "MAIN_PHASE_STARTED"
+                },
+                "triggerPlayer": "SOURCE_CONTROLLER",
+                "effects": [
+                  {
+                    "type": "ADD_MANA_CHOICE",
+                    "player": "SOURCE_CONTROLLER",
+                    "allowedColors": ["C"],
+                    "amount": {
+                      "type": "VARIABLE",
+                      "name": "drainedManaValue"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "automation": "ASSISTED"
+      }
+    ],
+    "Hide on the Ceiling": [
+      {
+        "id": "tritones-hide-on-the-ceiling-exile-return",
+        "sourceCardName": "Hide on the Ceiling",
+        "kind": "SPELL_EFFECT",
+        "effects": [
+          {
+            "type": "TARGET_SELECTION",
+            "prompt": "Elige X artefactos y/o criaturas objetivo",
+            "constraints": {
+              "zones": ["battlefield"],
+              "cardTypesAnyOf": ["Artifact", "Creature"]
+            },
+            "count": {
+              "type": "VARIABLE",
+              "name": "X"
+            },
+            "effects": [
+              {
+                "type": "FOR_EACH_SELECTED",
+                "selection": "TARGETS",
+                "effects": [
+                  {
+                    "type": "MOVE_ZONE",
+                    "target": "CURRENT_OBJECT",
+                    "destination": "exile"
+                  }
+                ]
+              },
+              {
+                "type": "DELAYED_EFFECT",
+                "trigger": {
+                  "type": "END_STEP_STARTED"
+                },
+                "effects": [
+                  {
+                    "type": "FOR_EACH_SELECTED",
+                    "selection": "TARGETS",
+                    "effects": [
+                      {
+                        "type": "MOVE_ZONE",
+                        "target": "CURRENT_OBJECT",
+                        "destination": "battlefield",
+                        "controller": "OWNER"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "automation": "ASSISTED"
+      }
+    ],
+    "Fierce Guardianship": [
+      {
+        "id": "tritones-fierce-guardianship-counter",
+        "sourceCardName": "Fierce Guardianship",
+        "kind": "SPELL_EFFECT",
+        "effects": [
+          {
+            "type": "TARGET_SELECTION",
+            "prompt": "Elige el hechizo no criatura objetivo a contrarrestar",
+            "constraints": {
+              "stackKind": "SPELL",
+              "excludeCardTypes": ["Creature"]
+            },
+            "effects": [
+              {
+                "type": "COUNTER_SPELL",
+                "target": "SELECTED_STACK_OBJECT"
+              }
+            ]
+          }
+        ],
+        "automation": "ASSISTED"
+      }
+    ],
+    "Force of Will": [
+      {
+        "id": "tritones-force-of-will-counter",
+        "sourceCardName": "Force of Will",
+        "kind": "SPELL_EFFECT",
+        "effects": [
+          {
+            "type": "TARGET_SELECTION",
+            "prompt": "Elige el hechizo objetivo a contrarrestar",
+            "constraints": {
+              "stackKind": "SPELL"
+            },
+            "effects": [
+              {
+                "type": "COUNTER_SPELL",
+                "target": "SELECTED_STACK_OBJECT"
+              }
+            ]
+          }
+        ],
+        "automation": "ASSISTED"
+      }
+    ],
+    "Waterbender's Restoration": [
+      {
+        "id": "tritones-waterbenders-restoration-blink-x",
+        "sourceCardName": "Waterbender's Restoration",
+        "kind": "SPELL_EFFECT",
+        "effects": [
+          {
+            "type": "TARGET_SELECTION",
+            "prompt": "Elige X criaturas que controlas",
+            "constraints": {
+              "zones": ["battlefield"],
+              "cardTypes": ["Creature"],
+              "controller": "YOU"
+            },
+            "count": {
+              "type": "VARIABLE",
+              "name": "X"
+            },
+            "effects": [
+              {
+                "type": "FOR_EACH_SELECTED",
+                "selection": "TARGETS",
+                "effects": [
+                  {
+                    "type": "MOVE_ZONE",
+                    "target": "CURRENT_OBJECT",
+                    "destination": "exile"
+                  }
+                ]
+              },
+              {
+                "type": "DELAYED_EFFECT",
+                "trigger": {
+                  "type": "END_STEP_STARTED"
+                },
+                "effects": [
+                  {
+                    "type": "FOR_EACH_SELECTED",
+                    "selection": "TARGETS",
+                    "effects": [
+                      {
+                        "type": "MOVE_ZONE",
+                        "target": "CURRENT_OBJECT",
+                        "destination": "battlefield",
+                        "controller": "OWNER"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "automation": "ASSISTED"
+      }
+    ],
+    "Dig Through Time": [
+      {
+        "id": "tritones-dig-through-time-look-seven",
+        "sourceCardName": "Dig Through Time",
+        "kind": "SPELL_EFFECT",
+        "effects": [
+          {
+            "type": "PHYSICAL_CONFIRMATION",
+            "prompt": "Mira físicamente las siete primeras cartas de tu biblioteca. Pon dos de ellas en tu mano y el resto en el fondo de tu biblioteca en el orden que quieras. Jarvis no registra sus identidades porque esta información es privada. Confirma cuando hayas terminado.",
+            "effects": [
+              {
+                "type": "MOVE_UNKNOWN_HIDDEN_CARDS",
+                "fromZone": "library",
+                "toZone": "hand",
+                "amount": {
+                  "type": "LITERAL",
+                  "value": 2
+                }
+              }
+            ]
+          }
+        ],
+        "automation": "ASSISTED"
+      }
+    ],
+    "Merrow Harbinger": [
+      {
+        "id": "tritones-merrow-harbinger-islandwalk",
+        "sourceCardName": "Merrow Harbinger",
+        "kind": "STATIC",
+        "effects": [
+          {
+            "type": "BLOCKING_RESTRICTION",
+            "restriction": {
+              "type": "LANDWALK",
+              "filter": {
+                "sourceOnly": true
+              },
+              "landSubtype": "Island",
+              "duration": "STATIC"
+            }
+          }
+        ]
+      },
+      {
+        "id": "tritones-merrow-harbinger-search",
+        "sourceCardName": "Merrow Harbinger",
+        "kind": "TRIGGERED",
+        "trigger": {
+          "type": "CARD_ENTERED_BATTLEFIELD"
+        },
+        "conditions": [
+          {
+            "type": "EVENT_SUBJECT_IS_SOURCE"
+          }
+        ],
+        "effects": [
+          {
+            "type": "OPTIONAL_EFFECT",
+            "prompt": "¿Quieres buscar una carta Merfolk en tu biblioteca?",
+            "effects": [
+              {
+                "type": "SEARCH_LIBRARY_CARD",
+                "player": "SOURCE_CONTROLLER",
+                "prompt": "Busca físicamente una carta Merfolk, revélala y declara su nombre. Después baraja; Jarvis registrará esa carta como la carta superior pública.",
+                "constraints": {
+                  "subtypes": ["Merfolk"]
+                },
+                "reveal": true,
+                "shuffle": true,
+                "destination": "TOP_OF_LIBRARY",
+                "allowFail": true
+              }
+            ]
+          }
+        ],
+        "automation": "ASSISTED"
+      }
+    ],
+    "Spirit Water Revival": [
+      {
+        "id": "tritones-spirit-water-revival",
+        "sourceCardName": "Spirit Water Revival",
+        "kind": "SPELL_EFFECT",
+        "effects": [
+          {
+            "type": "CONDITIONAL_EFFECT",
+            "condition": {
+              "type": "VALUE_COMPARE",
+              "left": {
+                "type": "VARIABLE",
+                "name": "WATERBEND_PAID"
+              },
+              "operator": "EQ",
+              "right": {
+                "type": "LITERAL",
+                "value": 1
+              }
+            },
+            "ifTrue": [
+              {
+                "type": "FOR_EACH",
+                "query": {
+                  "zones": ["graveyard"],
+                  "owner": "SOURCE_CONTROLLER"
+                },
+                "effects": [
+                  {
+                    "type": "MOVE_ZONE",
+                    "target": "CURRENT_OBJECT",
+                    "destination": "library"
+                  }
+                ]
+              },
+              {
+                "type": "SHUFFLE_LIBRARY",
+                "player": "SOURCE_CONTROLLER"
+              },
+              {
+                "type": "DRAW_CARD",
+                "amount": {
+                  "type": "LITERAL",
+                  "value": 7
+                }
+              },
+              {
+                "type": "SET_PLAYER_MAX_HAND_SIZE",
+                "player": "SOURCE_CONTROLLER",
+                "value": "UNLIMITED"
+              }
+            ],
+            "ifFalse": [
+              {
+                "type": "DRAW_CARD",
+                "amount": {
+                  "type": "LITERAL",
+                  "value": 2
+                }
+              }
+            ]
+          },
+          {
+            "type": "MOVE_ZONE",
+            "target": "SOURCE",
+            "destination": "exile"
+          }
+        ],
+        "automation": "ASSISTED"
+      }
+    ],
+    "Emperor Mihail II": [
+      {
+        "id": "tritones-emperor-mihail-top-merfolk-cast",
+        "sourceCardName": "Emperor Mihail II",
+        "kind": "STATIC",
+        "effects": [
+          {
+            "type": "ALLOW_CAST_FROM_LIBRARY_TOP",
+            "filter": {
+              "subtype": "Merfolk"
+            }
+          }
+        ]
+      },
+      {
+        "id": "tritones-emperor-mihail-merfolk-cast-token",
+        "sourceCardName": "Emperor Mihail II",
+        "kind": "TRIGGERED",
+        "trigger": {
+          "type": "SPELL_CAST"
+        },
+        "conditions": [
+          {
+            "type": "EVENT_CONTROLLER_IS",
+            "value": "YOU"
+          },
+          {
+            "type": "EVENT_HAS_SUBTYPE",
+            "value": "Merfolk"
+          }
+        ],
+        "effects": [
+          {
+            "type": "PAYMENT_BRANCH",
+            "payer": "SOURCE_CONTROLLER",
+            "cost": {
+              "type": "FIXED_MANA",
+              "cost": "{1}"
+            },
+            "ifPaid": [
+              {
+                "type": "CREATE_TOKEN",
+                "tokenId": "BLUE_MERFOLK_1_1",
+                "amount": {
+                  "type": "LITERAL",
+                  "value": 1
+                }
+              }
+            ],
+            "ifNotPaid": [],
+            "prompt": "¿Pagar {1} para crear una ficha Merfolk 1/1?"
+          }
+        ],
+        "automation": "ASSISTED"
+      }
+    ],
+    "Mindspring Merfolk": [
+      {
+        "id": "tritones-mindspring-merfolk-exhaust",
+        "sourceCardName": "Mindspring Merfolk",
+        "kind": "ACTIVATED",
+        "costs": [
+          {
+            "type": "MANA_COST",
+            "cost": "{X}{U}{U}"
+          },
+          {
+            "type": "TAP_SOURCE"
+          }
+        ],
+        "activationLimit": "ONCE_PER_OBJECT",
+        "effects": [
+          {
+            "type": "DRAW_CARD",
+            "amount": {
+              "type": "VARIABLE",
+              "name": "X"
+            }
+          },
+          {
+            "type": "FOR_EACH",
+            "query": {
+              "zones": ["battlefield"],
+              "controller": "SOURCE_CONTROLLER",
+              "cardTypes": ["Creature"],
+              "subtypes": ["Merfolk"]
+            },
+            "effects": [
+              {
+                "type": "ADD_COUNTER",
+                "target": "CURRENT_OBJECT",
+                "counterType": "+1/+1",
+                "amount": {
+                  "type": "LITERAL",
+                  "value": 1
+                }
+              }
+            ]
+          }
+        ],
+        "automation": "ASSISTED"
+      }
+    ],
+    "Thieving Skydiver": [
+      {
+        "id": "tritones-thieving-skydiver-kicked-etb",
+        "sourceCardName": "Thieving Skydiver",
+        "kind": "TRIGGERED",
+        "trigger": {
+          "type": "CARD_ENTERED_BATTLEFIELD"
+        },
+        "conditions": [
+          {
+            "type": "EVENT_SUBJECT_IS_SOURCE"
+          }
+        ],
+        "effects": [
+          {
+            "type": "CONDITIONAL_EFFECT",
+            "condition": {
+              "type": "VALUE_COMPARE",
+              "left": {
+                "type": "SOURCE_VALUE",
+                "key": "KICKED"
+              },
+              "operator": "GTE",
+              "right": {
+                "type": "LITERAL",
+                "value": 1
+              }
+            },
+            "ifTrue": [
+              {
+                "type": "TARGET_SELECTION",
+                "prompt": "Elige un artefacto objetivo con valor de maná X o menos",
+                "constraints": {
+                  "zones": ["battlefield"],
+                  "cardTypes": ["Artifact"],
+                  "controller": "ANY",
+                  "manaValueMax": {
+                    "type": "SOURCE_VALUE",
+                    "key": "X"
+                  }
+                },
+                "effects": [
+                  {
+                    "type": "CONDITIONAL_EFFECT",
+                    "condition": {
+                      "type": "OBJECT_MATCHES_QUERY",
+                      "object": "SELECTED_TARGET",
+                      "query": {
+                        "zones": ["battlefield"],
+                        "cardTypes": ["Equipment"]
+                      }
+                    },
+                    "ifTrue": [
+                      {
+                        "type": "CHANGE_CONTROLLER",
+                        "target": "SELECTED_TARGET",
+                        "controller": "SOURCE_CONTROLLER"
+                      },
+                      {
+                        "type": "ATTACH",
+                        "attachment": "SELECTED_TARGET",
+                        "target": "SOURCE"
+                      }
+                    ],
+                    "ifFalse": [
+                      {
+                        "type": "CHANGE_CONTROLLER",
+                        "target": "SELECTED_TARGET",
+                        "controller": "SOURCE_CONTROLLER"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "automation": "ASSISTED"
+      }
+    ],
+    "Empress Galina": [
+      {
+        "id": "tritones-empress-galina-control",
+        "sourceCardName": "Empress Galina",
+        "kind": "ACTIVATED",
+        "costs": [
+          {
+            "type": "MANA_COST",
+            "cost": "{U}{U}"
+          },
+          {
+            "type": "TAP_SOURCE"
+          }
+        ],
+        "effects": [
+          {
+            "type": "TARGET_SELECTION",
+            "prompt": "Elige un permanente legendario objetivo",
+            "constraints": {
+              "zones": ["battlefield"],
+              "cardTypes": ["Legendary"],
+              "controller": "ANY"
+            },
+            "effects": [
+              {
+                "type": "CHANGE_CONTROLLER",
+                "target": "SELECTED_TARGET",
+                "controller": "SOURCE_CONTROLLER"
+              }
+            ]
+          }
+        ],
+        "automation": "ASSISTED"
+      }
+    ],
+    "Multiversal Incursion": [
+      {
+        "id": "tritones-multiversal-incursion-copy-creatures",
+        "sourceCardName": "Multiversal Incursion",
+        "kind": "SPELL_EFFECT",
+        "effects": [
+          {
+            "type": "FOR_EACH",
+            "query": {
+              "zones": ["battlefield"],
+              "controller": "SOURCE_CONTROLLER",
+              "cardTypes": ["Creature"],
+              "isToken": false
+            },
+            "effects": [
+              {
+                "type": "CREATE_TOKEN_COPY",
+                "target": "CURRENT_OBJECT",
+                "amount": {
+                  "type": "LITERAL",
+                  "value": 1
+                },
+                "removeLegendary": true
+              }
+            ]
+          }
+        ],
+        "automation": "AUTO"
+      }
+    ],
+    "Deepchannel Mentor": [
+      {
+        "id": "tritones-deepchannel-mentor-unblockable",
+        "sourceCardName": "Deepchannel Mentor",
+        "kind": "STATIC",
+        "effects": [
+          {
+            "type": "BLOCKING_RESTRICTION",
+            "restriction": {
+              "type": "CANNOT_BE_BLOCKED",
+              "filter": {
+                "controller": "YOU",
+                "cardType": "Creature",
+                "colors": ["U"]
+              },
+              "duration": "STATIC"
+            }
+          }
+        ]
+      }
+    ],
+    "Deeproot Pilgrimage": [
+      {
+        "id": "tritones-deeproot-pilgrimage-tap",
+        "sourceCardName": "Deeproot Pilgrimage",
+        "kind": "TRIGGERED",
+        "trigger": {
+          "type": "PERMANENT_BECAME_TAPPED",
+          "oneOrMore": true
+        },
+        "conditions": [
+          {
+            "type": "EVENT_CONTROLLER_IS",
+            "value": "YOU"
+          },
+          {
+            "type": "EVENT_IS_TOKEN",
+            "value": false
+          },
+          {
+            "type": "EVENT_HAS_SUBTYPE",
+            "value": "Merfolk"
+          }
+        ],
+        "effects": [
+          {
+            "type": "CREATE_TOKEN",
+            "tokenId": "BLUE_MERFOLK_1_1_HEXPROOF",
+            "amount": {
+              "type": "LITERAL",
+              "value": 1
+            }
+          }
+        ],
+        "automation": "AUTO"
+      }
+    ],
+    "Deeproot Waters": [
+      {
+        "id": "tritones-deeproot-waters-cast",
+        "sourceCardName": "Deeproot Waters",
+        "kind": "TRIGGERED",
+        "trigger": {
+          "type": "SPELL_CAST"
+        },
+        "conditions": [
+          {
+            "type": "EVENT_CONTROLLER_IS",
+            "value": "YOU"
+          },
+          {
+            "type": "EVENT_HAS_SUBTYPE",
+            "value": "Merfolk"
+          }
+        ],
+        "effects": [
+          {
+            "type": "CREATE_TOKEN",
+            "tokenId": "BLUE_MERFOLK_1_1_HEXPROOF",
+            "amount": {
+              "type": "LITERAL",
+              "value": 1
+            }
+          }
+        ],
+        "automation": "AUTO"
+      }
+    ],
+    "Hydroblast": [
+      {
+        "id": "tritones-hydroblast-modes",
+        "sourceCardName": "Hydroblast",
+        "kind": "SPELL_EFFECT",
+        "automation": "ASSISTED",
+        "effects": [
+          {
+            "type": "CHOOSE_MODE",
+            "prompt": "Elige el modo de Hydroblast",
+            "modes": [
+              {
+                "id": "counter",
+                "label": "Contrarrestar un hechizo si es rojo",
+                "effects": [
+                  {
+                    "type": "TARGET_SELECTION",
+                    "prompt": "Elige un hechizo objetivo",
+                    "constraints": {
+                      "stackKind": "SPELL"
+                    },
+                    "effects": [
+                      {
+                        "type": "CONDITIONAL_EFFECT",
+                        "condition": {
+                          "type": "OBJECT_MATCHES_QUERY",
+                          "object": "SELECTED_STACK_OBJECT",
+                          "query": {
+                            "zones": ["stack"],
+                            "colorsAnyOf": ["R"]
+                          }
+                        },
+                        "ifTrue": [
+                          {
+                            "type": "COUNTER_SPELL",
+                            "target": "SELECTED_STACK_OBJECT"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "destroy",
+                "label": "Destruir un permanente si es rojo",
+                "effects": [
+                  {
+                    "type": "TARGET_SELECTION",
+                    "prompt": "Elige un permanente objetivo",
+                    "constraints": {
+                      "zones": ["battlefield"]
+                    },
+                    "effects": [
+                      {
+                        "type": "CONDITIONAL_EFFECT",
+                        "condition": {
+                          "type": "OBJECT_MATCHES_QUERY",
+                          "object": "SELECTED_TARGET",
+                          "query": {
+                            "zones": ["battlefield"],
+                            "colorsAnyOf": ["R"]
+                          }
+                        },
+                        "ifTrue": [
+                          {
+                            "type": "DESTROY_PERMANENT",
+                            "target": "SELECTED_TARGET"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Master of the Pearl Trident": [
+      {
+        "id": "tritones-master-pearl-trident-static",
+        "sourceCardName": "Master of the Pearl Trident",
+        "kind": "STATIC",
+        "effects": [
+          {
+            "type": "MODIFY_POWER_TOUGHNESS",
+            "power": 1,
+            "toughness": 1,
+            "filter": {
+              "controller": "YOU",
+              "cardType": "Creature",
+              "subtype": "Merfolk",
+              "excludeSource": true
+            }
+          },
+          {
+            "type": "BLOCKING_RESTRICTION",
+            "restriction": {
+              "type": "LANDWALK",
+              "filter": {
+                "controller": "YOU",
+                "cardType": "Creature",
+                "subtype": "Merfolk",
+                "excludeSource": true
+              },
+              "landSubtype": "Island",
+              "duration": "STATIC"
+            }
+          }
+        ]
+      }
+    ],
+    "Merfolk Sovereign": [
+      {
+        "id": "tritones-merfolk-sovereign-static",
+        "sourceCardName": "Merfolk Sovereign",
+        "kind": "STATIC",
+        "effects": [
+          {
+            "type": "MODIFY_POWER_TOUGHNESS",
+            "power": 1,
+            "toughness": 1,
+            "filter": {
+              "controller": "YOU",
+              "cardType": "Creature",
+              "subtype": "Merfolk",
+              "excludeSource": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "tritones-merfolk-sovereign-unblockable",
+        "sourceCardName": "Merfolk Sovereign",
+        "kind": "ACTIVATED",
+        "costs": [
+          {
+            "type": "TAP_SOURCE"
+          }
+        ],
+        "effects": [
+          {
+            "type": "TARGET_SELECTION",
+            "prompt": "Elige un Merfolk que no pueda ser bloqueado este turno",
+            "constraints": {
+              "zones": ["battlefield"],
+              "cardTypes": ["Creature"],
+              "subtypes": ["Merfolk"]
+            },
+            "effects": [
+              {
+                "type": "CANNOT_BE_BLOCKED",
+                "target": "SELECTED_TARGET",
+                "duration": "UNTIL_END_OF_TURN"
+              }
+            ]
+          }
+        ],
+        "automation": "ASSISTED"
+      }
+    ],
+    "Merrow Reejerey": [
+      {
+        "id": "tritones-merrow-reejerey-static",
+        "sourceCardName": "Merrow Reejerey",
+        "kind": "STATIC",
+        "effects": [
+          {
+            "type": "MODIFY_POWER_TOUGHNESS",
+            "power": 1,
+            "toughness": 1,
+            "filter": {
+              "controller": "YOU",
+              "cardType": "Creature",
+              "subtype": "Merfolk",
+              "excludeSource": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "tritones-merrow-reejerey-cast",
+        "sourceCardName": "Merrow Reejerey",
+        "kind": "TRIGGERED",
+        "trigger": {
+          "type": "SPELL_CAST"
+        },
+        "conditions": [
+          {
+            "type": "EVENT_CONTROLLER_IS",
+            "value": "YOU"
+          },
+          {
+            "type": "EVENT_HAS_SUBTYPE",
+            "value": "Merfolk"
+          }
+        ],
+        "effects": [
+          {
+            "type": "OPTIONAL_EFFECT",
+            "prompt": "¿Usar Merrow Reejerey para girar o enderezar un permanente?",
+            "effects": [
+              {
+                "type": "TARGET_SELECTION",
+                "prompt": "Elige un permanente objetivo",
+                "constraints": {
+                  "zones": ["battlefield"]
+                },
+                "effects": [
+                  {
+                    "type": "CHOOSE_MODE",
+                    "prompt": "¿Girar o enderezar?",
+                    "modes": [
+                      {
+                        "id": "tap",
+                        "label": "Girar",
+                        "effects": [
+                          {
+                            "type": "TAP_PERMANENT",
+                            "target": "SELECTED_TARGET"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "untap",
+                        "label": "Enderezar",
+                        "effects": [
+                          {
+                            "type": "UNTAP_PERMANENT",
+                            "target": "SELECTED_TARGET"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "automation": "ASSISTED"
+      }
+    ],
+    "Mist-Cloaked Herald": [
+      {
+        "id": "tritones-mist-cloaked-herald-unblockable",
+        "sourceCardName": "Mist-Cloaked Herald",
+        "kind": "STATIC",
+        "effects": [
+          {
+            "type": "BLOCKING_RESTRICTION",
+            "restriction": {
+              "type": "CANNOT_BE_BLOCKED",
+              "filter": {
+                "sourceOnly": true
+              },
+              "duration": "STATIC"
+            }
+          }
+        ]
+      }
+    ],
+    "Reliquary Tower": [
+      {
+        "id": "tritones-reliquary-tower-hand",
+        "sourceCardName": "Reliquary Tower",
+        "kind": "STATIC",
+        "effects": [
+          {
+            "type": "SET_MAX_HAND_SIZE",
+            "player": "SOURCE_CONTROLLER",
+            "value": "UNLIMITED"
+          }
+        ]
+      },
+      {
+        "id": "tritones-reliquary-tower-mana",
+        "sourceCardName": "Reliquary Tower",
+        "kind": "ACTIVATED",
+        "costs": [
+          {
+            "type": "TAP_SOURCE"
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_MANA",
+            "color": "C",
+            "amount": 1
+          }
+        ],
+        "automation": "AUTO",
+        "isManaAbility": true
+      }
+    ],
+    "Octopus Form": [
+      {
+        "id": "tritones-octopus-form",
+        "sourceCardName": "Octopus Form",
+        "kind": "SPELL_EFFECT",
+        "automation": "ASSISTED",
+        "effects": [
+          {
+            "type": "TARGET_SELECTION",
+            "prompt": "Elige una criatura que controlas",
+            "constraints": {
+              "zones": ["battlefield"],
+              "controller": "YOU",
+              "cardTypes": ["Creature"]
+            },
+            "effects": [
+              {
+                "type": "TEMPORARY_MODIFIER",
+                "target": "SELECTED_TARGET",
+                "power": 1,
+                "toughness": 1,
+                "grantKeywords": ["HEXPROOF"],
+                "duration": "UNTIL_END_OF_TURN"
+              },
+              {
+                "type": "UNTAP_PERMANENT",
+                "target": "SELECTED_TARGET"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Hour of Eternity": [
+      {
+        "id": "tritones-hour-of-eternity",
+        "sourceCardName": "Hour of Eternity",
+        "kind": "SPELL_EFFECT",
+        "automation": "ASSISTED",
+        "effects": [
+          {
+            "type": "CARD_SELECTION",
+            "prompt": "Elige X cartas de criatura de tu cementerio",
+            "constraints": {
+              "zones": ["graveyard"],
+              "controller": "YOU",
+              "cardTypes": ["Creature"]
+            },
+            "count": {
+              "type": "VARIABLE",
+              "name": "X"
+            },
+            "effects": [
+              {
+                "type": "FOR_EACH_SELECTED",
+                "selection": "CARDS",
+                "effects": [
+                  {
+                    "type": "MOVE_ZONE",
+                    "target": "CURRENT_OBJECT",
+                    "destination": "exile"
+                  },
+                  {
+                    "type": "CREATE_TOKEN_COPY",
+                    "target": "CURRENT_OBJECT",
+                    "amount": {
+                      "type": "LITERAL",
+                      "value": 1
+                    },
+                    "overrides": {
+                      "power": "4",
+                      "toughness": "4",
+                      "colors": ["B"],
+                      "addSubtypes": ["Zombie"]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Time Stop": [
+      {
+        "id": "tritones-time-stop-end-turn",
+        "sourceCardName": "Time Stop",
+        "kind": "SPELL_EFFECT",
+        "automation": "ASSISTED",
+        "effects": [
+          {
+            "type": "PHYSICAL_CONFIRMATION",
+            "prompt": "Antes de terminar el turno, si corresponde descarta físicamente hasta tu tamaño máximo de mano. Confirma para exiliar el stack y terminar el turno.",
+            "effects": [
+              {
+                "type": "END_TURN"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "White Lotus Tile": [
+      {
+        "id": "tritones-white-lotus-tile-enters",
+        "sourceCardName": "White Lotus Tile",
+        "kind": "AS_ENTERS",
+        "effects": [
+          {
+            "type": "ENTERS_TAPPED"
+          }
+        ],
+        "automation": "AUTO"
+      },
+      {
+        "id": "tritones-white-lotus-tile-mana",
+        "sourceCardName": "White Lotus Tile",
+        "kind": "ACTIVATED",
+        "costs": [
+          {
+            "type": "TAP_SOURCE"
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_MANA_CHOICE",
+            "player": "SOURCE_CONTROLLER",
+            "allowedColors": ["W", "U", "B", "R", "G"],
+            "amount": {
+              "type": "MAX_SHARED_CREATURE_SUBTYPE_COUNT",
+              "controller": "SOURCE_CONTROLLER"
+            }
+          }
+        ],
+        "automation": "ASSISTED",
+        "isManaAbility": true
+      }
+    ],
+    "Aquitect's Will": [
+      {
+        "id": "tritones-aquitects-will",
+        "sourceCardName": "Aquitect's Will",
+        "kind": "SPELL_EFFECT",
+        "automation": "ASSISTED",
+        "effects": [
+          {
+            "type": "TARGET_SELECTION",
+            "prompt": "Elige la tierra objetivo",
+            "constraints": {
+              "zones": ["battlefield"],
+              "cardTypes": ["Land"],
+              "controller": "ANY"
+            },
+            "effects": [
+              {
+                "type": "ADD_COUNTER",
+                "target": "SELECTED_TARGET",
+                "counterType": "flood",
+                "amount": {
+                  "type": "LITERAL",
+                  "value": 1
+                }
+              },
+              {
+                "type": "CHANGE_LAND_SUBTYPE",
+                "target": "SELECTED_TARGET",
+                "subtype": "Island",
+                "mode": "ADD",
+                "duration": "WHILE_COUNTER_PRESENT",
+                "counterType": "flood"
+              },
+              {
+                "type": "CONDITIONAL_EFFECT",
+                "condition": {
+                  "type": "VALUE_COMPARE",
+                  "left": {
+                    "type": "COUNT_OBJECTS",
+                    "query": {
+                      "zones": ["battlefield"],
+                      "controller": "SOURCE_CONTROLLER",
+                      "subtypes": ["Merfolk"]
+                    }
+                  },
+                  "operator": "GTE",
+                  "right": {
+                    "type": "LITERAL",
+                    "value": 1
+                  }
+                },
+                "ifTrue": [
+                  {
+                    "type": "DRAW_CARD",
+                    "amount": {
+                      "type": "LITERAL",
+                      "value": 1
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Harbinger of the Seas": [
+      {
+        "id": "tritones-harbinger-seas-islands",
+        "sourceCardName": "Harbinger of the Seas",
+        "kind": "STATIC",
+        "effects": [
+          {
+            "type": "SET_LAND_SUBTYPE",
+            "subtype": "Island",
+            "filter": {
+              "cardType": "Land",
+              "nonbasicLand": true
+            }
+          }
+        ]
+      }
+    ],
+    "Mathemagics": [
+      {
+        "id": "tritones-mathemagics",
+        "sourceCardName": "Mathemagics",
+        "kind": "SPELL_EFFECT",
+        "automation": "ASSISTED",
+        "effects": [
+          {
+            "type": "PLAYER_SELECTION",
+            "prompt": "Elige el jugador que roba 2^X cartas",
+            "relation": "ANY",
+            "effects": [
+              {
+                "type": "DRAW_FOR_PLAYER",
+                "player": "TARGET_PLAYER",
+                "amount": {
+                  "type": "POWER",
+                  "base": {
+                    "type": "LITERAL",
+                    "value": 2
+                  },
+                  "exponent": {
+                    "type": "VARIABLE",
+                    "name": "X"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Time Reversal": [
+      {
+        "id": "tritones-time-reversal",
+        "sourceCardName": "Time Reversal",
+        "kind": "SPELL_EFFECT",
+        "automation": "ASSISTED",
+        "effects": [
+          {
+            "type": "FOR_EACH_PLAYER",
+            "relation": "ALL_PLAYERS",
+            "effects": [
+              {
+                "type": "SHUFFLE_PLAYER_ZONES_INTO_LIBRARY",
+                "player": "CURRENT_PLAYER",
+                "zones": ["hand", "graveyard"]
+              }
+            ]
+          },
+          {
+            "type": "FOR_EACH_PLAYER",
+            "relation": "ALL_PLAYERS",
+            "effects": [
+              {
+                "type": "DRAW_FOR_PLAYER",
+                "player": "CURRENT_PLAYER",
+                "amount": {
+                  "type": "LITERAL",
+                  "value": 7
+                }
+              }
+            ]
+          },
+          {
+            "type": "MOVE_ZONE",
+            "target": "SOURCE",
+            "destination": "exile"
+          }
+        ]
+      }
+    ],
+    "Tempted by the Oriq": [
+      {
+        "id": "tritones-tempted-by-the-oriq",
+        "sourceCardName": "Tempted by the Oriq",
+        "kind": "SPELL_EFFECT",
+        "automation": "ASSISTED",
+        "effects": [
+          {
+            "type": "FOR_EACH_PLAYER",
+            "relation": "OPPONENTS_OF_SOURCE_CONTROLLER",
+            "effects": [
+              {
+                "type": "OPTIONAL_EFFECT",
+                "prompt": "¿Ganar control de hasta un permanente elegible de este oponente?",
+                "effects": [
+                  {
+                    "type": "TARGET_SELECTION",
+                    "prompt": "Elige criatura o planeswalker de valor de maná 3 o menos",
+                    "constraints": {
+                      "zones": ["battlefield"],
+                      "controllerPlayer": "CURRENT_PLAYER",
+                      "cardTypesAnyOf": ["Creature", "Planeswalker"],
+                      "manaValueMax": {
+                        "type": "LITERAL",
+                        "value": 3
+                      }
+                    },
+                    "effects": [
+                      {
+                        "type": "CHANGE_CONTROLLER",
+                        "target": "SELECTED_TARGET",
+                        "controller": "SOURCE_CONTROLLER"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Force of Negation": [
+      {
+        "id": "tritones-force-of-negation-counter-exile",
+        "sourceCardName": "Force of Negation",
+        "kind": "SPELL_EFFECT",
+        "effects": [
+          {
+            "type": "TARGET_SELECTION",
+            "prompt": "Elige el hechizo no criatura objetivo a contrarrestar",
+            "constraints": {
+              "stackKind": "SPELL",
+              "excludeCardTypes": ["Creature"]
+            },
+            "effects": [
+              {
+                "type": "COUNTER_SPELL",
+                "target": "SELECTED_STACK_OBJECT",
+                "destination": "exile"
+              }
+            ]
+          }
+        ],
+        "automation": "ASSISTED"
+      }
+    ],
+    "Tideshaper Mystic": [
+      {
+        "id": "tritones-tideshaper-mystic",
+        "sourceCardName": "Tideshaper Mystic",
+        "kind": "ACTIVATED",
+        "automation": "ASSISTED",
+        "costs": [
+          {
+            "type": "TAP_SOURCE"
+          }
+        ],
+        "restrictions": ["YOUR_TURN"],
+        "effects": [
+          {
+            "type": "TARGET_SELECTION",
+            "prompt": "Elige la tierra objetivo",
+            "constraints": {
+              "zones": ["battlefield"],
+              "cardTypes": ["Land"]
+            },
+            "effects": [
+              {
+                "type": "CHOOSE_VALUE",
+                "prompt": "Elige el tipo de tierra básica",
+                "variableName": "chosenLandType",
+                "options": [
+                  {
+                    "id": "Plains",
+                    "label": "Plains",
+                    "value": "Plains"
+                  },
+                  {
+                    "id": "Island",
+                    "label": "Island",
+                    "value": "Island"
+                  },
+                  {
+                    "id": "Swamp",
+                    "label": "Swamp",
+                    "value": "Swamp"
+                  },
+                  {
+                    "id": "Mountain",
+                    "label": "Mountain",
+                    "value": "Mountain"
+                  },
+                  {
+                    "id": "Forest",
+                    "label": "Forest",
+                    "value": "Forest"
+                  }
+                ]
+              },
+              {
+                "type": "CHANGE_LAND_SUBTYPE",
+                "target": "SELECTED_TARGET",
+                "subtype": {
+                  "type": "VARIABLE",
+                  "name": "chosenLandType"
+                },
+                "mode": "SET",
+                "duration": "UNTIL_END_OF_TURN"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Tidebinder Mage": [
+      {
+        "id": "tritones-tidebinder-mage-etb",
+        "sourceCardName": "Tidebinder Mage",
+        "kind": "TRIGGERED",
+        "trigger": {
+          "type": "CARD_ENTERED_BATTLEFIELD"
+        },
+        "conditions": [
+          {
+            "type": "EVENT_SUBJECT_IS_SOURCE"
+          }
+        ],
+        "automation": "ASSISTED",
+        "effects": [
+          {
+            "type": "TARGET_SELECTION",
+            "prompt": "Elige una criatura roja o verde que controle un oponente",
+            "constraints": {
+              "zones": ["battlefield"],
+              "controller": "OPPONENT",
+              "cardTypes": ["Creature"],
+              "colorsAnyOf": ["R", "G"]
+            },
+            "effects": [
+              {
+                "type": "TAP_PERMANENT",
+                "target": "SELECTED_TARGET"
+              },
+              {
+                "type": "ADD_UNTAP_RESTRICTION",
+                "target": "SELECTED_TARGET",
+                "duration": "WHILE_SOURCE_CONTROLLED"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Wanderwine Prophets": [
+      {
+        "id": "tritones-wanderwine-champion-enter",
+        "sourceCardName": "Wanderwine Prophets",
+        "kind": "TRIGGERED",
+        "trigger": {
+          "type": "CARD_ENTERED_BATTLEFIELD"
+        },
+        "conditions": [
+          {
+            "type": "EVENT_SUBJECT_IS_SOURCE"
+          }
+        ],
+        "automation": "ASSISTED",
+        "effects": [
+          {
+            "type": "CHOOSE_MODE",
+            "prompt": "Champion a Merfolk: exilia otro Merfolk o sacrifica Wanderwine Prophets",
+            "modes": [
+              {
+                "id": "champion",
+                "label": "Exiliar otro Merfolk",
+                "effects": [
+                  {
+                    "type": "CARD_SELECTION",
+                    "prompt": "Elige otro Merfolk que controlas",
+                    "constraints": {
+                      "zones": ["battlefield"],
+                      "controller": "YOU",
+                      "cardTypes": ["Creature"],
+                      "subtypes": ["Merfolk"],
+                      "excludeSource": true
+                    },
+                    "effects": [
+                      {
+                        "type": "MOVE_ZONE",
+                        "target": "SELECTED_CARD",
+                        "destination": "exile"
+                      },
+                      {
+                        "type": "LINK_OBJECT",
+                        "target": "SELECTED_CARD",
+                        "key": "CHAMPION"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "sacrifice",
+                "label": "Sacrificar Wanderwine Prophets",
+                "effects": [
+                  {
+                    "type": "SACRIFICE",
+                    "target": "SOURCE"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "tritones-wanderwine-champion-leave",
+        "sourceCardName": "Wanderwine Prophets",
+        "kind": "TRIGGERED",
+        "trigger": {
+          "type": "CARD_LEFT_BATTLEFIELD"
+        },
+        "conditions": [
+          {
+            "type": "EVENT_SUBJECT_IS_SOURCE"
+          }
+        ],
+        "automation": "AUTO",
+        "effects": [
+          {
+            "type": "RETURN_LINKED_OBJECTS",
+            "key": "CHAMPION",
+            "destination": "battlefield",
+            "controller": "OWNER"
+          }
+        ]
+      },
+      {
+        "id": "tritones-wanderwine-extra-turn",
+        "sourceCardName": "Wanderwine Prophets",
+        "kind": "TRIGGERED",
+        "trigger": {
+          "type": "PLAYER_DEALT_DAMAGE"
+        },
+        "conditions": [
+          {
+            "type": "EVENT_SUBJECT_IS_SOURCE"
+          },
+          {
+            "type": "EVENT_DAMAGE_KIND_IS",
+            "value": "COMBAT"
+          }
+        ],
+        "automation": "ASSISTED",
+        "effects": [
+          {
+            "type": "OPTIONAL_EFFECT",
+            "prompt": "¿Sacrificar un Merfolk para tomar un turno extra?",
+            "effects": [
+              {
+                "type": "CARD_SELECTION",
+                "prompt": "Elige un Merfolk que controlas para sacrificar",
+                "constraints": {
+                  "zones": ["battlefield"],
+                  "controller": "YOU",
+                  "cardTypes": ["Creature"],
+                  "subtypes": ["Merfolk"]
+                },
+                "effects": [
+                  {
+                    "type": "SACRIFICE",
+                    "target": "SELECTED_CARD"
+                  },
+                  {
+                    "type": "QUEUE_EXTRA_TURN",
+                    "player": "SOURCE_CONTROLLER"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Lord of Atlantis": [
+      {
+        "id": "tritones-lord-of-atlantis-pt",
+        "sourceCardName": "Lord of Atlantis",
+        "kind": "STATIC",
+        "effects": [
+          {
+            "type": "MODIFY_POWER_TOUGHNESS",
+            "power": 1,
+            "toughness": 1,
+            "filter": {
+              "subtype": "Merfolk",
+              "excludeSource": true
+            }
+          }
+        ]
+      }
+    ],
+    "Vodalian Hexcatcher": [
+      {
+        "id": "tritones-vodalian-hexcatcher-pt",
+        "sourceCardName": "Vodalian Hexcatcher",
+        "kind": "STATIC",
+        "effects": [
+          {
+            "type": "MODIFY_POWER_TOUGHNESS",
+            "power": 1,
+            "toughness": 1,
+            "filter": {
+              "controller": "YOU",
+              "subtype": "Merfolk",
+              "excludeSource": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "tritones-vodalian-hexcatcher-counter",
+        "sourceCardName": "Vodalian Hexcatcher",
+        "kind": "ACTIVATED",
+        "automation": "ASSISTED",
+        "costs": [
+          {
+            "type": "SACRIFICE_PERMANENT",
+            "prompt": "Elige un Merfolk que controlas para sacrificar",
+            "constraints": {
+              "zones": ["battlefield"],
+              "controller": "YOU",
+              "cardTypes": ["Creature"],
+              "subtypes": ["Merfolk"]
+            }
+          }
+        ],
+        "effects": [
+          {
+            "type": "TARGET_SELECTION",
+            "prompt": "Elige el hechizo no criatura objetivo",
+            "constraints": {
+              "zones": ["stack"],
+              "stackKind": "SPELL",
+              "excludeCardTypes": ["Creature"]
+            },
+            "effects": [
+              {
+                "type": "PAYMENT_BRANCH",
+                "payer": "TARGET_CONTROLLER",
+                "cost": {
+                  "type": "FIXED_MANA",
+                  "cost": "{1}"
+                },
+                "prompt": "¿El controlador paga {1}?",
+                "ifPaid": [],
+                "ifNotPaid": [
+                  {
+                    "type": "COUNTER_SPELL",
+                    "target": "SELECTED_STACK_OBJECT"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Commander's Plate": [
+      {
+        "id": "tritones-commanders-plate-static",
+        "sourceCardName": "Commander's Plate",
+        "kind": "STATIC",
+        "effects": [
+          {
+            "type": "MODIFY_POWER_TOUGHNESS",
+            "power": 3,
+            "toughness": 3,
+            "filter": {
+              "attachedToSource": true
+            }
+          },
+          {
+            "type": "PROTECTION_FROM_COLORS",
+            "colors": {
+              "type": "NOT_IN_COMMANDER_COLOR_IDENTITY"
+            },
+            "filter": {
+              "attachedToSource": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "tritones-commanders-plate-equip-commander",
+        "sourceCardName": "Commander's Plate",
+        "kind": "ACTIVATED",
+        "automation": "ASSISTED",
+        "costs": [
+          {
+            "type": "MANA_COST",
+            "cost": "{3}"
+          }
+        ],
+        "restrictions": ["SORCERY_SPEED"],
+        "effects": [
+          {
+            "type": "TARGET_SELECTION",
+            "prompt": "Elige tu comandante para equipar",
+            "constraints": {
+              "zones": ["battlefield"],
+              "controller": "YOU",
+              "cardTypes": ["Creature"],
+              "isCommander": true
+            },
+            "effects": [
+              {
+                "type": "ATTACH",
+                "attachment": "SOURCE",
+                "target": "SELECTED_TARGET"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "tritones-commanders-plate-equip",
+        "sourceCardName": "Commander's Plate",
+        "kind": "ACTIVATED",
+        "automation": "ASSISTED",
+        "costs": [
+          {
+            "type": "MANA_COST",
+            "cost": "{5}"
+          }
+        ],
+        "restrictions": ["SORCERY_SPEED"],
+        "effects": [
+          {
+            "type": "TARGET_SELECTION",
+            "prompt": "Elige una criatura que controlas para equipar",
+            "constraints": {
+              "zones": ["battlefield"],
+              "controller": "YOU",
+              "cardTypes": ["Creature"]
+            },
+            "effects": [
+              {
+                "type": "ATTACH",
+                "attachment": "SOURCE",
+                "target": "SELECTED_TARGET"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Chrome Mox": [
+      {
+        "id": "tritones-chrome-mox-imprint",
+        "sourceCardName": "Chrome Mox",
+        "kind": "TRIGGERED",
+        "trigger": {
+          "type": "CARD_ENTERED_BATTLEFIELD"
+        },
+        "conditions": [
+          {
+            "type": "EVENT_SUBJECT_IS_SOURCE"
+          }
+        ],
+        "effects": [
+          {
+            "type": "OPTIONAL_EFFECT",
+            "prompt": "¿Quieres hacer imprint con una carta no artefacto y no tierra de tu mano?",
+            "effects": [
+              {
+                "type": "SELECT_HIDDEN_ZONE_CARD",
+                "player": "SOURCE_CONTROLLER",
+                "zone": "hand",
+                "prompt": "Declara la carta que exilias con imprint",
+                "constraints": {
+                  "excludeCardTypes": ["Artifact", "Land"]
+                },
+                "destination": "exile",
+                "count": {
+                  "type": "LITERAL",
+                  "value": 1
+                },
+                "linkKey": "IMPRINT"
+              }
+            ]
+          }
+        ],
+        "automation": "ASSISTED"
+      },
+      {
+        "id": "tritones-chrome-mox-mana",
+        "sourceCardName": "Chrome Mox",
+        "kind": "ACTIVATED",
+        "costs": [
+          {
+            "type": "TAP_SOURCE"
+          }
+        ],
+        "effects": [
+          {
+            "type": "ADD_MANA_FROM_LINKED_COLORS",
+            "player": "SOURCE_CONTROLLER",
+            "key": "IMPRINT",
+            "amount": {
+              "type": "LITERAL",
+              "value": 1
+            }
+          }
+        ],
+        "automation": "AUTO",
+        "isManaAbility": true
+      }
+    ],
+    "Kiora, the Rising Tide": [
+      {
+        "id": "tritones-kiora-enter",
+        "sourceCardName": "Kiora, the Rising Tide",
+        "kind": "TRIGGERED",
+        "trigger": {
+          "type": "CARD_ENTERED_BATTLEFIELD"
+        },
+        "conditions": [
+          {
+            "type": "EVENT_SUBJECT_IS_SOURCE"
+          }
+        ],
+        "effects": [
+          {
+            "type": "DRAW_CARD",
+            "amount": {
+              "type": "LITERAL",
+              "value": 2
+            }
+          },
+          {
+            "type": "SELECT_HIDDEN_ZONE_CARD",
+            "player": "SOURCE_CONTROLLER",
+            "zone": "hand",
+            "prompt": "Declara las dos cartas que descartas",
+            "constraints": {},
+            "destination": "graveyard",
+            "count": {
+              "type": "LITERAL",
+              "value": 2
+            }
+          }
+        ],
+        "automation": "ASSISTED"
+      },
+      {
+        "id": "tritones-kiora-threshold",
+        "sourceCardName": "Kiora, the Rising Tide",
+        "kind": "TRIGGERED",
+        "trigger": {
+          "type": "CREATURE_ATTACKED"
+        },
+        "conditions": [
+          {
+            "type": "EVENT_SUBJECT_IS_SOURCE"
+          }
+        ],
+        "effects": [
+          {
+            "type": "CONDITIONAL_EFFECT",
+            "condition": {
+              "type": "VALUE_COMPARE",
+              "left": {
+                "type": "COUNT_OBJECTS",
+                "query": {
+                  "zones": ["graveyard"],
+                  "owner": "SOURCE_CONTROLLER"
+                }
+              },
+              "operator": "GTE",
+              "right": {
+                "type": "LITERAL",
+                "value": 7
+              }
+            },
+            "ifTrue": [
+              {
+                "type": "OPTIONAL_EFFECT",
+                "prompt": "Threshold: ¿crear Scion of the Deep?",
+                "effects": [
+                  {
+                    "type": "CREATE_TOKEN",
+                    "tokenId": "SCION_OF_THE_DEEP_8_8",
+                    "amount": {
+                      "type": "LITERAL",
+                      "value": 1
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "automation": "ASSISTED"
+      }
+    ]
+  },
+  "handledByRules": {
+    "Island": ["BASIC_LAND_MANA_BY_SUBTYPE"]
+  },
+  "notes": "Conservative Tritones Runtime DSL 2.5 catalog. Block 3 adds linked/delayed rule state, temporary modifiers, static keyword grants, extra-turn/end-turn groundwork, dynamic mana values, and continuous land-type effects. Only strict executable cards are loaded as READY."
+}

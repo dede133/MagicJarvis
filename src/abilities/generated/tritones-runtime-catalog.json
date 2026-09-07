@@ -1,0 +1,5608 @@
+{
+  "schemaVersion": 1,
+  "runtimeDslVersion": "2.6",
+  "deckName": "Tritones",
+  "commander": "Namor the Sub-Mariner",
+  "activeCardCount": 100,
+  "uniqueActiveCards": 71,
+  "generatedAt": "2026-08-15",
+  "source": {
+    "deckFile": "Tritones.txt",
+    "semanticCacheFile": ".magicjarvis/gemini-semantic-cache.json",
+    "semanticCoverage": "71/71",
+    "externalCallsUsed": false
+  },
+  "policy": {
+    "purpose": "Precompiled, deck-specific Runtime translations using generic MagicJarvis DSL primitives.",
+    "loadPolicy": "ONLY_READY_CARDS",
+    "runtimeAbilities": "Executable AbilityDefinition data is loaded only for READY cards. PARTIAL entries are diagnostic-only and never contribute runtime behavior.",
+    "noCardSpecificEngineLogic": true,
+    "physicalTableAuthoritative": true,
+    "hiddenZonesDefault": "UNTRACKED",
+    "strictStatus": "READY only when all game-relevant Oracle text is executable within the current physical-table model."
+  },
+  "assumedRuntimeExtensions": [
+    "ACTIVATION_SACRIFICE_COST",
+    "ACTIVATION_TURN_RESTRICTION",
+    "ADD_MANA_CHOICE",
+    "AS_ENTERS",
+    "CHOOSE_MODE",
+    "CHOOSE_VALUE",
+    "CONDITIONAL_EFFECT",
+    "CURRENT_OBJECT",
+    "DELAYED_EFFECT",
+    "END_TURN",
+    "ENCORE",
+    "FOR_EACH",
+    "FOR_EACH_PLAYER",
+    "FOR_EACH_SELECTED",
+    "MULTIPLAYER_PLAYER_STATE",
+    "ATTACK_REQUIREMENT",
+    "ObjectQuery",
+    "PAYMENT_BRANCH",
+    "PAYMENT_CHOICE",
+    "PLAYER_SELECTION",
+    "PROTECTION_ENFORCEMENT",
+    "PlayerReference",
+    "SACRIFICE",
+    "SET_VARIABLE",
+    "TAP_PERMANENT",
+    "ValueExpression",
+    "attachments",
+    "basic-land ability replacement",
+    "batch target selection",
+    "color filters",
+    "continuous land subtype effects",
+    "control change",
+    "dynamic mana-value target filters",
+    "effective type line",
+    "extra-turn queue groundwork",
+    "generic counters",
+    "linked object groups",
+    "owner-control zone return",
+    "persistent source values",
+    "spell copies",
+    "stack target reset",
+    "static keyword grants",
+    "step triggers",
+    "temporary continuous modifiers",
+    "token object copies",
+    "untap restrictions tied to source"
+  ],
+  "statusSummary": {
+    "READY": 71,
+    "PARTIAL": 0,
+    "MANUAL": 0
+  },
+  "topMissingPrimitives": [
+    {
+      "primitive": "RETARGET_TIMING",
+      "cardsAffected": 3
+    },
+    {
+      "primitive": "REPLACEMENT_EFFECT",
+      "cardsAffected": 2
+    },
+    {
+      "primitive": "WARD_ENFORCEMENT",
+      "cardsAffected": 2
+    },
+    {
+      "primitive": "FREE_CAST",
+      "cardsAffected": 2
+    },
+    {
+      "primitive": "HIDDEN_ZONE_SEARCH",
+      "cardsAffected": 1
+    },
+    {
+      "primitive": "OPPONENT_LIBRARY_ACCESS",
+      "cardsAffected": 1
+    },
+    {
+      "primitive": "CONTROL_CHANGE",
+      "cardsAffected": 1
+    },
+    {
+      "primitive": "FIRST_EVENT_PER_TURN_TRACKING",
+      "cardsAffected": 1
+    },
+    {
+      "primitive": "DURATION_UNTIL_SOURCE_LEAVES",
+      "cardsAffected": 1
+    },
+    {
+      "primitive": "PLAYER_CONTROL",
+      "cardsAffected": 1
+    },
+    {
+      "primitive": "DELAYED_DURATION",
+      "cardsAffected": 1
+    },
+    {
+      "primitive": "ADDITIONAL_COST_PAID_REFERENCE",
+      "cardsAffected": 1
+    },
+    {
+      "primitive": "MILL",
+      "cardsAffected": 1
+    },
+    {
+      "primitive": "CAST_FROM_OTHER_GRAVEYARD",
+      "cardsAffected": 1
+    },
+    {
+      "primitive": "SPELL_CAST_COUNT_EVENT_CONDITION",
+      "cardsAffected": 1
+    },
+    {
+      "primitive": "EQUIPPED_OBJECT_REFERENCE",
+      "cardsAffected": 1
+    },
+    {
+      "primitive": "HIDDEN_TOP_LIBRARY_LOOK",
+      "cardsAffected": 1
+    },
+    {
+      "primitive": "VARIABLE_EVENT_AMOUNT",
+      "cardsAffected": 1
+    },
+    {
+      "primitive": "HIDDEN_ZONE_SELECTION",
+      "cardsAffected": 1
+    },
+    {
+      "primitive": "LINKED_OBJECT",
+      "cardsAffected": 1
+    },
+    {
+      "primitive": "LIBRARY_BOTTOM_RANDOMIZE",
+      "cardsAffected": 1
+    }
+  ],
+  "cards": {
+    "Namor the Sub-Mariner": {
+      "deckQuantity": 1,
+      "oracleText": "Flying\nNamor's power is equal to the number of Merfolk you control.\nWhenever you cast a noncreature spell with one or more blue mana symbols in its mana cost, create that many 1/1 blue Merfolk creature tokens.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-namor-the-sub-mariner-blue-noncreature",
+          "sourceCardName": "Namor the Sub-Mariner",
+          "kind": "TRIGGERED",
+          "trigger": {
+            "type": "SPELL_CAST"
+          },
+          "conditions": [
+            {
+              "type": "EVENT_CONTROLLER_IS",
+              "value": "YOU"
+            },
+            {
+              "type": "SPELL_IS_CREATURE",
+              "value": false
+            },
+            {
+              "type": "EVENT_NUMBER_COMPARE",
+              "field": "blueManaSymbols",
+              "operator": "GT",
+              "value": 0
+            }
+          ],
+          "effects": [
+            {
+              "type": "CREATE_TOKEN",
+              "tokenId": "BLUE_MERFOLK_1_1",
+              "amount": {
+                "type": "EVENT_VALUE",
+                "field": "blueManaSymbols"
+              }
+            }
+          ],
+          "automation": "AUTO"
+        }
+      ],
+      "supportedComposition": [
+        "PRINTED_FLYING",
+        "SPELL_CAST",
+        "EVENT_NUMBER_COMPARE",
+        "CREATE_TOKEN"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Runtime DSL 2.4: executable with the current physical-table/public-known model."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "KEYWORD",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "STATIC",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "Namor's power is equal to the number of Merfolk you control."
+          ],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "TRIGGERED",
+          "trigger": "Whenever you cast a noncreature spell with one or more blue mana symbols in its mana cost",
+          "costs": [],
+          "conditions": [],
+          "effects": ["create that many 1/1 blue Merfolk creature tokens"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Aetherize": {
+      "deckQuantity": 1,
+      "oracleText": "Return all attacking creatures to their owner's hand.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-aetherize-known-attackers",
+          "sourceCardName": "Aetherize",
+          "kind": "SPELL_EFFECT",
+          "effects": [
+            {
+              "type": "FOR_EACH",
+              "query": {
+                "zones": ["battlefield"],
+                "cardTypes": ["Creature"],
+                "attacking": true
+              },
+              "effects": [
+                {
+                  "type": "MOVE_ZONE",
+                  "target": "CURRENT_OBJECT",
+                  "destination": "hand",
+                  "controller": "OWNER"
+                }
+              ]
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": [
+        "FOR_EACH",
+        "OBJECT_QUERY_ATTACKING",
+        "MOVE_ZONE"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "READY under the physical-table contract: opposing attackers explicitly declared as known are synchronized into combat before resolution."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Return all attacking creatures to their owner's hand."],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Aquitect's Will": {
+      "deckQuantity": 1,
+      "oracleText": "Put a flood counter on target land. That land is an Island in addition to its other types for as long as it has a flood counter on it. If you control a Merfolk, draw a card.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-aquitects-will",
+          "sourceCardName": "Aquitect's Will",
+          "kind": "SPELL_EFFECT",
+          "automation": "ASSISTED",
+          "effects": [
+            {
+              "type": "TARGET_SELECTION",
+              "prompt": "Elige la tierra objetivo",
+              "constraints": {
+                "zones": ["battlefield"],
+                "cardTypes": ["Land"],
+                "controller": "ANY"
+              },
+              "effects": [
+                {
+                  "type": "ADD_COUNTER",
+                  "target": "SELECTED_TARGET",
+                  "counterType": "flood",
+                  "amount": {
+                    "type": "LITERAL",
+                    "value": 1
+                  }
+                },
+                {
+                  "type": "CHANGE_LAND_SUBTYPE",
+                  "target": "SELECTED_TARGET",
+                  "subtype": "Island",
+                  "mode": "ADD",
+                  "duration": "WHILE_COUNTER_PRESENT",
+                  "counterType": "flood"
+                },
+                {
+                  "type": "CONDITIONAL_EFFECT",
+                  "condition": {
+                    "type": "VALUE_COMPARE",
+                    "left": {
+                      "type": "COUNT_OBJECTS",
+                      "query": {
+                        "zones": ["battlefield"],
+                        "controller": "SOURCE_CONTROLLER",
+                        "subtypes": ["Merfolk"]
+                      }
+                    },
+                    "operator": "GTE",
+                    "right": {
+                      "type": "LITERAL",
+                      "value": 1
+                    }
+                  },
+                  "ifTrue": [
+                    {
+                      "type": "DRAW_CARD",
+                      "amount": {
+                        "type": "LITERAL",
+                        "value": 1
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "supportedComposition": [
+        "TARGET_SELECTION",
+        "ADD_COUNTER",
+        "CHANGE_LAND_SUBTYPE",
+        "DURATION_WHILE_COUNTER_PRESENT",
+        "COUNT_OBJECTS",
+        "CONDITIONAL_EFFECT",
+        "DRAW_CARD"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Runtime DSL 2.5: flood counter, Island adicional mientras conserve el contador y draw condicional son ejecutables."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "Put a flood counter on target land",
+            "That land is an Island in addition to its other types for as long as it has a flood counter on it"
+          ],
+          "targets": ["target land"],
+          "restrictions": [],
+          "duration": "for as long as it has a flood counter on it"
+        },
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": ["If you control a Merfolk"],
+          "effects": ["draw a card"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Arcane Signet": {
+      "deckQuantity": 1,
+      "oracleText": "{T}: Add one mana of any color in your commander's color identity.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-arcane-signet-mana",
+          "sourceCardName": "Arcane Signet",
+          "kind": "ACTIVATED",
+          "costs": [
+            {
+              "type": "TAP_SOURCE"
+            }
+          ],
+          "effects": [
+            {
+              "type": "ADD_MANA",
+              "color": "U",
+              "amount": 1
+            }
+          ],
+          "automation": "AUTO",
+          "isManaAbility": true
+        }
+      ],
+      "supportedComposition": ["TAP_SOURCE", "ADD_MANA"],
+      "missingPrimitives": [],
+      "notes": [
+        "En Tritones la identidad de color del comandante es solo azul, por lo que se precompila a U."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "ACTIVATED",
+          "trigger": null,
+          "costs": ["{T}"],
+          "conditions": [],
+          "effects": [
+            "Add one mana of any color in your commander's color identity."
+          ],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Bribery": {
+      "deckQuantity": 1,
+      "oracleText": "Search target opponent's library for a creature card and put that card onto the battlefield under your control. Then that player shuffles.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "bribery-spell",
+          "sourceCardName": "Bribery",
+          "kind": "SPELL_EFFECT",
+          "automation": "ASSISTED",
+          "effects": [
+            {
+              "type": "PLAYER_SELECTION",
+              "prompt": "Elige el oponente objetivo de Bribery.",
+              "relation": "OPPONENT",
+              "effects": [
+                {
+                  "type": "SEARCH_LIBRARY_CARD",
+                  "player": "TARGET_PLAYER",
+                  "prompt": "Busca físicamente en la biblioteca de ese oponente una criatura y declara la que has encontrado.",
+                  "constraints": { "cardTypesAnyOf": ["Creature"] },
+                  "reveal": false,
+                  "shuffle": true,
+                  "allowFail": true,
+                  "destination": "battlefield",
+                  "controller": "SOURCE_CONTROLLER"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "supportedComposition": [
+        "PLAYER_SELECTION",
+        "HIDDEN_ZONE_SEARCH",
+        "MOVE_ZONE",
+        "CONTROL_CHANGE",
+        "PLAYER_SHUFFLED"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "La biblioteca rival sigue siendo física: el usuario declara únicamente la criatura encontrada.",
+        "La criatura conserva al rival como propietario, entra bajo control del controlador de Bribery y el barajado rival se registra."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "Search target opponent's library for a creature card",
+            "put that card onto the battlefield under your control",
+            "that player shuffles"
+          ],
+          "targets": ["target opponent"],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Chrome Mox": {
+      "deckQuantity": 1,
+      "oracleText": "Imprint — When this artifact enters, you may exile a nonartifact, nonland card from your hand.\n{T}: Add one mana of any of the exiled card's colors.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-chrome-mox-imprint",
+          "sourceCardName": "Chrome Mox",
+          "kind": "TRIGGERED",
+          "trigger": {
+            "type": "CARD_ENTERED_BATTLEFIELD"
+          },
+          "conditions": [
+            {
+              "type": "EVENT_SUBJECT_IS_SOURCE"
+            }
+          ],
+          "effects": [
+            {
+              "type": "OPTIONAL_EFFECT",
+              "prompt": "¿Quieres hacer imprint con una carta no artefacto y no tierra de tu mano?",
+              "effects": [
+                {
+                  "type": "SELECT_HIDDEN_ZONE_CARD",
+                  "player": "SOURCE_CONTROLLER",
+                  "zone": "hand",
+                  "prompt": "Declara la carta que exilias con imprint",
+                  "constraints": {
+                    "excludeCardTypes": ["Artifact", "Land"]
+                  },
+                  "destination": "exile",
+                  "count": {
+                    "type": "LITERAL",
+                    "value": 1
+                  },
+                  "linkKey": "IMPRINT"
+                }
+              ]
+            }
+          ],
+          "automation": "ASSISTED"
+        },
+        {
+          "id": "tritones-chrome-mox-mana",
+          "sourceCardName": "Chrome Mox",
+          "kind": "ACTIVATED",
+          "costs": [
+            {
+              "type": "TAP_SOURCE"
+            }
+          ],
+          "effects": [
+            {
+              "type": "ADD_MANA_FROM_LINKED_COLORS",
+              "player": "SOURCE_CONTROLLER",
+              "key": "IMPRINT",
+              "amount": {
+                "type": "LITERAL",
+                "value": 1
+              }
+            }
+          ],
+          "automation": "AUTO",
+          "isManaAbility": true
+        }
+      ],
+      "supportedComposition": [
+        "CARD_ENTERED_BATTLEFIELD",
+        "OPTIONAL_EFFECT",
+        "SELECT_HIDDEN_ZONE_CARD",
+        "LINKED_OBJECT",
+        "LINKED_COLOR_QUERY",
+        "MANA_PRODUCTION"
+      ],
+      "missingPrimitives": [],
+      "notes": [],
+      "semanticAbilitySummary": [
+        {
+          "kind": "TRIGGERED",
+          "trigger": "When this artifact enters",
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "you may exile a nonartifact, nonland card from your hand"
+          ],
+          "targets": ["a nonartifact, nonland card from your hand"],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "ACTIVATED",
+          "trigger": null,
+          "costs": ["{T}"],
+          "conditions": [],
+          "effects": ["Add one mana of any of the exiled card's colors"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Commandeer": {
+      "deckQuantity": 1,
+      "oracleText": "You may exile two blue cards from your hand rather than pay this spell's mana cost.\nGain control of target noncreature spell. You may choose new targets for it. (If that spell is an artifact, enchantment, or planeswalker, the permanent enters under your control.)",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-commandeer-control-spell",
+          "sourceCardName": "Commandeer",
+          "kind": "SPELL_EFFECT",
+          "effects": [
+            {
+              "type": "TARGET_SELECTION",
+              "prompt": "Elige un hechizo no criatura objetivo",
+              "constraints": {
+                "stackKind": "SPELL",
+                "excludeCardTypes": ["Creature"]
+              },
+              "effects": [
+                {
+                  "type": "CHANGE_CONTROLLER",
+                  "target": "SELECTED_STACK_OBJECT",
+                  "controller": "SOURCE_CONTROLLER"
+                },
+                {
+                  "type": "RETARGET_STACK_OBJECT",
+                  "target": "SELECTED_STACK_OBJECT"
+                }
+              ]
+            }
+          ],
+          "automation": "AUTO"
+        }
+      ],
+      "supportedComposition": [
+        "ALTERNATIVE_COST",
+        "HIDDEN_CARD_DECLARATION",
+        "SPELL_CONTROL_CHANGE",
+        "RETARGET"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Alternative pitch cost, spell-control change and retargeting are executable. Targets are chosen during Commandeer resolution and applied after Commandeer leaves the stack, so Ward triggers from newly chosen targets are stacked at the next legal point."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "REPLACEMENT",
+          "trigger": null,
+          "costs": ["exile two blue cards from your hand"],
+          "conditions": [],
+          "effects": ["rather than pay this spell's mana cost"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "Gain control of target noncreature spell",
+            "You may choose new targets for it"
+          ],
+          "targets": ["target noncreature spell"],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Commander's Plate": {
+      "deckQuantity": 1,
+      "oracleText": "Equipped creature gets +3/+3 and has protection from each color that's not in your commander's color identity.\nEquip commander {3}\nEquip {5}",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-commanders-plate-static",
+          "sourceCardName": "Commander's Plate",
+          "kind": "STATIC",
+          "effects": [
+            {
+              "type": "MODIFY_POWER_TOUGHNESS",
+              "power": 3,
+              "toughness": 3,
+              "filter": {
+                "attachedToSource": true
+              }
+            },
+            {
+              "type": "PROTECTION_FROM_COLORS",
+              "colors": {
+                "type": "NOT_IN_COMMANDER_COLOR_IDENTITY"
+              },
+              "filter": {
+                "attachedToSource": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "tritones-commanders-plate-equip-commander",
+          "sourceCardName": "Commander's Plate",
+          "kind": "ACTIVATED",
+          "automation": "ASSISTED",
+          "costs": [
+            {
+              "type": "MANA_COST",
+              "cost": "{3}"
+            }
+          ],
+          "restrictions": ["SORCERY_SPEED"],
+          "effects": [
+            {
+              "type": "TARGET_SELECTION",
+              "prompt": "Elige tu comandante para equipar",
+              "constraints": {
+                "zones": ["battlefield"],
+                "controller": "YOU",
+                "cardTypes": ["Creature"],
+                "isCommander": true
+              },
+              "effects": [
+                {
+                  "type": "ATTACH",
+                  "attachment": "SOURCE",
+                  "target": "SELECTED_TARGET"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tritones-commanders-plate-equip",
+          "sourceCardName": "Commander's Plate",
+          "kind": "ACTIVATED",
+          "automation": "ASSISTED",
+          "costs": [
+            {
+              "type": "MANA_COST",
+              "cost": "{5}"
+            }
+          ],
+          "restrictions": ["SORCERY_SPEED"],
+          "effects": [
+            {
+              "type": "TARGET_SELECTION",
+              "prompt": "Elige una criatura que controlas para equipar",
+              "constraints": {
+                "zones": ["battlefield"],
+                "controller": "YOU",
+                "cardTypes": ["Creature"]
+              },
+              "effects": [
+                {
+                  "type": "ATTACH",
+                  "attachment": "SOURCE",
+                  "target": "SELECTED_TARGET"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "supportedComposition": [
+        "ATTACH",
+        "EQUIPPED_OBJECT_REFERENCE",
+        "MODIFY_POWER_TOUGHNESS",
+        "PROTECTION_ENFORCEMENT",
+        "SORCERY_SPEED"
+      ],
+      "missingPrimitives": [],
+      "notes": [],
+      "semanticAbilitySummary": [
+        {
+          "kind": "STATIC",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "Equipped creature gets +3/+3",
+            "Equipped creature has protection from each color that's not in your commander's color identity"
+          ],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "ACTIVATED",
+          "trigger": null,
+          "costs": ["{3}"],
+          "conditions": [],
+          "effects": [
+            "Attach Commander's Plate to target commander you control"
+          ],
+          "targets": ["commander"],
+          "restrictions": ["Can only be attached to a commander"],
+          "duration": null
+        },
+        {
+          "kind": "ACTIVATED",
+          "trigger": null,
+          "costs": ["{5}"],
+          "conditions": [],
+          "effects": [
+            "Attach Commander's Plate to target creature you control"
+          ],
+          "targets": ["creature"],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Cosi's Trickster": {
+      "deckQuantity": 1,
+      "oracleText": "Whenever an opponent shuffles their library, you may put a +1/+1 counter on this creature.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-cosi-s-trickster-shuffle",
+          "sourceCardName": "Cosi's Trickster",
+          "kind": "TRIGGERED",
+          "trigger": {
+            "type": "PLAYER_SHUFFLED"
+          },
+          "conditions": [
+            {
+              "type": "EVENT_CONTROLLER_IS",
+              "value": "OPPONENT"
+            }
+          ],
+          "effects": [
+            {
+              "type": "OPTIONAL_EFFECT",
+              "prompt": "¿Poner un contador +1/+1 sobre Cosi's Trickster?",
+              "effects": [
+                {
+                  "type": "ADD_COUNTER",
+                  "target": "SOURCE",
+                  "counterType": "+1/+1",
+                  "amount": {
+                    "type": "LITERAL",
+                    "value": 1
+                  }
+                }
+              ]
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": [
+        "PLAYER_SHUFFLED",
+        "OPTIONAL_EFFECT",
+        "ADD_COUNTER"
+      ],
+      "missingPrimitives": [],
+      "notes": [],
+      "semanticAbilitySummary": [
+        {
+          "kind": "TRIGGERED",
+          "trigger": "Whenever an opponent shuffles their library",
+          "costs": [],
+          "conditions": [],
+          "effects": ["put a +1/+1 counter on this creature"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Counterspell": {
+      "deckQuantity": 1,
+      "oracleText": "Counter target spell.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-counterspell-counter",
+          "sourceCardName": "Counterspell",
+          "kind": "SPELL_EFFECT",
+          "effects": [
+            {
+              "type": "TARGET_SELECTION",
+              "prompt": "Elige el hechizo objetivo a contrarrestar",
+              "constraints": {
+                "stackKind": "SPELL"
+              },
+              "effects": [
+                {
+                  "type": "COUNTER_SPELL",
+                  "target": "SELECTED_STACK_OBJECT"
+                }
+              ]
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": ["TARGET_SELECTION", "COUNTER_SPELL"],
+      "missingPrimitives": [],
+      "notes": [],
+      "semanticAbilitySummary": [
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Counter target spell."],
+          "targets": ["target spell"],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Cyclonic Rift": {
+      "deckQuantity": 1,
+      "oracleText": "Return target nonland permanent you don't control to its owner's hand.\nOverload {6}{U} (You may cast this spell for its overload cost. If you do, change \"target\" in its text to \"each.\")",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-cyclonic-rift-mode",
+          "sourceCardName": "Cyclonic Rift",
+          "kind": "SPELL_EFFECT",
+          "effects": [
+            {
+              "type": "CONDITIONAL_EFFECT",
+              "condition": {
+                "type": "VALUE_COMPARE",
+                "left": {
+                  "type": "VARIABLE",
+                  "name": "OVERLOAD"
+                },
+                "operator": "EQ",
+                "right": {
+                  "type": "LITERAL",
+                  "value": 1
+                }
+              },
+              "ifTrue": [
+                {
+                  "type": "FOR_EACH",
+                  "query": {
+                    "zones": ["battlefield"],
+                    "controllerRelation": "NOT_SOURCE_CONTROLLER",
+                    "excludeCardTypes": ["Land"]
+                  },
+                  "effects": [
+                    {
+                      "type": "MOVE_ZONE",
+                      "target": "CURRENT_OBJECT",
+                      "destination": "hand",
+                      "controller": "OWNER"
+                    }
+                  ]
+                }
+              ],
+              "ifFalse": [
+                {
+                  "type": "TARGET_SELECTION",
+                  "prompt": "Elige un permanente no tierra que no controlas",
+                  "constraints": {
+                    "zones": ["battlefield"],
+                    "controllerRelation": "NOT_SOURCE_CONTROLLER",
+                    "excludeCardTypes": ["Land"]
+                  },
+                  "effects": [
+                    {
+                      "type": "MOVE_ZONE",
+                      "target": "SELECTED_TARGET",
+                      "destination": "hand",
+                      "controller": "OWNER"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": [
+        "ALTERNATIVE_COST",
+        "CAST_PAYMENT_MEMORY",
+        "CONDITIONAL_EFFECT",
+        "TARGET_SELECTION",
+        "NONLAND_FILTER",
+        "NOT_SOURCE_CONTROLLER_QUERY",
+        "MOVE_ZONE",
+        "FOR_EACH"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "READY under the physical-table contract: normal and overload modes operate on all public permanents currently declared to Jarvis."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "Return target nonland permanent you don't control to its owner's hand."
+          ],
+          "targets": ["target nonland permanent you don't control"],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "KEYWORD",
+          "trigger": null,
+          "costs": ["{6}{U}"],
+          "conditions": [],
+          "effects": [
+            "You may cast this spell for its overload cost",
+            "If you do, change \"target\" in its text to \"each.\""
+          ],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Deepchannel Mentor": {
+      "deckQuantity": 1,
+      "oracleText": "Blue creatures you control can't be blocked.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-deepchannel-mentor-unblockable",
+          "sourceCardName": "Deepchannel Mentor",
+          "kind": "STATIC",
+          "effects": [
+            {
+              "type": "BLOCKING_RESTRICTION",
+              "restriction": {
+                "type": "CANNOT_BE_BLOCKED",
+                "filter": {
+                  "controller": "YOU",
+                  "cardType": "Creature",
+                  "colors": ["U"]
+                },
+                "duration": "STATIC"
+              }
+            }
+          ]
+        }
+      ],
+      "supportedComposition": ["STATIC_COLOR_FILTER"],
+      "missingPrimitives": [],
+      "notes": [
+        "Runtime DSL 2.4: executable with the current physical-table/public-known model."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "STATIC",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Blue creatures you control can't be blocked."],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Deeproot Pilgrimage": {
+      "deckQuantity": 1,
+      "oracleText": "Whenever one or more nontoken Merfolk you control become tapped, create a 1/1 blue Merfolk creature token with hexproof.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-deeproot-pilgrimage-tap",
+          "sourceCardName": "Deeproot Pilgrimage",
+          "kind": "TRIGGERED",
+          "trigger": {
+            "type": "PERMANENT_BECAME_TAPPED",
+            "oneOrMore": true
+          },
+          "conditions": [
+            {
+              "type": "EVENT_CONTROLLER_IS",
+              "value": "YOU"
+            },
+            {
+              "type": "EVENT_IS_TOKEN",
+              "value": false
+            },
+            {
+              "type": "EVENT_HAS_SUBTYPE",
+              "value": "Merfolk"
+            }
+          ],
+          "effects": [
+            {
+              "type": "CREATE_TOKEN",
+              "tokenId": "BLUE_MERFOLK_1_1_HEXPROOF",
+              "amount": {
+                "type": "LITERAL",
+                "value": 1
+              }
+            }
+          ],
+          "automation": "AUTO"
+        }
+      ],
+      "supportedComposition": [
+        "PERMANENT_BECAME_TAPPED",
+        "NON_TOKEN_FILTER",
+        "CREATE_TOKEN"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Runtime DSL 2.4: executable with the current physical-table/public-known model."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "TRIGGERED",
+          "trigger": "Whenever one or more nontoken Merfolk you control become tapped",
+          "costs": [],
+          "conditions": [],
+          "effects": ["create a 1/1 blue Merfolk creature token with hexproof"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Deeproot Waters": {
+      "deckQuantity": 1,
+      "oracleText": "Whenever you cast a Merfolk spell, create a 1/1 blue Merfolk creature token with hexproof. (A creature with hexproof can't be the target of spells or abilities your opponents control.)",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-deeproot-waters-cast",
+          "sourceCardName": "Deeproot Waters",
+          "kind": "TRIGGERED",
+          "trigger": {
+            "type": "SPELL_CAST"
+          },
+          "conditions": [
+            {
+              "type": "EVENT_CONTROLLER_IS",
+              "value": "YOU"
+            },
+            {
+              "type": "EVENT_HAS_SUBTYPE",
+              "value": "Merfolk"
+            }
+          ],
+          "effects": [
+            {
+              "type": "CREATE_TOKEN",
+              "tokenId": "BLUE_MERFOLK_1_1_HEXPROOF",
+              "amount": {
+                "type": "LITERAL",
+                "value": 1
+              }
+            }
+          ],
+          "automation": "AUTO"
+        }
+      ],
+      "supportedComposition": [
+        "SPELL_CAST",
+        "EVENT_HAS_SUBTYPE",
+        "CREATE_TOKEN"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Runtime DSL 2.4: executable with the current physical-table/public-known model."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "TRIGGERED",
+          "trigger": "Whenever you cast a Merfolk spell",
+          "costs": [],
+          "conditions": [],
+          "effects": ["create a 1/1 blue Merfolk creature token with hexproof"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Dig Through Time": {
+      "deckQuantity": 1,
+      "oracleText": "Delve (Each card you exile from your graveyard while casting this spell pays for {1}.)\nLook at the top seven cards of your library. Put two of them into your hand and the rest on the bottom of your library in any order.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-dig-through-time-look-seven",
+          "sourceCardName": "Dig Through Time",
+          "kind": "SPELL_EFFECT",
+          "effects": [
+            {
+              "type": "PHYSICAL_CONFIRMATION",
+              "prompt": "Mira físicamente las siete primeras cartas de tu biblioteca. Pon dos de ellas en tu mano y el resto en el fondo de tu biblioteca en el orden que quieras. Jarvis no registra sus identidades porque esta información es privada. Confirma cuando hayas terminado.",
+              "effects": [
+                {
+                  "type": "MOVE_UNKNOWN_HIDDEN_CARDS",
+                  "fromZone": "library",
+                  "toZone": "hand",
+                  "amount": {
+                    "type": "LITERAL",
+                    "value": 2
+                  }
+                }
+              ]
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": [
+        "CARD_SELECTION",
+        "CAST_GENERIC_CONTRIBUTION",
+        "MOVE_ZONE",
+        "PHYSICAL_HIDDEN_ZONE_OPERATION",
+        "SEARCH_LIBRARY_CARD"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Delve is executable from the public graveyard. The top-seven choice remains private: Jarvis prompts for the physical operation and updates counts only, never storing private identities."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "KEYWORD",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "Look at the top seven cards of your library.",
+            "Put two of them into your hand.",
+            "Put the rest on the bottom of your library in any order."
+          ],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Emperor Mihail II": {
+      "deckQuantity": 1,
+      "oracleText": "You may look at the top card of your library any time.\nYou may cast Merfolk spells from the top of your library.\nWhenever you cast a Merfolk spell, you may pay {1}. If you do, create a 1/1 blue Merfolk creature token.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-emperor-mihail-top-merfolk-cast",
+          "sourceCardName": "Emperor Mihail II",
+          "kind": "STATIC",
+          "effects": [
+            {
+              "type": "ALLOW_CAST_FROM_LIBRARY_TOP",
+              "filter": {
+                "subtype": "Merfolk"
+              }
+            }
+          ]
+        },
+        {
+          "id": "tritones-emperor-mihail-merfolk-cast-token",
+          "sourceCardName": "Emperor Mihail II",
+          "kind": "TRIGGERED",
+          "trigger": {
+            "type": "SPELL_CAST"
+          },
+          "conditions": [
+            {
+              "type": "EVENT_CONTROLLER_IS",
+              "value": "YOU"
+            },
+            {
+              "type": "EVENT_HAS_SUBTYPE",
+              "value": "Merfolk"
+            }
+          ],
+          "effects": [
+            {
+              "type": "PAYMENT_BRANCH",
+              "payer": "SOURCE_CONTROLLER",
+              "cost": {
+                "type": "FIXED_MANA",
+                "cost": "{1}"
+              },
+              "ifPaid": [
+                {
+                  "type": "CREATE_TOKEN",
+                  "tokenId": "BLUE_MERFOLK_1_1",
+                  "amount": {
+                    "type": "LITERAL",
+                    "value": 1
+                  }
+                }
+              ],
+              "ifNotPaid": [],
+              "prompt": "¿Pagar {1} para crear una ficha Merfolk 1/1?"
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": [
+        "SPELL_CAST",
+        "EVENT_HAS_SUBTYPE",
+        "PAYMENT_BRANCH",
+        "CREATE_TOKEN"
+      ],
+      "missingPrimitives": [],
+      "notes": "La mirada de la carta superior se mantiene física/privada; Jarvis no registra su identidad. El jugador declara explícitamente el lanzamiento desde arriba, que se valida mediante una permission estática genérica. El trigger de Merfolk usa PAYMENT_BRANCH.",
+      "semanticAbilitySummary": [
+        {
+          "kind": "STATIC",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["You may look at the top card of your library any time."],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "STATIC",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "You may cast Merfolk spells from the top of your library."
+          ],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "TRIGGERED",
+          "trigger": "Whenever you cast a Merfolk spell",
+          "costs": ["{1}"],
+          "conditions": [],
+          "effects": ["create a 1/1 blue Merfolk creature token"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Empress Galina": {
+      "deckQuantity": 1,
+      "oracleText": "{U}{U}, {T}: Gain control of target legendary permanent. (This effect lasts indefinitely.)",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-empress-galina-control",
+          "sourceCardName": "Empress Galina",
+          "kind": "ACTIVATED",
+          "costs": [
+            {
+              "type": "MANA_COST",
+              "cost": "{U}{U}"
+            },
+            {
+              "type": "TAP_SOURCE"
+            }
+          ],
+          "effects": [
+            {
+              "type": "TARGET_SELECTION",
+              "prompt": "Elige un permanente legendario objetivo",
+              "constraints": {
+                "zones": ["battlefield"],
+                "cardTypes": ["Legendary"],
+                "controller": "ANY"
+              },
+              "effects": [
+                {
+                  "type": "CHANGE_CONTROLLER",
+                  "target": "SELECTED_TARGET",
+                  "controller": "SOURCE_CONTROLLER"
+                }
+              ]
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": [
+        "TARGET_SELECTION",
+        "CONTROL_CHANGE",
+        "LEGENDARY_TARGET_FILTER"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Indefinite control change is represented by controllerId on the known permanent."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "ACTIVATED",
+          "trigger": null,
+          "costs": ["{U}{U}", "{T}"],
+          "conditions": [],
+          "effects": ["Gain control of target legendary permanent"],
+          "targets": ["target legendary permanent"],
+          "restrictions": [],
+          "duration": "indefinitely"
+        }
+      ]
+    },
+    "Fierce Guardianship": {
+      "deckQuantity": 1,
+      "oracleText": "If you control a commander, you may cast this spell without paying its mana cost.\nCounter target noncreature spell.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-fierce-guardianship-counter",
+          "sourceCardName": "Fierce Guardianship",
+          "kind": "SPELL_EFFECT",
+          "effects": [
+            {
+              "type": "TARGET_SELECTION",
+              "prompt": "Elige el hechizo no criatura objetivo a contrarrestar",
+              "constraints": {
+                "stackKind": "SPELL",
+                "excludeCardTypes": ["Creature"]
+              },
+              "effects": [
+                {
+                  "type": "COUNTER_SPELL",
+                  "target": "SELECTED_STACK_OBJECT"
+                }
+              ]
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": [
+        "ALTERNATIVE_COST",
+        "CAST_CONDITION",
+        "TARGET_SELECTION",
+        "NONCREATURE_STACK_TARGET_FILTER",
+        "COUNTER_SPELL"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Conditional free cast is represented by the generic precompiled casting-options catalog."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "STATIC",
+          "trigger": null,
+          "costs": [],
+          "conditions": ["you control a commander"],
+          "effects": ["you may cast this spell without paying its mana cost"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Counter target noncreature spell"],
+          "targets": ["target noncreature spell"],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Force of Negation": {
+      "deckQuantity": 1,
+      "oracleText": "If it's not your turn, you may exile a blue card from your hand rather than pay this spell's mana cost.\nCounter target noncreature spell. If that spell is countered this way, exile it instead of putting it into its owner's graveyard.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-force-of-negation-counter-exile",
+          "sourceCardName": "Force of Negation",
+          "kind": "SPELL_EFFECT",
+          "effects": [
+            {
+              "type": "TARGET_SELECTION",
+              "prompt": "Elige el hechizo no criatura objetivo a contrarrestar",
+              "constraints": {
+                "stackKind": "SPELL",
+                "excludeCardTypes": ["Creature"]
+              },
+              "effects": [
+                {
+                  "type": "COUNTER_SPELL",
+                  "target": "SELECTED_STACK_OBJECT",
+                  "destination": "exile"
+                }
+              ]
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": [
+        "ALTERNATIVE_COST",
+        "HIDDEN_HAND_SELECTION",
+        "NONCREATURE_STACK_TARGET_FILTER",
+        "COUNTER_REPLACEMENT_DESTINATION"
+      ],
+      "missingPrimitives": [],
+      "notes": ["NOT_YOUR_TURN now resolves against activePlayerId."],
+      "semanticAbilitySummary": [
+        {
+          "kind": "REPLACEMENT",
+          "trigger": null,
+          "costs": ["exile a blue card from your hand"],
+          "conditions": ["it's not your turn"],
+          "effects": ["rather than pay this spell's mana cost"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "Counter target noncreature spell",
+            "exile it instead of putting it into its owner's graveyard"
+          ],
+          "targets": ["target noncreature spell"],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Force of Will": {
+      "deckQuantity": 1,
+      "oracleText": "You may pay 1 life and exile a blue card from your hand rather than pay this spell's mana cost.\nCounter target spell.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-force-of-will-counter",
+          "sourceCardName": "Force of Will",
+          "kind": "SPELL_EFFECT",
+          "effects": [
+            {
+              "type": "TARGET_SELECTION",
+              "prompt": "Elige el hechizo objetivo a contrarrestar",
+              "constraints": {
+                "stackKind": "SPELL"
+              },
+              "effects": [
+                {
+                  "type": "COUNTER_SPELL",
+                  "target": "SELECTED_STACK_OBJECT"
+                }
+              ]
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": [
+        "ALTERNATIVE_COST",
+        "LIFE_PAYMENT_COST",
+        "HIDDEN_HAND_SELECTION",
+        "COUNTER_SPELL"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Coste normal o alternativo: pagar 1 vida y exiliar una carta azul declarada de la mano; luego contrarresta el hechizo objetivo."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "REPLACEMENT",
+          "trigger": null,
+          "costs": ["pay 1 life", "exile a blue card from your hand"],
+          "conditions": [],
+          "effects": ["rather than pay this spell's mana cost"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Counter target spell."],
+          "targets": ["target spell"],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Harbinger of the Seas": {
+      "deckQuantity": 1,
+      "oracleText": "Nonbasic lands are Islands.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-harbinger-seas-islands",
+          "sourceCardName": "Harbinger of the Seas",
+          "kind": "STATIC",
+          "effects": [
+            {
+              "type": "SET_LAND_SUBTYPE",
+              "subtype": "Island",
+              "filter": {
+                "cardType": "Land",
+                "nonbasicLand": true
+              }
+            }
+          ]
+        }
+      ],
+      "supportedComposition": [
+        "STATIC_TYPE_CHANGE",
+        "SET_LAND_SUBTYPE",
+        "NONBASIC_LAND_FILTER",
+        "INTRINSIC_BASIC_LAND_MANA"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Runtime DSL 2.5: las tierras no básicas conocidas pasan a ser Islands; el runtime usa su tipo efectivo para mana/landwalk y suprime sus abilities mientras el tipo básico esté establecido."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "STATIC",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Nonbasic lands are Islands."],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Hide on the Ceiling": {
+      "deckQuantity": 1,
+      "oracleText": "Exile X target artifacts and/or creatures. Return the exiled cards to the battlefield under their owners' control at the beginning of the next end step.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-hide-on-the-ceiling-exile-return",
+          "sourceCardName": "Hide on the Ceiling",
+          "kind": "SPELL_EFFECT",
+          "effects": [
+            {
+              "type": "TARGET_SELECTION",
+              "prompt": "Elige X artefactos y/o criaturas objetivo",
+              "constraints": {
+                "zones": ["battlefield"],
+                "cardTypesAnyOf": ["Artifact", "Creature"]
+              },
+              "count": {
+                "type": "VARIABLE",
+                "name": "X"
+              },
+              "effects": [
+                {
+                  "type": "FOR_EACH_SELECTED",
+                  "selection": "TARGETS",
+                  "effects": [
+                    {
+                      "type": "MOVE_ZONE",
+                      "target": "CURRENT_OBJECT",
+                      "destination": "exile"
+                    }
+                  ]
+                },
+                {
+                  "type": "DELAYED_EFFECT",
+                  "trigger": {
+                    "type": "END_STEP_STARTED"
+                  },
+                  "effects": [
+                    {
+                      "type": "FOR_EACH_SELECTED",
+                      "selection": "TARGETS",
+                      "effects": [
+                        {
+                          "type": "MOVE_ZONE",
+                          "target": "CURRENT_OBJECT",
+                          "destination": "battlefield",
+                          "controller": "OWNER"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": ["TARGET_SELECTION", "MOVE_ZONE"],
+      "missingPrimitives": [],
+      "notes": [
+        "Precompiled with X-target batch selection, selected-object iteration, delayed next-end-step return, and owner-controller restoration."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "Exile X target artifacts and/or creatures.",
+            "Return the exiled cards to the battlefield under their owners' control at the beginning of the next end step."
+          ],
+          "targets": ["X target artifacts and/or creatures"],
+          "restrictions": [],
+          "duration": "the beginning of the next end step"
+        }
+      ]
+    },
+    "Hour of Eternity": {
+      "deckQuantity": 1,
+      "oracleText": "Exile X target creature cards from your graveyard. For each card exiled this way, create a token that's a copy of that card, except it's a 4/4 black Zombie.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-hour-of-eternity",
+          "sourceCardName": "Hour of Eternity",
+          "kind": "SPELL_EFFECT",
+          "automation": "ASSISTED",
+          "effects": [
+            {
+              "type": "CARD_SELECTION",
+              "prompt": "Elige X cartas de criatura de tu cementerio",
+              "constraints": {
+                "zones": ["graveyard"],
+                "controller": "YOU",
+                "cardTypes": ["Creature"]
+              },
+              "count": {
+                "type": "VARIABLE",
+                "name": "X"
+              },
+              "effects": [
+                {
+                  "type": "FOR_EACH_SELECTED",
+                  "selection": "CARDS",
+                  "effects": [
+                    {
+                      "type": "MOVE_ZONE",
+                      "target": "CURRENT_OBJECT",
+                      "destination": "exile"
+                    },
+                    {
+                      "type": "CREATE_TOKEN_COPY",
+                      "target": "CURRENT_OBJECT",
+                      "amount": {
+                        "type": "LITERAL",
+                        "value": 1
+                      },
+                      "overrides": {
+                        "power": "4",
+                        "toughness": "4",
+                        "colors": ["B"],
+                        "addSubtypes": ["Zombie"]
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "supportedComposition": ["MOVE_ZONE", "FOR_EACH"],
+      "missingPrimitives": [],
+      "notes": [
+        "Runtime DSL 2.4: executable with the current physical-table/public-known model."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "Exile X target creature cards from your graveyard",
+            "For each card exiled this way, create a token that's a copy of that card, except it's a 4/4 black Zombie"
+          ],
+          "targets": ["X target creature cards from your graveyard"],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Hydroblast": {
+      "deckQuantity": 1,
+      "oracleText": "Choose one —\n• Counter target spell if it's red.\n• Destroy target permanent if it's red.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-hydroblast-modes",
+          "sourceCardName": "Hydroblast",
+          "kind": "SPELL_EFFECT",
+          "automation": "ASSISTED",
+          "effects": [
+            {
+              "type": "CHOOSE_MODE",
+              "prompt": "Elige el modo de Hydroblast",
+              "modes": [
+                {
+                  "id": "counter",
+                  "label": "Contrarrestar un hechizo si es rojo",
+                  "effects": [
+                    {
+                      "type": "TARGET_SELECTION",
+                      "prompt": "Elige un hechizo objetivo",
+                      "constraints": {
+                        "stackKind": "SPELL"
+                      },
+                      "effects": [
+                        {
+                          "type": "CONDITIONAL_EFFECT",
+                          "condition": {
+                            "type": "OBJECT_MATCHES_QUERY",
+                            "object": "SELECTED_STACK_OBJECT",
+                            "query": {
+                              "zones": ["stack"],
+                              "colorsAnyOf": ["R"]
+                            }
+                          },
+                          "ifTrue": [
+                            {
+                              "type": "COUNTER_SPELL",
+                              "target": "SELECTED_STACK_OBJECT"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "destroy",
+                  "label": "Destruir un permanente si es rojo",
+                  "effects": [
+                    {
+                      "type": "TARGET_SELECTION",
+                      "prompt": "Elige un permanente objetivo",
+                      "constraints": {
+                        "zones": ["battlefield"]
+                      },
+                      "effects": [
+                        {
+                          "type": "CONDITIONAL_EFFECT",
+                          "condition": {
+                            "type": "OBJECT_MATCHES_QUERY",
+                            "object": "SELECTED_TARGET",
+                            "query": {
+                              "zones": ["battlefield"],
+                              "colorsAnyOf": ["R"]
+                            }
+                          },
+                          "ifTrue": [
+                            {
+                              "type": "DESTROY_PERMANENT",
+                              "target": "SELECTED_TARGET"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "supportedComposition": [
+        "CHOOSE_MODE",
+        "TARGET_SELECTION",
+        "COLOR_FILTER",
+        "COUNTER_SPELL"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Runtime DSL 2.4: executable with the current physical-table/public-known model."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "Counter target spell if it's red",
+            "Destroy target permanent if it's red"
+          ],
+          "targets": ["target spell", "target permanent"],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Inundate": {
+      "deckQuantity": 1,
+      "oracleText": "Return all nonblue creatures to their owners' hands.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-inundate-known-nonblue-creatures",
+          "sourceCardName": "Inundate",
+          "kind": "SPELL_EFFECT",
+          "effects": [
+            {
+              "type": "FOR_EACH",
+              "query": {
+                "zones": ["battlefield"],
+                "cardTypes": ["Creature"],
+                "excludeColors": ["U"]
+              },
+              "effects": [
+                {
+                  "type": "MOVE_ZONE",
+                  "target": "CURRENT_OBJECT",
+                  "destination": "hand",
+                  "controller": "OWNER"
+                }
+              ]
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": ["FOR_EACH", "COLOR_FILTER", "MOVE_ZONE"],
+      "missingPrimitives": [],
+      "notes": [
+        "READY under the physical-table contract: every known nonblue creature is returned to its owner's hand; undeclared physical objects remain table-authoritative."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Return all nonblue creatures to their owners' hands"],
+          "targets": ["all nonblue creatures"],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Island": {
+      "deckQuantity": 30,
+      "oracleText": "({T}: Add {U}.)",
+      "status": "READY",
+      "runtimeAbilities": [],
+      "supportedComposition": ["BASIC_LAND_MANA_RULE"],
+      "missingPrimitives": [],
+      "notes": [
+        "No necesita AbilityDefinition: la regla general por subtipo produce {U}."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "ACTIVATED",
+          "trigger": null,
+          "costs": ["{T}"],
+          "conditions": [],
+          "effects": ["Add {U}"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ],
+      "handledByRules": ["BASIC_LAND_MANA_BY_SUBTYPE"]
+    },
+    "Kindred Discovery": {
+      "deckQuantity": 1,
+      "oracleText": "As this enchantment enters, choose a creature type.\nWhenever a creature you control of the chosen type enters or attacks, draw a card.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-kindred-discovery-as-enters",
+          "sourceCardName": "Kindred Discovery",
+          "kind": "AS_ENTERS",
+          "effects": [
+            {
+              "type": "CHOOSE_VALUE",
+              "prompt": "Choose a creature type.",
+              "variableName": "chosenType",
+              "allowCustomValue": true,
+              "customValueLabel": "Creature type"
+            },
+            {
+              "type": "STORE_SOURCE_VALUE",
+              "key": "chosenType",
+              "value": {
+                "type": "VARIABLE",
+                "name": "chosenType"
+              }
+            }
+          ],
+          "automation": "ASSISTED"
+        },
+        {
+          "id": "tritones-kindred-discovery-enters",
+          "sourceCardName": "Kindred Discovery",
+          "kind": "TRIGGERED",
+          "trigger": {
+            "type": "CARD_ENTERED_BATTLEFIELD"
+          },
+          "conditions": [
+            {
+              "type": "EVENT_CONTROLLER_IS",
+              "value": "YOU"
+            },
+            {
+              "type": "EVENT_HAS_TYPE",
+              "value": "Creature"
+            },
+            {
+              "type": "EVENT_HAS_SUBTYPE",
+              "value": {
+                "type": "SOURCE_VALUE",
+                "key": "chosenType"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "type": "DRAW_CARD",
+              "amount": {
+                "type": "LITERAL",
+                "value": 1
+              }
+            }
+          ],
+          "automation": "AUTO"
+        },
+        {
+          "id": "tritones-kindred-discovery-attacks",
+          "sourceCardName": "Kindred Discovery",
+          "kind": "TRIGGERED",
+          "trigger": {
+            "type": "CREATURE_ATTACKED"
+          },
+          "conditions": [
+            {
+              "type": "EVENT_CONTROLLER_IS",
+              "value": "YOU"
+            },
+            {
+              "type": "EVENT_HAS_TYPE",
+              "value": "Creature"
+            },
+            {
+              "type": "EVENT_HAS_SUBTYPE",
+              "value": {
+                "type": "SOURCE_VALUE",
+                "key": "chosenType"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "type": "DRAW_CARD",
+              "amount": {
+                "type": "LITERAL",
+                "value": 1
+              }
+            }
+          ],
+          "automation": "AUTO"
+        }
+      ],
+      "supportedComposition": [
+        "CARD_ENTERED_BATTLEFIELD",
+        "CREATURE_ATTACKED",
+        "DRAW_CARD"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Precompiled with AS_ENTERS choice, persistent source value and dynamic chosen-type filters."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "REPLACEMENT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["choose a creature type"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "TRIGGERED",
+          "trigger": "Whenever a creature you control of the chosen type enters or attacks",
+          "costs": [],
+          "conditions": [
+            "a creature you control of the chosen type enters or attacks"
+          ],
+          "effects": ["draw a card"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Kiora, the Rising Tide": {
+      "deckQuantity": 1,
+      "oracleText": "When Kiora enters, draw two cards, then discard two cards.\nThreshold — Whenever Kiora attacks, if there are seven or more cards in your graveyard, you may create Scion of the Deep, a legendary 8/8 blue Octopus creature token.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-kiora-enter",
+          "sourceCardName": "Kiora, the Rising Tide",
+          "kind": "TRIGGERED",
+          "trigger": {
+            "type": "CARD_ENTERED_BATTLEFIELD"
+          },
+          "conditions": [
+            {
+              "type": "EVENT_SUBJECT_IS_SOURCE"
+            }
+          ],
+          "effects": [
+            {
+              "type": "DRAW_CARD",
+              "amount": {
+                "type": "LITERAL",
+                "value": 2
+              }
+            },
+            {
+              "type": "SELECT_HIDDEN_ZONE_CARD",
+              "player": "SOURCE_CONTROLLER",
+              "zone": "hand",
+              "prompt": "Declara las dos cartas que descartas",
+              "constraints": {},
+              "destination": "graveyard",
+              "count": {
+                "type": "LITERAL",
+                "value": 2
+              }
+            }
+          ],
+          "automation": "ASSISTED"
+        },
+        {
+          "id": "tritones-kiora-threshold",
+          "sourceCardName": "Kiora, the Rising Tide",
+          "kind": "TRIGGERED",
+          "trigger": {
+            "type": "CREATURE_ATTACKED"
+          },
+          "conditions": [
+            {
+              "type": "EVENT_SUBJECT_IS_SOURCE"
+            }
+          ],
+          "effects": [
+            {
+              "type": "CONDITIONAL_EFFECT",
+              "condition": {
+                "type": "VALUE_COMPARE",
+                "left": {
+                  "type": "COUNT_OBJECTS",
+                  "query": {
+                    "zones": ["graveyard"],
+                    "owner": "SOURCE_CONTROLLER"
+                  }
+                },
+                "operator": "GTE",
+                "right": {
+                  "type": "LITERAL",
+                  "value": 7
+                }
+              },
+              "ifTrue": [
+                {
+                  "type": "OPTIONAL_EFFECT",
+                  "prompt": "Threshold: ¿crear Scion of the Deep?",
+                  "effects": [
+                    {
+                      "type": "CREATE_TOKEN",
+                      "tokenId": "SCION_OF_THE_DEEP_8_8",
+                      "amount": {
+                        "type": "LITERAL",
+                        "value": 1
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": [
+        "CARD_ENTERED_BATTLEFIELD",
+        "DRAW_CARD",
+        "SELECT_HIDDEN_ZONE_CARD",
+        "COUNT_OBJECTS",
+        "CONDITIONAL_EFFECT",
+        "OPTIONAL_EFFECT",
+        "CREATE_TOKEN"
+      ],
+      "missingPrimitives": [],
+      "notes": [],
+      "semanticAbilitySummary": [
+        {
+          "kind": "TRIGGERED",
+          "trigger": "When Kiora enters",
+          "costs": [],
+          "conditions": [],
+          "effects": ["draw two cards", "discard two cards"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "TRIGGERED",
+          "trigger": "Whenever Kiora attacks",
+          "costs": [],
+          "conditions": ["there are seven or more cards in your graveyard"],
+          "effects": [
+            "you may create Scion of the Deep, a legendary 8/8 blue Octopus creature token"
+          ],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Kopala, Warden of Waves": {
+      "deckQuantity": 1,
+      "oracleText": "Spells your opponents cast that target a Merfolk you control cost {2} more to cast.\nAbilities your opponents activate that target a Merfolk you control cost {2} more to activate.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "kopala-spell-target-tax",
+          "sourceCardName": "Kopala, Warden of Waves",
+          "kind": "STATIC",
+          "effects": [
+            {
+              "type": "MODIFY_TARGETING_COST",
+              "amount": 2,
+              "appliesTo": "SPELL",
+              "targetFilter": {
+                "controller": "YOU",
+                "subtype": "Merfolk"
+              },
+              "sourceController": "OPPONENT"
+            }
+          ]
+        },
+        {
+          "id": "kopala-ability-target-tax",
+          "sourceCardName": "Kopala, Warden of Waves",
+          "kind": "STATIC",
+          "effects": [
+            {
+              "type": "MODIFY_TARGETING_COST",
+              "amount": 2,
+              "appliesTo": "ACTIVATED_ABILITY",
+              "targetFilter": {
+                "controller": "YOU",
+                "subtype": "Merfolk"
+              },
+              "sourceController": "OPPONENT"
+            }
+          ]
+        }
+      ],
+      "supportedComposition": ["MODIFY_TARGETING_COST", "DECLARATION_TARGETS"],
+      "missingPrimitives": [],
+      "notes": [
+        "Target-aware +{2} taxes are derived after targets are declared for opponent spells and activated abilities."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "STATIC",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "Spells your opponents cast that target a Merfolk you control cost {2} more to cast"
+          ],
+          "targets": ["Merfolk you control"],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "STATIC",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "Abilities your opponents activate that target a Merfolk you control cost {2} more to activate"
+          ],
+          "targets": ["Merfolk you control"],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Lord of Atlantis": {
+      "deckQuantity": 1,
+      "oracleText": "Other Merfolk get +1/+1 and have islandwalk. (They can't be blocked as long as defending player controls an Island.)",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-lord-of-atlantis-pt",
+          "sourceCardName": "Lord of Atlantis",
+          "kind": "STATIC",
+          "effects": [
+            {
+              "type": "MODIFY_POWER_TOUGHNESS",
+              "power": 1,
+              "toughness": 1,
+              "filter": {
+                "subtype": "Merfolk",
+                "excludeSource": true
+              }
+            }
+          ]
+        }
+      ],
+      "supportedComposition": ["MODIFY_POWER_TOUGHNESS"],
+      "missingPrimitives": [],
+      "notes": [
+        "Landwalk checks the actual defending PlayerId and public lands by controllerId."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "STATIC",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Other Merfolk get +1/+1 and have islandwalk"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Lotus Petal": {
+      "deckQuantity": 1,
+      "oracleText": "{T}, Sacrifice this artifact: Add one mana of any color.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-lotus-petal-mana",
+          "sourceCardName": "Lotus Petal",
+          "kind": "ACTIVATED",
+          "costs": [
+            {
+              "type": "TAP_SOURCE"
+            },
+            {
+              "type": "SACRIFICE_SOURCE"
+            }
+          ],
+          "effects": [
+            {
+              "type": "ADD_MANA_CHOICE",
+              "player": "SOURCE_CONTROLLER",
+              "allowedColors": ["W", "U", "B", "R", "G"],
+              "amount": {
+                "type": "LITERAL",
+                "value": 1
+              }
+            }
+          ],
+          "automation": "ASSISTED",
+          "isManaAbility": true
+        }
+      ],
+      "supportedComposition": [
+        "TAP_SOURCE",
+        "SACRIFICE_SOURCE",
+        "ADD_MANA_CHOICE"
+      ],
+      "missingPrimitives": [],
+      "notes": [],
+      "semanticAbilitySummary": [
+        {
+          "kind": "ACTIVATED",
+          "trigger": null,
+          "costs": ["{T}", "Sacrifice this artifact"],
+          "conditions": [],
+          "effects": ["Add one mana of any color"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Mana Drain": {
+      "deckQuantity": 1,
+      "oracleText": "Counter target spell. At the beginning of your next main phase, add an amount of {C} equal to that spell's mana value.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-mana-drain-counter-delayed-mana",
+          "sourceCardName": "Mana Drain",
+          "kind": "SPELL_EFFECT",
+          "effects": [
+            {
+              "type": "TARGET_SELECTION",
+              "prompt": "Elige el hechizo objetivo a contrarrestar",
+              "constraints": {
+                "stackKind": "SPELL"
+              },
+              "effects": [
+                {
+                  "type": "SET_VARIABLE",
+                  "variableName": "drainedManaValue",
+                  "value": {
+                    "type": "MANA_VALUE",
+                    "target": "SELECTED_STACK_OBJECT"
+                  }
+                },
+                {
+                  "type": "COUNTER_SPELL",
+                  "target": "SELECTED_STACK_OBJECT"
+                },
+                {
+                  "type": "DELAYED_EFFECT",
+                  "trigger": {
+                    "type": "MAIN_PHASE_STARTED"
+                  },
+                  "triggerPlayer": "SOURCE_CONTROLLER",
+                  "effects": [
+                    {
+                      "type": "ADD_MANA_CHOICE",
+                      "player": "SOURCE_CONTROLLER",
+                      "allowedColors": ["C"],
+                      "amount": {
+                        "type": "VARIABLE",
+                        "name": "drainedManaValue"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": [
+        "TARGET_SELECTION",
+        "COUNTER_SPELL",
+        "MANA_VALUE",
+        "ADD_MANA"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Precompiled with captured mana value and one-shot next-main-phase delayed effect."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Counter target spell"],
+          "targets": ["target spell"],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "TRIGGERED",
+          "trigger": "At the beginning of your next main phase",
+          "costs": [],
+          "conditions": [],
+          "effects": ["add an amount of {C} equal to that spell's mana value"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Master of the Pearl Trident": {
+      "deckQuantity": 1,
+      "oracleText": "Other Merfolk creatures you control get +1/+1 and have islandwalk. (They can't be blocked as long as defending player controls an Island.)",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-master-pearl-trident-static",
+          "sourceCardName": "Master of the Pearl Trident",
+          "kind": "STATIC",
+          "effects": [
+            {
+              "type": "MODIFY_POWER_TOUGHNESS",
+              "power": 1,
+              "toughness": 1,
+              "filter": {
+                "controller": "YOU",
+                "cardType": "Creature",
+                "subtype": "Merfolk",
+                "excludeSource": true
+              }
+            },
+            {
+              "type": "BLOCKING_RESTRICTION",
+              "restriction": {
+                "type": "LANDWALK",
+                "filter": {
+                  "controller": "YOU",
+                  "cardType": "Creature",
+                  "subtype": "Merfolk",
+                  "excludeSource": true
+                },
+                "landSubtype": "Island",
+                "duration": "STATIC"
+              }
+            }
+          ]
+        }
+      ],
+      "supportedComposition": ["MODIFY_POWER_TOUGHNESS"],
+      "missingPrimitives": [],
+      "notes": [
+        "Runtime DSL 2.4: executable with the current physical-table/public-known model."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "STATIC",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "Other Merfolk creatures you control get +1/+1 and have islandwalk"
+          ],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Mathemagics": {
+      "deckQuantity": 1,
+      "oracleText": "Target player draws 2ˣ cards. (2⁰ = 1, 2¹ = 2, 2² = 4, 2³ = 8, 2⁴ = 16, 2⁵ = 32, and so on.)",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-mathemagics",
+          "sourceCardName": "Mathemagics",
+          "kind": "SPELL_EFFECT",
+          "automation": "ASSISTED",
+          "effects": [
+            {
+              "type": "PLAYER_SELECTION",
+              "prompt": "Elige el jugador que roba 2^X cartas",
+              "relation": "ANY",
+              "effects": [
+                {
+                  "type": "DRAW_FOR_PLAYER",
+                  "player": "TARGET_PLAYER",
+                  "amount": {
+                    "type": "POWER",
+                    "base": {
+                      "type": "LITERAL",
+                      "value": 2
+                    },
+                    "exponent": {
+                      "type": "VARIABLE",
+                      "name": "X"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "supportedComposition": [
+        "VARIABLE_X",
+        "POWER",
+        "PLAYER_SELECTION",
+        "DRAW_FOR_PLAYER"
+      ],
+      "missingPrimitives": [],
+      "notes": [],
+      "semanticAbilitySummary": [
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Target player draws 2ˣ cards"],
+          "targets": ["Target player"],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Merfolk Looter": {
+      "deckQuantity": 1,
+      "oracleText": "{T}: Draw a card, then discard a card.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-merfolk-looter-loot",
+          "sourceCardName": "Merfolk Looter",
+          "kind": "ACTIVATED",
+          "costs": [
+            {
+              "type": "TAP_SOURCE"
+            }
+          ],
+          "effects": [
+            {
+              "type": "DRAW_CARD",
+              "amount": {
+                "type": "LITERAL",
+                "value": 1
+              }
+            },
+            {
+              "type": "DISCARD_CARD",
+              "player": "YOU",
+              "amount": {
+                "type": "LITERAL",
+                "value": 1
+              }
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": ["TAP_SOURCE", "DRAW_CARD", "DISCARD_CARD"],
+      "missingPrimitives": [],
+      "notes": [],
+      "semanticAbilitySummary": [
+        {
+          "kind": "ACTIVATED",
+          "trigger": null,
+          "costs": ["{T}"],
+          "conditions": [],
+          "effects": ["Draw a card", "Discard a card"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Merfolk Sovereign": {
+      "deckQuantity": 1,
+      "oracleText": "Other Merfolk creatures you control get +1/+1.\n{T}: Target Merfolk creature can't be blocked this turn.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-merfolk-sovereign-static",
+          "sourceCardName": "Merfolk Sovereign",
+          "kind": "STATIC",
+          "effects": [
+            {
+              "type": "MODIFY_POWER_TOUGHNESS",
+              "power": 1,
+              "toughness": 1,
+              "filter": {
+                "controller": "YOU",
+                "cardType": "Creature",
+                "subtype": "Merfolk",
+                "excludeSource": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "tritones-merfolk-sovereign-unblockable",
+          "sourceCardName": "Merfolk Sovereign",
+          "kind": "ACTIVATED",
+          "costs": [
+            {
+              "type": "TAP_SOURCE"
+            }
+          ],
+          "effects": [
+            {
+              "type": "TARGET_SELECTION",
+              "prompt": "Elige un Merfolk que no pueda ser bloqueado este turno",
+              "constraints": {
+                "zones": ["battlefield"],
+                "cardTypes": ["Creature"],
+                "subtypes": ["Merfolk"]
+              },
+              "effects": [
+                {
+                  "type": "CANNOT_BE_BLOCKED",
+                  "target": "SELECTED_TARGET",
+                  "duration": "UNTIL_END_OF_TURN"
+                }
+              ]
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": [
+        "MODIFY_POWER_TOUGHNESS",
+        "TAP_SOURCE",
+        "TARGET_SELECTION"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Runtime DSL 2.4: executable with the current physical-table/public-known model."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "STATIC",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Other Merfolk creatures you control get +1/+1"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "ACTIVATED",
+          "trigger": null,
+          "costs": ["{T}"],
+          "conditions": [],
+          "effects": ["Target Merfolk creature can't be blocked this turn"],
+          "targets": ["Target Merfolk creature"],
+          "restrictions": [],
+          "duration": "this turn"
+        }
+      ]
+    },
+    "Merrow Commerce": {
+      "deckQuantity": 1,
+      "oracleText": "At the beginning of your end step, untap all Merfolk you control.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-merrow-commerce-end-step",
+          "sourceCardName": "Merrow Commerce",
+          "kind": "TRIGGERED",
+          "trigger": {
+            "type": "END_STEP_STARTED"
+          },
+          "conditions": [
+            {
+              "type": "EVENT_ACTIVE_PLAYER_IS_SOURCE_CONTROLLER"
+            }
+          ],
+          "effects": [
+            {
+              "type": "FOR_EACH",
+              "query": {
+                "zones": ["battlefield"],
+                "controller": "SOURCE_CONTROLLER",
+                "subtypes": ["Merfolk"]
+              },
+              "effects": [
+                {
+                  "type": "UNTAP_PERMANENT",
+                  "target": "CURRENT_OBJECT"
+                }
+              ]
+            }
+          ],
+          "automation": "AUTO"
+        }
+      ],
+      "supportedComposition": [
+        "END_STEP_STARTED",
+        "FOR_EACH",
+        "UNTAP_PERMANENT"
+      ],
+      "missingPrimitives": [],
+      "notes": [],
+      "semanticAbilitySummary": [
+        {
+          "kind": "TRIGGERED",
+          "trigger": "At the beginning of your end step",
+          "costs": [],
+          "conditions": [],
+          "effects": ["untap all Merfolk you control"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Merrow Harbinger": {
+      "deckQuantity": 1,
+      "oracleText": "Islandwalk (This creature can't be blocked as long as defending player controls an Island.)\nWhen this creature enters, you may search your library for a Merfolk card, reveal it, then shuffle and put that card on top.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-merrow-harbinger-islandwalk",
+          "sourceCardName": "Merrow Harbinger",
+          "kind": "STATIC",
+          "effects": [
+            {
+              "type": "BLOCKING_RESTRICTION",
+              "restriction": {
+                "type": "LANDWALK",
+                "filter": {
+                  "sourceOnly": true
+                },
+                "landSubtype": "Island",
+                "duration": "STATIC"
+              }
+            }
+          ]
+        },
+        {
+          "id": "tritones-merrow-harbinger-search",
+          "sourceCardName": "Merrow Harbinger",
+          "kind": "TRIGGERED",
+          "trigger": {
+            "type": "CARD_ENTERED_BATTLEFIELD"
+          },
+          "conditions": [
+            {
+              "type": "EVENT_SUBJECT_IS_SOURCE"
+            }
+          ],
+          "effects": [
+            {
+              "type": "OPTIONAL_EFFECT",
+              "prompt": "¿Quieres buscar una carta Merfolk en tu biblioteca?",
+              "effects": [
+                {
+                  "type": "SEARCH_LIBRARY_CARD",
+                  "player": "SOURCE_CONTROLLER",
+                  "prompt": "Busca físicamente una carta Merfolk, revélala y declara su nombre. Después baraja; Jarvis registrará esa carta como la carta superior pública.",
+                  "constraints": {
+                    "subtypes": ["Merfolk"]
+                  },
+                  "reveal": true,
+                  "shuffle": true,
+                  "destination": "TOP_OF_LIBRARY",
+                  "allowFail": true
+                }
+              ]
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": [
+        "CARD_ENTERED_BATTLEFIELD",
+        "CAST_GENERIC_CONTRIBUTION",
+        "OPTIONAL_EFFECT",
+        "PHYSICAL_HIDDEN_ZONE_OPERATION",
+        "PLAYER_SHUFFLED",
+        "SEARCH_LIBRARY_CARD"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Islandwalk plus the revealed library search are executable. The searched card is materialized only because it is revealed publicly; shuffle clears prior top knowledge, then the revealed card is registered as the known top."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "KEYWORD",
+          "trigger": null,
+          "costs": [],
+          "conditions": ["defending player controls an Island"],
+          "effects": ["This creature can't be blocked"],
+          "targets": [],
+          "restrictions": [],
+          "duration": "as long as defending player controls an Island"
+        },
+        {
+          "kind": "TRIGGERED",
+          "trigger": "When this creature enters",
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "search your library for a Merfolk card",
+            "reveal it",
+            "shuffle",
+            "put that card on top"
+          ],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Merrow Reejerey": {
+      "deckQuantity": 1,
+      "oracleText": "Other Merfolk creatures you control get +1/+1.\nWhenever you cast a Merfolk spell, you may tap or untap target permanent.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-merrow-reejerey-static",
+          "sourceCardName": "Merrow Reejerey",
+          "kind": "STATIC",
+          "effects": [
+            {
+              "type": "MODIFY_POWER_TOUGHNESS",
+              "power": 1,
+              "toughness": 1,
+              "filter": {
+                "controller": "YOU",
+                "cardType": "Creature",
+                "subtype": "Merfolk",
+                "excludeSource": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "tritones-merrow-reejerey-cast",
+          "sourceCardName": "Merrow Reejerey",
+          "kind": "TRIGGERED",
+          "trigger": {
+            "type": "SPELL_CAST"
+          },
+          "conditions": [
+            {
+              "type": "EVENT_CONTROLLER_IS",
+              "value": "YOU"
+            },
+            {
+              "type": "EVENT_HAS_SUBTYPE",
+              "value": "Merfolk"
+            }
+          ],
+          "effects": [
+            {
+              "type": "OPTIONAL_EFFECT",
+              "prompt": "¿Usar Merrow Reejerey para girar o enderezar un permanente?",
+              "effects": [
+                {
+                  "type": "TARGET_SELECTION",
+                  "prompt": "Elige un permanente objetivo",
+                  "constraints": {
+                    "zones": ["battlefield"]
+                  },
+                  "effects": [
+                    {
+                      "type": "CHOOSE_MODE",
+                      "prompt": "¿Girar o enderezar?",
+                      "modes": [
+                        {
+                          "id": "tap",
+                          "label": "Girar",
+                          "effects": [
+                            {
+                              "type": "TAP_PERMANENT",
+                              "target": "SELECTED_TARGET"
+                            }
+                          ]
+                        },
+                        {
+                          "id": "untap",
+                          "label": "Enderezar",
+                          "effects": [
+                            {
+                              "type": "UNTAP_PERMANENT",
+                              "target": "SELECTED_TARGET"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": [
+        "MODIFY_POWER_TOUGHNESS",
+        "SPELL_CAST",
+        "EVENT_HAS_SUBTYPE",
+        "OPTIONAL_EFFECT",
+        "TARGET_SELECTION",
+        "CHOOSE_MODE",
+        "TAP_PERMANENT",
+        "UNTAP_PERMANENT"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Runtime DSL 2.4: executable with the current physical-table/public-known model."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "STATIC",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Other Merfolk creatures you control get +1/+1."],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "TRIGGERED",
+          "trigger": "Whenever you cast a Merfolk spell",
+          "costs": [],
+          "conditions": [],
+          "effects": ["you may tap or untap target permanent."],
+          "targets": ["target permanent"],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Mind Spring": {
+      "deckQuantity": 1,
+      "oracleText": "Draw X cards.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-mind-spring-draw",
+          "sourceCardName": "Mind Spring",
+          "kind": "SPELL_EFFECT",
+          "effects": [
+            {
+              "type": "DRAW_CARD",
+              "amount": {
+                "type": "VARIABLE",
+                "name": "X"
+              }
+            }
+          ],
+          "automation": "AUTO"
+        }
+      ],
+      "supportedComposition": ["DRAW_CARD"],
+      "missingPrimitives": [],
+      "notes": [
+        "Runtime DSL 2.4: executable with the current physical-table/public-known model."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Draw X cards"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Mindspring Merfolk": {
+      "deckQuantity": 1,
+      "oracleText": "Exhaust — {X}{U}{U}, {T}: Draw X cards. Put a +1/+1 counter on each Merfolk creature you control. (Activate each exhaust ability only once.)",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-mindspring-merfolk-exhaust",
+          "sourceCardName": "Mindspring Merfolk",
+          "kind": "ACTIVATED",
+          "costs": [
+            {
+              "type": "MANA_COST",
+              "cost": "{X}{U}{U}"
+            },
+            {
+              "type": "TAP_SOURCE"
+            }
+          ],
+          "activationLimit": "ONCE_PER_OBJECT",
+          "effects": [
+            {
+              "type": "DRAW_CARD",
+              "amount": {
+                "type": "VARIABLE",
+                "name": "X"
+              }
+            },
+            {
+              "type": "FOR_EACH",
+              "query": {
+                "zones": ["battlefield"],
+                "controller": "SOURCE_CONTROLLER",
+                "cardTypes": ["Creature"],
+                "subtypes": ["Merfolk"]
+              },
+              "effects": [
+                {
+                  "type": "ADD_COUNTER",
+                  "target": "CURRENT_OBJECT",
+                  "counterType": "+1/+1",
+                  "amount": {
+                    "type": "LITERAL",
+                    "value": 1
+                  }
+                }
+              ]
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": [
+        "MANA_COST",
+        "TAP_SOURCE",
+        "DRAW_CARD",
+        "FOR_EACH",
+        "ADD_COUNTER"
+      ],
+      "missingPrimitives": [],
+      "notes": "Exhaust se modela como activationLimit ONCE_PER_OBJECT; X se elige y paga antes de activar, se captura en la resolución, y el contador se aplica con FOR_EACH a Merfolk que controlas.",
+      "semanticAbilitySummary": [
+        {
+          "kind": "ACTIVATED",
+          "trigger": null,
+          "costs": ["{X}{U}{U}", "{T}"],
+          "conditions": [],
+          "effects": [
+            "Draw X cards",
+            "Put a +1/+1 counter on each Merfolk creature you control"
+          ],
+          "targets": [],
+          "restrictions": ["Activate each exhaust ability only once"],
+          "duration": null
+        }
+      ]
+    },
+    "Mist Dancer": {
+      "deckQuantity": 1,
+      "oracleText": "Flying\nOther Merfolk you control get +1/+0 and have flying.\nEncore {5}{U}{U} ({5}{U}{U}, Exile this card from your graveyard: For each opponent, create a token copy that attacks that opponent this turn if able. They gain haste. Sacrifice them at the beginning of the next end step. Activate only as a sorcery.)",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "mist-dancer-lord",
+          "sourceCardName": "Mist Dancer",
+          "kind": "STATIC",
+          "effects": [
+            {
+              "type": "MODIFY_POWER_TOUGHNESS",
+              "power": 1,
+              "toughness": 0,
+              "filter": {
+                "controller": "YOU",
+                "subtype": "Merfolk",
+                "excludeSource": true
+              }
+            },
+            {
+              "type": "GRANT_KEYWORD",
+              "keyword": "FLYING",
+              "filter": {
+                "controller": "YOU",
+                "subtype": "Merfolk",
+                "excludeSource": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "mist-dancer-encore",
+          "sourceCardName": "Mist Dancer",
+          "kind": "ACTIVATED",
+          "costs": [
+            { "type": "MANA_COST", "cost": "{5}{U}{U}" },
+            { "type": "EXILE_SOURCE_FROM_GRAVEYARD" }
+          ],
+          "restrictions": ["SORCERY_SPEED"],
+          "effects": [{ "type": "ENCORE" }],
+          "automation": "AUTO"
+        }
+      ],
+      "supportedComposition": [
+        "PRINTED_FLYING",
+        "MODIFY_POWER_TOUGHNESS",
+        "STATIC_KEYWORD_GRANT",
+        "ENCORE",
+        "MULTIPLAYER_ITERATION",
+        "CREATE_TOKEN_COPY",
+        "ATTACK_REQUIREMENT",
+        "DELAYED_EFFECT",
+        "SACRIFICE"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Encore usa player IDs estables: crea una copia con haste por oponente, registra la obligación de atacar a ese oponente si puede y sacrifica en el siguiente end step solo las copias que sigues controlando. El MVP actual tiene un único oponente placeholder; la misma implementación itera N oponentes cuando multiplayer esté activo."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "KEYWORD",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "STATIC",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "Other Merfolk you control get +1/+0",
+            "Other Merfolk you control have flying"
+          ],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "ACTIVATED",
+          "trigger": null,
+          "costs": ["{5}{U}{U}", "Exile this card from your graveyard"],
+          "conditions": [],
+          "effects": [
+            "For each opponent, create a token copy that attacks that opponent this turn if able",
+            "They gain haste",
+            "Sacrifice them at the beginning of the next end step"
+          ],
+          "targets": [],
+          "restrictions": ["Activate only as a sorcery"],
+          "duration": "at the beginning of the next end step"
+        }
+      ]
+    },
+    "Mist-Cloaked Herald": {
+      "deckQuantity": 1,
+      "oracleText": "This creature can't be blocked.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-mist-cloaked-herald-unblockable",
+          "sourceCardName": "Mist-Cloaked Herald",
+          "kind": "STATIC",
+          "effects": [
+            {
+              "type": "BLOCKING_RESTRICTION",
+              "restriction": {
+                "type": "CANNOT_BE_BLOCKED",
+                "filter": {
+                  "sourceOnly": true
+                },
+                "duration": "STATIC"
+              }
+            }
+          ]
+        }
+      ],
+      "supportedComposition": [],
+      "missingPrimitives": [],
+      "notes": [
+        "Runtime DSL 2.4: executable with the current physical-table/public-known model."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "STATIC",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["This creature can't be blocked"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Moonlit Meditation": {
+      "deckQuantity": 1,
+      "oracleText": "Enchant artifact or creature you control\nThe first time you would create one or more tokens each turn, you may instead create that many tokens that are copies of enchanted permanent.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "moonlit-meditation-token-replacement",
+          "sourceCardName": "Moonlit Meditation",
+          "kind": "STATIC",
+          "effects": [
+            {
+              "type": "REPLACE_FIRST_TOKEN_CREATION_WITH_ATTACHED_COPIES",
+              "optional": true
+            }
+          ]
+        }
+      ],
+      "supportedComposition": [
+        "AURA_TARGETING",
+        "REPLACEMENT_EFFECT",
+        "FIRST_EVENT_PER_TURN_TRACKING",
+        "TOKEN_COPY"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Aura target is declared on cast; the first token-creation event each turn can be replaced with the same number of copies of the enchanted permanent."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "STATIC",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Enchant artifact or creature you control"],
+          "targets": ["artifact or creature you control"],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "REPLACEMENT",
+          "trigger": "The first time you would create one or more tokens each turn",
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "you may instead create that many tokens that are copies of enchanted permanent"
+          ],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Multiversal Incursion": {
+      "deckQuantity": 1,
+      "oracleText": "For each nontoken creature you control, create a token that's a copy of that creature, except it isn't legendary.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-multiversal-incursion-copy-creatures",
+          "sourceCardName": "Multiversal Incursion",
+          "kind": "SPELL_EFFECT",
+          "effects": [
+            {
+              "type": "FOR_EACH",
+              "query": {
+                "zones": ["battlefield"],
+                "controller": "SOURCE_CONTROLLER",
+                "cardTypes": ["Creature"],
+                "isToken": false
+              },
+              "effects": [
+                {
+                  "type": "CREATE_TOKEN_COPY",
+                  "target": "CURRENT_OBJECT",
+                  "amount": {
+                    "type": "LITERAL",
+                    "value": 1
+                  },
+                  "removeLegendary": true
+                }
+              ]
+            }
+          ],
+          "automation": "AUTO"
+        }
+      ],
+      "supportedComposition": [
+        "FOR_EACH",
+        "COPY_OBJECT",
+        "TOKEN_COPY_MODIFIER"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Each known nontoken creature you control creates a token copy; the copy removes Legendary from its type line."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "For each nontoken creature you control, create a token that's a copy of that creature, except it isn't legendary"
+          ],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Mystic Remora": {
+      "deckQuantity": 1,
+      "oracleText": "Cumulative upkeep {1} (At the beginning of your upkeep, put an age counter on this permanent, then sacrifice it unless you pay its upkeep cost for each age counter on it.)\nWhenever an opponent casts a noncreature spell, you may draw a card unless that player pays {4}.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-mystic-remora-cumulative-upkeep",
+          "sourceCardName": "Mystic Remora",
+          "kind": "TRIGGERED",
+          "trigger": {
+            "type": "UPKEEP_STARTED"
+          },
+          "conditions": [
+            {
+              "type": "EVENT_ACTIVE_PLAYER_IS_SOURCE_CONTROLLER"
+            }
+          ],
+          "effects": [
+            {
+              "type": "ADD_COUNTER",
+              "target": "SOURCE",
+              "counterType": "AGE",
+              "amount": {
+                "type": "LITERAL",
+                "value": 1
+              }
+            },
+            {
+              "type": "PAYMENT_BRANCH",
+              "payer": "SOURCE_CONTROLLER",
+              "cost": {
+                "type": "GENERIC_FROM_VALUE",
+                "value": {
+                  "type": "MULTIPLY",
+                  "values": [
+                    {
+                      "type": "LITERAL",
+                      "value": 1
+                    },
+                    {
+                      "type": "COUNTER_COUNT",
+                      "target": "SOURCE",
+                      "counterType": "AGE"
+                    }
+                  ]
+                }
+              },
+              "ifPaid": [],
+              "ifNotPaid": [
+                {
+                  "type": "SACRIFICE",
+                  "target": "SOURCE"
+                }
+              ],
+              "prompt": "¿Pagar el cumulative upkeep de Mystic Remora?"
+            }
+          ],
+          "automation": "ASSISTED"
+        },
+        {
+          "id": "tritones-mystic-remora-opponent-noncreature",
+          "sourceCardName": "Mystic Remora",
+          "kind": "TRIGGERED",
+          "trigger": {
+            "type": "SPELL_CAST"
+          },
+          "conditions": [
+            {
+              "type": "EVENT_CONTROLLER_IS",
+              "value": "OPPONENT"
+            },
+            {
+              "type": "SPELL_IS_CREATURE",
+              "value": false
+            }
+          ],
+          "effects": [
+            {
+              "type": "PAYMENT_BRANCH",
+              "payer": "EVENT_PLAYER",
+              "cost": {
+                "type": "FIXED_MANA",
+                "cost": "{4}"
+              },
+              "ifPaid": [],
+              "ifNotPaid": [
+                {
+                  "type": "OPTIONAL_EFFECT",
+                  "prompt": "¿Robar una carta por Mystic Remora?",
+                  "effects": [
+                    {
+                      "type": "DRAW_CARD",
+                      "amount": {
+                        "type": "LITERAL",
+                        "value": 1
+                      }
+                    }
+                  ]
+                }
+              ],
+              "prompt": "¿El jugador que lanzó el hechizo paga {4}?"
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": [
+        "UPKEEP_STARTED",
+        "ADD_COUNTER",
+        "COUNTER_COUNT",
+        "MULTIPLY",
+        "PAYMENT_BRANCH",
+        "SACRIFICE",
+        "SPELL_CAST",
+        "OPTIONAL_EFFECT",
+        "DRAW_CARD"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Pago local usa ManaPlanner; pago de rival es decisión asistida por diseño."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "KEYWORD",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "TRIGGERED",
+          "trigger": "Whenever an opponent casts a noncreature spell",
+          "costs": [],
+          "conditions": [],
+          "effects": ["you may draw a card unless that player pays {4}"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Octopus Form": {
+      "deckQuantity": 1,
+      "oracleText": "Target creature you control gets +1/+1 and gains hexproof until end of turn. Untap it. (It can't be the target of spells or abilities your opponents control.)",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-octopus-form",
+          "sourceCardName": "Octopus Form",
+          "kind": "SPELL_EFFECT",
+          "automation": "ASSISTED",
+          "effects": [
+            {
+              "type": "TARGET_SELECTION",
+              "prompt": "Elige una criatura que controlas",
+              "constraints": {
+                "zones": ["battlefield"],
+                "controller": "YOU",
+                "cardTypes": ["Creature"]
+              },
+              "effects": [
+                {
+                  "type": "TEMPORARY_MODIFIER",
+                  "target": "SELECTED_TARGET",
+                  "power": 1,
+                  "toughness": 1,
+                  "grantKeywords": ["HEXPROOF"],
+                  "duration": "UNTIL_END_OF_TURN"
+                },
+                {
+                  "type": "UNTAP_PERMANENT",
+                  "target": "SELECTED_TARGET"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "supportedComposition": ["TARGET_SELECTION", "UNTAP_PERMANENT"],
+      "missingPrimitives": [],
+      "notes": [
+        "Runtime DSL 2.4: executable with the current physical-table/public-known model."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "Target creature you control gets +1/+1 and gains hexproof until end of turn",
+            "Untap it"
+          ],
+          "targets": ["Target creature you control"],
+          "restrictions": [],
+          "duration": "until end of turn"
+        },
+        {
+          "kind": "KEYWORD",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Patchwork Banner": {
+      "deckQuantity": 1,
+      "oracleText": "As this artifact enters, choose a creature type.\nCreatures you control of the chosen type get +1/+1.\n{T}: Add one mana of any color.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-patchwork-banner-as-enters",
+          "sourceCardName": "Patchwork Banner",
+          "kind": "AS_ENTERS",
+          "effects": [
+            {
+              "type": "CHOOSE_VALUE",
+              "prompt": "Choose a creature type.",
+              "variableName": "chosenType",
+              "allowCustomValue": true,
+              "customValueLabel": "Creature type"
+            },
+            {
+              "type": "STORE_SOURCE_VALUE",
+              "key": "chosenType",
+              "value": {
+                "type": "VARIABLE",
+                "name": "chosenType"
+              }
+            }
+          ],
+          "automation": "ASSISTED"
+        },
+        {
+          "id": "tritones-patchwork-banner-buff",
+          "sourceCardName": "Patchwork Banner",
+          "kind": "STATIC",
+          "effects": [
+            {
+              "type": "MODIFY_POWER_TOUGHNESS",
+              "power": 1,
+              "toughness": 1,
+              "filter": {
+                "controller": "YOU",
+                "cardType": "Creature",
+                "subtype": {
+                  "type": "SOURCE_VALUE",
+                  "key": "chosenType"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "tritones-patchwork-banner-mana",
+          "sourceCardName": "Patchwork Banner",
+          "kind": "ACTIVATED",
+          "costs": [
+            {
+              "type": "TAP_SOURCE"
+            }
+          ],
+          "effects": [
+            {
+              "type": "ADD_MANA_CHOICE",
+              "player": "SOURCE_CONTROLLER",
+              "allowedColors": ["W", "U", "B", "R", "G"],
+              "amount": {
+                "type": "LITERAL",
+                "value": 1
+              }
+            }
+          ],
+          "automation": "ASSISTED",
+          "isManaAbility": true
+        }
+      ],
+      "supportedComposition": [
+        "MODIFY_POWER_TOUGHNESS",
+        "TAP_SOURCE",
+        "ADD_MANA_CHOICE"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "La habilidad de maná es completamente expresable; elección/tipo estático no.",
+        "Precompiled with AS_ENTERS choice, persistent source value and dynamic chosen-type filters."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "REPLACEMENT",
+          "trigger": "As this artifact enters",
+          "costs": [],
+          "conditions": [],
+          "effects": ["choose a creature type"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "STATIC",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Creatures you control of the chosen type get +1/+1"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "ACTIVATED",
+          "trigger": null,
+          "costs": ["{T}"],
+          "conditions": [],
+          "effects": ["Add one mana of any color"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Raise the Palisade": {
+      "deckQuantity": 1,
+      "oracleText": "Choose a creature type. Return all creatures that aren't of the chosen type to their owners' hands.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-raise-the-palisade",
+          "sourceCardName": "Raise the Palisade",
+          "kind": "SPELL_EFFECT",
+          "effects": [
+            {
+              "type": "CHOOSE_VALUE",
+              "prompt": "Choose a creature type.",
+              "variableName": "chosenType",
+              "allowCustomValue": true,
+              "customValueLabel": "Creature type"
+            },
+            {
+              "type": "FOR_EACH",
+              "query": {
+                "zones": ["battlefield"],
+                "cardTypes": ["Creature"],
+                "excludeSubtypes": [
+                  {
+                    "type": "VARIABLE",
+                    "name": "chosenType"
+                  }
+                ]
+              },
+              "effects": [
+                {
+                  "type": "MOVE_ZONE",
+                  "target": "CURRENT_OBJECT",
+                  "destination": "hand",
+                  "controller": "OWNER"
+                }
+              ]
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": [
+        "CHOOSE_VALUE",
+        "FOR_EACH",
+        "MOVE_ZONE",
+        "DYNAMIC_SUBTYPE_FILTER"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "READY under the physical-table contract: the player declares the creature type and Jarvis processes every known battlefield creature."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "Choose a creature type",
+            "Return all creatures that aren't of the chosen type to their owners' hands"
+          ],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Reliquary Tower": {
+      "deckQuantity": 1,
+      "oracleText": "You have no maximum hand size.\n{T}: Add {C}.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-reliquary-tower-hand",
+          "sourceCardName": "Reliquary Tower",
+          "kind": "STATIC",
+          "effects": [
+            {
+              "type": "SET_MAX_HAND_SIZE",
+              "player": "SOURCE_CONTROLLER",
+              "value": "UNLIMITED"
+            }
+          ]
+        },
+        {
+          "id": "tritones-reliquary-tower-mana",
+          "sourceCardName": "Reliquary Tower",
+          "kind": "ACTIVATED",
+          "costs": [
+            {
+              "type": "TAP_SOURCE"
+            }
+          ],
+          "effects": [
+            {
+              "type": "ADD_MANA",
+              "color": "C",
+              "amount": 1
+            }
+          ],
+          "automation": "AUTO",
+          "isManaAbility": true
+        }
+      ],
+      "supportedComposition": ["TAP_SOURCE", "ADD_MANA"],
+      "missingPrimitives": [],
+      "notes": [
+        "Runtime DSL 2.4: executable with the current physical-table/public-known model."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "STATIC",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["You have no maximum hand size"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "ACTIVATED",
+          "trigger": null,
+          "costs": ["{T}"],
+          "conditions": [],
+          "effects": ["Add {C}"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Rhystic Study": {
+      "deckQuantity": 1,
+      "oracleText": "Whenever an opponent casts a spell, you may draw a card unless that player pays {1}.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-rhystic-study-opponent-spell",
+          "sourceCardName": "Rhystic Study",
+          "kind": "TRIGGERED",
+          "trigger": {
+            "type": "SPELL_CAST"
+          },
+          "conditions": [
+            {
+              "type": "EVENT_CONTROLLER_IS",
+              "value": "OPPONENT"
+            }
+          ],
+          "effects": [
+            {
+              "type": "PAYMENT_BRANCH",
+              "payer": "EVENT_PLAYER",
+              "cost": {
+                "type": "FIXED_MANA",
+                "cost": "{1}"
+              },
+              "ifPaid": [],
+              "ifNotPaid": [
+                {
+                  "type": "OPTIONAL_EFFECT",
+                  "prompt": "¿Robar una carta por Rhystic Study?",
+                  "effects": [
+                    {
+                      "type": "DRAW_CARD",
+                      "amount": {
+                        "type": "LITERAL",
+                        "value": 1
+                      }
+                    }
+                  ]
+                }
+              ],
+              "prompt": "¿El jugador que lanzó el hechizo paga {1}?"
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": [
+        "SPELL_CAST",
+        "PAYMENT_BRANCH",
+        "OPTIONAL_EFFECT",
+        "DRAW_CARD"
+      ],
+      "missingPrimitives": [],
+      "notes": ["Pago del rival es asistido por diseño."],
+      "semanticAbilitySummary": [
+        {
+          "kind": "TRIGGERED",
+          "trigger": "Whenever an opponent casts a spell",
+          "costs": [],
+          "conditions": [],
+          "effects": ["you may draw a card unless that player pays {1}."],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Sapphire Medallion": {
+      "deckQuantity": 1,
+      "oracleText": "Blue spells you cast cost {1} less to cast.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-sapphire-medallion-cost-reduction",
+          "sourceCardName": "Sapphire Medallion",
+          "kind": "STATIC",
+          "effects": [
+            {
+              "type": "MODIFY_COST",
+              "operation": "REDUCE_GENERIC_COST",
+              "amount": 1,
+              "filter": {
+                "controller": "YOU",
+                "colors": ["U"]
+              }
+            }
+          ]
+        }
+      ],
+      "supportedComposition": ["MODIFY_COST", "COLOR_FILTER"],
+      "missingPrimitives": [],
+      "notes": [],
+      "semanticAbilitySummary": [
+        {
+          "kind": "STATIC",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Blue spells you cast cost {1} less to cast"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Secret Invasion": {
+      "deckQuantity": 1,
+      "oracleText": "Enchant creature you control\nWhen this Aura enters, exile up to one target creature other than enchanted creature until this Aura leaves the battlefield. Enchanted creature becomes a copy of that creature until this Aura leaves the battlefield.\nEnchanted creature has ward {2}.",
+      "status": "READY",
+      "runtimeAbilities": [],
+      "supportedComposition": [
+        "AURA_TARGETING",
+        "TRIGGER_TARGET_DECLARATION",
+        "TARGET_SELECTION",
+        "MOVE_ZONE",
+        "DURATION_UNTIL_SOURCE_LEAVES",
+        "WARD_ENFORCEMENT",
+        "COPY_OBJECT_CHARACTERISTICS"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Aura casting, triggered target timing, source-bound exile/return, ward and copy-characteristic application are executable. Copy effects feed effective name, type, color, mana value, P/T, keywords and runtime abilities while the source remains on the battlefield."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "KEYWORD",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "TRIGGERED",
+          "trigger": "When this Aura enters",
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "exile up to one target creature other than enchanted creature until this Aura leaves the battlefield",
+            "Enchanted creature becomes a copy of that creature until this Aura leaves the battlefield"
+          ],
+          "targets": [
+            "up to one target creature other than enchanted creature"
+          ],
+          "restrictions": [],
+          "duration": "until this Aura leaves the battlefield"
+        },
+        {
+          "kind": "STATIC",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Enchanted creature has ward {2}"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Secret of Bloodbending": {
+      "deckQuantity": 1,
+      "oracleText": "As an additional cost to cast this spell, you may waterbend {10}.\nYou control target opponent during their next combat phase. If this spell's additional cost was paid, you control that player during their next turn instead. (You see all cards that player could see and make all decisions for them.)\nExile Secret of Bloodbending.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "secret-of-bloodbending-spell",
+          "sourceCardName": "Secret of Bloodbending",
+          "kind": "SPELL_EFFECT",
+          "automation": "ASSISTED",
+          "effects": [
+            {
+              "type": "PLAYER_SELECTION",
+              "prompt": "Elige el oponente objetivo de Secret of Bloodbending.",
+              "relation": "OPPONENT",
+              "effects": [
+                {
+                  "type": "CONDITIONAL_EFFECT",
+                  "condition": {
+                    "type": "VALUE_COMPARE",
+                    "left": {
+                      "type": "VARIABLE",
+                      "name": "WATERBEND_PAID"
+                    },
+                    "operator": "EQ",
+                    "right": {
+                      "type": "LITERAL",
+                      "value": 1
+                    }
+                  },
+                  "ifTrue": [
+                    {
+                      "type": "CONTROL_PLAYER",
+                      "player": "TARGET_PLAYER",
+                      "controller": "SOURCE_CONTROLLER",
+                      "duration": "NEXT_TURN"
+                    }
+                  ],
+                  "ifFalse": [
+                    {
+                      "type": "CONTROL_PLAYER",
+                      "player": "TARGET_PLAYER",
+                      "controller": "SOURCE_CONTROLLER",
+                      "duration": "NEXT_COMBAT"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "MOVE_ZONE",
+              "target": "SOURCE",
+              "destination": "exile",
+              "controller": "OWNER"
+            }
+          ]
+        }
+      ],
+      "supportedComposition": [
+        "PLAYER_SELECTION",
+        "CONTROL_PLAYER",
+        "CONDITIONAL_EFFECT",
+        "MOVE_ZONE"
+      ],
+      "missingPrimitives": [],
+      "notes": "MVP físico: waterbend {10} usa el coste adicional existente; Jarvis registra si el jugador local controla el próximo combate o el próximo turno del oponente y muestra un recordatorio que se completa manualmente. Las decisiones del jugador controlado se ejecutan físicamente.",
+      "semanticAbilitySummary": [
+        {
+          "kind": "REPLACEMENT",
+          "trigger": "As an additional cost to cast this spell",
+          "costs": ["waterbend {10}"],
+          "conditions": [],
+          "effects": [],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": ["If this spell's additional cost was paid"],
+          "effects": [
+            "You control target opponent during their next combat phase",
+            "control that player during their next turn instead"
+          ],
+          "targets": ["target opponent"],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Exile Secret of Bloodbending"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Sol Ring": {
+      "deckQuantity": 1,
+      "oracleText": "{T}: Add {C}{C}.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-sol-ring-mana",
+          "sourceCardName": "Sol Ring",
+          "kind": "ACTIVATED",
+          "costs": [
+            {
+              "type": "TAP_SOURCE"
+            }
+          ],
+          "effects": [
+            {
+              "type": "ADD_MANA",
+              "color": "C",
+              "amount": 2
+            }
+          ],
+          "automation": "AUTO",
+          "isManaAbility": true
+        }
+      ],
+      "supportedComposition": ["TAP_SOURCE", "ADD_MANA"],
+      "missingPrimitives": [],
+      "notes": [],
+      "semanticAbilitySummary": [
+        {
+          "kind": "ACTIVATED",
+          "trigger": null,
+          "costs": ["{T}"],
+          "conditions": [],
+          "effects": ["Add {C}{C}"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Sorcerous Squall": {
+      "deckQuantity": 1,
+      "oracleText": "Delve (Each card you exile from your graveyard while casting this spell pays for {1}.)\nTarget opponent mills nine cards, then you may cast an instant or sorcery spell from that player's graveyard without paying its mana cost. If that spell would be put into a graveyard, exile it instead.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "sorcerous-squall-spell",
+          "sourceCardName": "Sorcerous Squall",
+          "kind": "SPELL_EFFECT",
+          "automation": "ASSISTED",
+          "effects": [
+            {
+              "type": "PLAYER_SELECTION",
+              "prompt": "Elige el oponente objetivo de Sorcerous Squall.",
+              "relation": "OPPONENT",
+              "effects": [
+                {
+                  "type": "MILL_PLAYER",
+                  "player": "TARGET_PLAYER",
+                  "amount": { "type": "LITERAL", "value": 9 }
+                },
+                {
+                  "type": "SELECT_PUBLIC_ZONE_CARD",
+                  "player": "TARGET_PLAYER",
+                  "zone": "graveyard",
+                  "prompt": "El rival ha molido nueve cartas. Declara el instantáneo o conjuro de su cementerio que quieres lanzar, o no elijas ninguno.",
+                  "constraints": {
+                    "cardTypesAnyOf": ["Instant", "Sorcery"]
+                  },
+                  "allowFail": true,
+                  "linkKey": "sorcerous-squall-graveyard-spell",
+                  "knownBecause": "MILLED"
+                },
+                {
+                  "type": "CAST_LINKED_CARD_WITHOUT_PAYING_MANA_COST",
+                  "key": "sorcerous-squall-graveyard-spell",
+                  "fromZone": "graveyard",
+                  "exileIfWouldEnterGraveyard": true
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "supportedComposition": [
+        "DELVE_COST",
+        "PLAYER_SELECTION",
+        "MILL_PLAYER",
+        "SELECT_PUBLIC_ZONE_CARD",
+        "CAST_LINKED_CARD_WITHOUT_PAYING_MANA_COST",
+        "REPLACEMENT_EFFECT"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Delve is executable. The opponent mills physically; Jarvis updates counts, accepts the explicitly declared instant/sorcery from that public graveyard, casts it for free during resolution, and installs the one-shot graveyard-to-exile replacement."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "KEYWORD",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "Target opponent mills nine cards",
+            "you may cast an instant or sorcery spell from that player's graveyard without paying its mana cost",
+            "If that spell would be put into a graveyard, exile it instead"
+          ],
+          "targets": ["Target opponent"],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Spirit Water Revival": {
+      "deckQuantity": 1,
+      "oracleText": "As an additional cost to cast this spell, you may waterbend {6}. (While paying a waterbend cost, you can tap your artifacts and creatures to help. Each one pays for {1}.)\nDraw two cards. If this spell's additional cost was paid, instead shuffle your graveyard into your library, draw seven cards, and you have no maximum hand size for the rest of the game.\nExile Spirit Water Revival.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-spirit-water-revival",
+          "sourceCardName": "Spirit Water Revival",
+          "kind": "SPELL_EFFECT",
+          "effects": [
+            {
+              "type": "CONDITIONAL_EFFECT",
+              "condition": {
+                "type": "VALUE_COMPARE",
+                "left": {
+                  "type": "VARIABLE",
+                  "name": "WATERBEND_PAID"
+                },
+                "operator": "EQ",
+                "right": {
+                  "type": "LITERAL",
+                  "value": 1
+                }
+              },
+              "ifTrue": [
+                {
+                  "type": "FOR_EACH",
+                  "query": {
+                    "zones": ["graveyard"],
+                    "controller": "SOURCE_CONTROLLER"
+                  },
+                  "effects": [
+                    {
+                      "type": "MOVE_ZONE",
+                      "target": "CURRENT_OBJECT",
+                      "destination": "library"
+                    }
+                  ]
+                },
+                {
+                  "type": "SHUFFLE_LIBRARY",
+                  "player": "SOURCE_CONTROLLER"
+                },
+                {
+                  "type": "DRAW_CARD",
+                  "amount": {
+                    "type": "LITERAL",
+                    "value": 7
+                  }
+                },
+                {
+                  "type": "SET_PLAYER_MAX_HAND_SIZE",
+                  "player": "SOURCE_CONTROLLER",
+                  "value": "UNLIMITED"
+                }
+              ],
+              "ifFalse": [
+                {
+                  "type": "DRAW_CARD",
+                  "amount": {
+                    "type": "LITERAL",
+                    "value": 2
+                  }
+                }
+              ]
+            },
+            {
+              "type": "MOVE_ZONE",
+              "target": "SOURCE",
+              "destination": "exile"
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": [
+        "CAST_GENERIC_CONTRIBUTION",
+        "DRAW_CARD",
+        "MOVE_ZONE",
+        "PHYSICAL_HIDDEN_ZONE_OPERATION",
+        "SEARCH_LIBRARY_CARD"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Optional waterbend {6}, conditional resolution, graveyard shuffle, draw and persistent max-hand-size override are executable in the local physical-table model."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Draw two cards."],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "REPLACEMENT",
+          "trigger": "If this spell's additional cost was paid",
+          "costs": [],
+          "conditions": ["this spell's additional cost was paid"],
+          "effects": [
+            "shuffle your graveyard into your library",
+            "draw seven cards",
+            "you have no maximum hand size for the rest of the game"
+          ],
+          "targets": [],
+          "restrictions": [],
+          "duration": "the rest of the game"
+        },
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Exile Spirit Water Revival."],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "OTHER",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Storm of Saruman": {
+      "deckQuantity": 1,
+      "oracleText": "Ward {3}\nWhenever you cast your second spell each turn, copy it, except the copy isn't legendary. You may choose new targets for the copy. (A copy of a permanent spell becomes a token.)",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "storm-of-saruman-ward",
+          "sourceCardName": "Storm of Saruman",
+          "kind": "STATIC",
+          "effects": [
+            {
+              "type": "WARD",
+              "cost": "{3}",
+              "filter": { "sourceOnly": true }
+            }
+          ]
+        },
+        {
+          "id": "storm-of-saruman-second-spell",
+          "sourceCardName": "Storm of Saruman",
+          "kind": "TRIGGERED",
+          "trigger": { "type": "SPELL_CAST" },
+          "conditions": [
+            { "type": "EVENT_CONTROLLER_IS", "value": "YOU" },
+            {
+              "type": "EVENT_NUMBER_COMPARE",
+              "field": "castNumberThisTurn",
+              "operator": "EQ",
+              "value": 2
+            }
+          ],
+          "effects": [
+            {
+              "type": "COPY_SPELL",
+              "target": "EVENT_STACK_OBJECT",
+              "controller": "SOURCE_CONTROLLER",
+              "chooseNewTargets": true,
+              "removeLegendary": true
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": [
+        "WARD_ENFORCEMENT",
+        "SPELL_CAST_COUNT_EVENT_CONDITION",
+        "COPY_SPELL",
+        "RETARGET_TIMING",
+        "REMOVE_LEGENDARY_FROM_COPY"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "The second spell each turn is copied on the stack, keeps its modes/X/declared targets, may retarget before priority resumes, and the copy is nonlegendary."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "TRIGGERED",
+          "trigger": "Whenever you cast your second spell each turn",
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "copy it, except the copy isn't legendary",
+            "You may choose new targets for the copy"
+          ],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "KEYWORD",
+          "trigger": null,
+          "costs": ["{3}"],
+          "conditions": [],
+          "effects": [],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Svyelun of Sea and Sky": {
+      "deckQuantity": 1,
+      "oracleText": "Svyelun has indestructible as long as you control at least two other Merfolk.\nWhenever Svyelun attacks, draw a card.\nOther Merfolk you control have ward {1}. (Whenever another Merfolk you control becomes the target of a spell or ability an opponent controls, counter it unless that player pays {1}.)",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-svyelun-indestructible",
+          "sourceCardName": "Svyelun of Sea and Sky",
+          "kind": "STATIC",
+          "effects": [
+            {
+              "type": "GRANT_KEYWORD",
+              "keyword": "INDESTRUCTIBLE",
+              "filter": {
+                "sourceOnly": true
+              },
+              "condition": {
+                "type": "CONTROL_COUNT_AT_LEAST",
+                "query": {
+                  "zones": ["battlefield"],
+                  "controller": "SOURCE_CONTROLLER",
+                  "cardTypes": ["Creature"],
+                  "subtypes": ["Merfolk"],
+                  "excludeSource": true
+                },
+                "count": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "tritones-svyelun-attack-draw",
+          "sourceCardName": "Svyelun of Sea and Sky",
+          "kind": "TRIGGERED",
+          "trigger": {
+            "type": "CREATURE_ATTACKED"
+          },
+          "conditions": [
+            {
+              "type": "EVENT_SUBJECT_IS_SOURCE"
+            }
+          ],
+          "effects": [
+            {
+              "type": "DRAW_CARD",
+              "amount": {
+                "type": "LITERAL",
+                "value": 1
+              }
+            }
+          ],
+          "automation": "AUTO"
+        },
+        {
+          "id": "tritones-svyelun-ward",
+          "sourceCardName": "Svyelun of Sea and Sky",
+          "kind": "STATIC",
+          "effects": [
+            {
+              "type": "WARD",
+              "cost": "{1}",
+              "filter": {
+                "controller": "YOU",
+                "subtype": "Merfolk",
+                "excludeSource": true
+              }
+            }
+          ]
+        }
+      ],
+      "supportedComposition": [
+        "CONDITIONAL_KEYWORD_GRANT",
+        "CREATURE_ATTACKED",
+        "DRAW_CARD",
+        "WARD"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Conditional indestructible, attack draw and ward are executable; ward now uses declaration-time targets and a real stack trigger."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "STATIC",
+          "trigger": null,
+          "costs": [],
+          "conditions": ["you control at least two other Merfolk"],
+          "effects": ["Svyelun has indestructible"],
+          "targets": [],
+          "restrictions": [],
+          "duration": "as long as you control at least two other Merfolk"
+        },
+        {
+          "kind": "TRIGGERED",
+          "trigger": "Whenever Svyelun attacks",
+          "costs": [],
+          "conditions": [],
+          "effects": ["draw a card"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "STATIC",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Other Merfolk you control have ward {1}"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Tempted by the Oriq": {
+      "deckQuantity": 1,
+      "oracleText": "For each opponent, gain control of up to one target creature or planeswalker that player controls with mana value 3 or less.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-tempted-by-the-oriq",
+          "sourceCardName": "Tempted by the Oriq",
+          "kind": "SPELL_EFFECT",
+          "automation": "ASSISTED",
+          "effects": [
+            {
+              "type": "FOR_EACH_PLAYER",
+              "relation": "OPPONENTS_OF_SOURCE_CONTROLLER",
+              "effects": [
+                {
+                  "type": "OPTIONAL_EFFECT",
+                  "prompt": "¿Ganar control de hasta un permanente elegible de este oponente?",
+                  "effects": [
+                    {
+                      "type": "TARGET_SELECTION",
+                      "prompt": "Elige criatura o planeswalker de valor de maná 3 o menos",
+                      "constraints": {
+                        "zones": ["battlefield"],
+                        "controllerPlayer": "CURRENT_PLAYER",
+                        "cardTypesAnyOf": ["Creature", "Planeswalker"],
+                        "manaValueMax": {
+                          "type": "LITERAL",
+                          "value": 3
+                        }
+                      },
+                      "effects": [
+                        {
+                          "type": "CHANGE_CONTROLLER",
+                          "target": "SELECTED_TARGET",
+                          "controller": "SOURCE_CONTROLLER"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "supportedComposition": [
+        "FOR_EACH_PLAYER",
+        "OPTIONAL_EFFECT",
+        "TARGET_SELECTION",
+        "MANA_VALUE_TARGET_FILTER",
+        "CHANGE_CONTROLLER"
+      ],
+      "missingPrimitives": [],
+      "notes": [],
+      "semanticAbilitySummary": [
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "gain control of up to one target creature or planeswalker that player controls with mana value 3 or less"
+          ],
+          "targets": [
+            "creature or planeswalker that player controls with mana value 3 or less"
+          ],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "The Key to the Vault": {
+      "deckQuantity": 1,
+      "oracleText": "Whenever equipped creature deals combat damage to a player, look at that many cards from the top of your library. You may exile a nonland card from among them. Put the rest on the bottom of your library in a random order. You may cast the exiled card without paying its mana cost.\nEquip {2}{U}",
+      "status": "READY",
+      "runtimeAbilities": [],
+      "supportedComposition": [
+        "EQUIPPED_OBJECT_REFERENCE",
+        "VARIABLE_EVENT_AMOUNT",
+        "HIDDEN_TOP_LIBRARY_LOOK",
+        "HIDDEN_ZONE_SELECTION",
+        "LINKED_OBJECT",
+        "FREE_CAST",
+        "LIBRARY_BOTTOM_RANDOMIZE",
+        "EQUIP"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Explicit runtime definition trusts the player to declare the chosen nonland card from the inspected physical top N; only that card becomes known.",
+        "The remaining inspected cards are returned to the physical library bottom in random order by confirmation.",
+        "The linked exiled card can be cast during resolution without paying its mana cost; additional costs and target taxes still apply."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "TRIGGERED",
+          "trigger": "Whenever equipped creature deals combat damage to a player",
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "look at that many cards from the top of your library",
+            "you may exile a nonland card from among them",
+            "put the rest on the bottom of your library in a random order",
+            "you may cast the exiled card without paying its mana cost"
+          ],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "ACTIVATED",
+          "trigger": "Equip {2}{U}",
+          "costs": ["{2}{U}"],
+          "conditions": [],
+          "effects": [
+            "attach The Key to the Vault to target creature you control"
+          ],
+          "targets": ["creature you control"],
+          "restrictions": ["activate only as a sorcery"],
+          "duration": null
+        }
+      ]
+    },
+    "Thieving Skydiver": {
+      "deckQuantity": 1,
+      "oracleText": "Kicker {X}. X can't be 0. (You may pay an additional {X} as you cast this spell.)\nFlying\nWhen this creature enters, if it was kicked, gain control of target artifact with mana value X or less. If that artifact is an Equipment, attach it to this creature.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-thieving-skydiver-kicked-etb",
+          "sourceCardName": "Thieving Skydiver",
+          "kind": "TRIGGERED",
+          "trigger": {
+            "type": "CARD_ENTERED_BATTLEFIELD"
+          },
+          "conditions": [
+            {
+              "type": "EVENT_SUBJECT_IS_SOURCE"
+            }
+          ],
+          "effects": [
+            {
+              "type": "CONDITIONAL_EFFECT",
+              "condition": {
+                "type": "VALUE_COMPARE",
+                "left": {
+                  "type": "SOURCE_VALUE",
+                  "key": "KICKED"
+                },
+                "operator": "GTE",
+                "right": {
+                  "type": "LITERAL",
+                  "value": 1
+                }
+              },
+              "ifTrue": [
+                {
+                  "type": "TARGET_SELECTION",
+                  "prompt": "Elige un artefacto objetivo con valor de maná X o menos",
+                  "constraints": {
+                    "zones": ["battlefield"],
+                    "cardTypes": ["Artifact"],
+                    "controller": "ANY",
+                    "manaValueMax": {
+                      "type": "SOURCE_VALUE",
+                      "key": "X"
+                    }
+                  },
+                  "effects": [
+                    {
+                      "type": "CONDITIONAL_EFFECT",
+                      "condition": {
+                        "type": "OBJECT_MATCHES_QUERY",
+                        "object": "SELECTED_TARGET",
+                        "query": {
+                          "zones": ["battlefield"],
+                          "cardTypes": ["Equipment"]
+                        }
+                      },
+                      "ifTrue": [
+                        {
+                          "type": "CHANGE_CONTROLLER",
+                          "target": "SELECTED_TARGET",
+                          "controller": "SOURCE_CONTROLLER"
+                        },
+                        {
+                          "type": "ATTACH",
+                          "attachment": "SELECTED_TARGET",
+                          "target": "SOURCE"
+                        }
+                      ],
+                      "ifFalse": [
+                        {
+                          "type": "CHANGE_CONTROLLER",
+                          "target": "SELECTED_TARGET",
+                          "controller": "SOURCE_CONTROLLER"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": [
+        "ADDITIONAL_COST",
+        "VARIABLE_X",
+        "CAST_PAYMENT_MEMORY",
+        "MANA_VALUE_TARGET_FILTER",
+        "CONTROL_CHANGE",
+        "ATTACHMENT"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Kicker X is stored on the resolved permanent; the ETB uses that X for target legality, changes control, and attaches Equipment to Thieving Skydiver."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "KEYWORD",
+          "trigger": null,
+          "costs": ["{X}"],
+          "conditions": [],
+          "effects": [],
+          "targets": [],
+          "restrictions": ["X can't be 0"],
+          "duration": null
+        },
+        {
+          "kind": "KEYWORD",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "TRIGGERED",
+          "trigger": "When this creature enters, if it was kicked",
+          "costs": [],
+          "conditions": ["it was kicked"],
+          "effects": [
+            "gain control of target artifact with mana value X or less",
+            "attach it to this creature"
+          ],
+          "targets": ["target artifact with mana value X or less"],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Tidebinder Mage": {
+      "deckQuantity": 1,
+      "oracleText": "When this creature enters, tap target red or green creature an opponent controls. That creature doesn't untap during its controller's untap step for as long as you control this creature.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-tidebinder-mage-etb",
+          "sourceCardName": "Tidebinder Mage",
+          "kind": "TRIGGERED",
+          "trigger": {
+            "type": "CARD_ENTERED_BATTLEFIELD"
+          },
+          "conditions": [
+            {
+              "type": "EVENT_SUBJECT_IS_SOURCE"
+            }
+          ],
+          "automation": "ASSISTED",
+          "effects": [
+            {
+              "type": "TARGET_SELECTION",
+              "prompt": "Elige una criatura roja o verde que controle un oponente",
+              "constraints": {
+                "zones": ["battlefield"],
+                "controller": "OPPONENT",
+                "cardTypes": ["Creature"],
+                "colorsAnyOf": ["R", "G"]
+              },
+              "effects": [
+                {
+                  "type": "TAP_PERMANENT",
+                  "target": "SELECTED_TARGET"
+                },
+                {
+                  "type": "ADD_UNTAP_RESTRICTION",
+                  "target": "SELECTED_TARGET",
+                  "duration": "WHILE_SOURCE_CONTROLLED"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "supportedComposition": [
+        "CARD_ENTERED_BATTLEFIELD",
+        "COLOR_FILTER",
+        "TARGET_SELECTION",
+        "TAP_PERMANENT"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Opponent untap steps now execute against activePlayerId/controllerId."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "TRIGGERED",
+          "trigger": "When this creature enters",
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "tap target red or green creature an opponent controls",
+            "That creature doesn't untap during its controller's untap step"
+          ],
+          "targets": ["red or green creature an opponent controls"],
+          "restrictions": [],
+          "duration": "for as long as you control this creature"
+        }
+      ]
+    },
+    "Tideshaper Mystic": {
+      "deckQuantity": 1,
+      "oracleText": "{T}: Target land becomes the basic land type of your choice until end of turn. Activate only during your turn.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-tideshaper-mystic",
+          "sourceCardName": "Tideshaper Mystic",
+          "kind": "ACTIVATED",
+          "automation": "ASSISTED",
+          "costs": [
+            {
+              "type": "TAP_SOURCE"
+            }
+          ],
+          "restrictions": ["YOUR_TURN"],
+          "effects": [
+            {
+              "type": "TARGET_SELECTION",
+              "prompt": "Elige la tierra objetivo",
+              "constraints": {
+                "zones": ["battlefield"],
+                "cardTypes": ["Land"]
+              },
+              "effects": [
+                {
+                  "type": "CHOOSE_VALUE",
+                  "prompt": "Elige el tipo de tierra básica",
+                  "variableName": "chosenLandType",
+                  "options": [
+                    {
+                      "id": "Plains",
+                      "label": "Plains",
+                      "value": "Plains"
+                    },
+                    {
+                      "id": "Island",
+                      "label": "Island",
+                      "value": "Island"
+                    },
+                    {
+                      "id": "Swamp",
+                      "label": "Swamp",
+                      "value": "Swamp"
+                    },
+                    {
+                      "id": "Mountain",
+                      "label": "Mountain",
+                      "value": "Mountain"
+                    },
+                    {
+                      "id": "Forest",
+                      "label": "Forest",
+                      "value": "Forest"
+                    }
+                  ]
+                },
+                {
+                  "type": "CHANGE_LAND_SUBTYPE",
+                  "target": "SELECTED_TARGET",
+                  "subtype": {
+                    "type": "VARIABLE",
+                    "name": "chosenLandType"
+                  },
+                  "mode": "SET",
+                  "duration": "UNTIL_END_OF_TURN"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "supportedComposition": [
+        "TAP_SOURCE",
+        "YOUR_TURN",
+        "TARGET_SELECTION",
+        "CHOOSE_VALUE",
+        "CHANGE_LAND_SUBTYPE"
+      ],
+      "missingPrimitives": [],
+      "notes": [],
+      "semanticAbilitySummary": [
+        {
+          "kind": "ACTIVATED",
+          "trigger": null,
+          "costs": ["{T}"],
+          "conditions": [],
+          "effects": [
+            "Target land becomes the basic land type of your choice until end of turn."
+          ],
+          "targets": ["Target land"],
+          "restrictions": ["Activate only during your turn."],
+          "duration": "until end of turn"
+        }
+      ]
+    },
+    "Time Reversal": {
+      "deckQuantity": 1,
+      "oracleText": "Each player shuffles their hand and graveyard into their library, then draws seven cards. Exile Time Reversal.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-time-reversal",
+          "sourceCardName": "Time Reversal",
+          "kind": "SPELL_EFFECT",
+          "automation": "ASSISTED",
+          "effects": [
+            {
+              "type": "FOR_EACH_PLAYER",
+              "relation": "ALL_PLAYERS",
+              "effects": [
+                {
+                  "type": "SHUFFLE_PLAYER_ZONES_INTO_LIBRARY",
+                  "player": "CURRENT_PLAYER",
+                  "zones": ["hand", "graveyard"]
+                }
+              ]
+            },
+            {
+              "type": "FOR_EACH_PLAYER",
+              "relation": "ALL_PLAYERS",
+              "effects": [
+                {
+                  "type": "DRAW_FOR_PLAYER",
+                  "player": "CURRENT_PLAYER",
+                  "amount": {
+                    "type": "LITERAL",
+                    "value": 7
+                  }
+                }
+              ]
+            },
+            {
+              "type": "MOVE_ZONE",
+              "target": "SOURCE",
+              "destination": "exile"
+            }
+          ]
+        }
+      ],
+      "supportedComposition": [
+        "FOR_EACH_PLAYER",
+        "BATCH_ZONE_SHUFFLE",
+        "DRAW_FOR_PLAYER",
+        "MOVE_ZONE"
+      ],
+      "missingPrimitives": [],
+      "notes": [],
+      "semanticAbilitySummary": [
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "Each player shuffles their hand and graveyard into their library",
+            "each player draws seven cards"
+          ],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Exile Time Reversal."],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Time Stop": {
+      "deckQuantity": 1,
+      "oracleText": "End the turn. (Exile all spells and abilities, including this spell. The player whose turn it is discards down to their maximum hand size. Damage heals and \"this turn\" and \"until end of turn\" effects end.)",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-time-stop-end-turn",
+          "sourceCardName": "Time Stop",
+          "kind": "SPELL_EFFECT",
+          "automation": "ASSISTED",
+          "effects": [
+            {
+              "type": "PHYSICAL_CONFIRMATION",
+              "prompt": "Antes de terminar el turno, si corresponde descarta físicamente hasta tu tamaño máximo de mano. Confirma para exiliar el stack y terminar el turno.",
+              "effects": [
+                {
+                  "type": "END_TURN"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "supportedComposition": [],
+      "missingPrimitives": [],
+      "notes": [
+        "Runtime DSL 2.4: executable with the current physical-table/public-known model."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["End the turn."],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Twincast": {
+      "deckQuantity": 1,
+      "oracleText": "Copy target instant or sorcery spell. You may choose new targets for the copy.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-twincast-copy",
+          "sourceCardName": "Twincast",
+          "kind": "SPELL_EFFECT",
+          "effects": [
+            {
+              "type": "TARGET_SELECTION",
+              "prompt": "Elige el instantáneo o conjuro objetivo a copiar",
+              "constraints": {
+                "stackKind": "SPELL",
+                "cardTypesAnyOf": ["Instant", "Sorcery"]
+              },
+              "effects": [
+                {
+                  "type": "COPY_SPELL",
+                  "target": "SELECTED_STACK_OBJECT",
+                  "controller": "SOURCE_CONTROLLER",
+                  "chooseNewTargets": true
+                }
+              ]
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": ["TARGET_SELECTION", "COPY_SPELL", "RETARGET"],
+      "missingPrimitives": [],
+      "notes": [
+        "The target spell is copied with its declared targets, then any number of those targets may be changed immediately as the copy is created."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [
+            "Copy target instant or sorcery spell",
+            "You may choose new targets for the copy"
+          ],
+          "targets": ["target instant or sorcery spell"],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Vodalian Hexcatcher": {
+      "deckQuantity": 1,
+      "oracleText": "Flash\nOther Merfolk you control get +1/+1.\nSacrifice a Merfolk: Counter target noncreature spell unless its controller pays {1}.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-vodalian-hexcatcher-pt",
+          "sourceCardName": "Vodalian Hexcatcher",
+          "kind": "STATIC",
+          "effects": [
+            {
+              "type": "MODIFY_POWER_TOUGHNESS",
+              "power": 1,
+              "toughness": 1,
+              "filter": {
+                "controller": "YOU",
+                "subtype": "Merfolk",
+                "excludeSource": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "tritones-vodalian-hexcatcher-counter",
+          "sourceCardName": "Vodalian Hexcatcher",
+          "kind": "ACTIVATED",
+          "automation": "ASSISTED",
+          "costs": [
+            {
+              "type": "SACRIFICE_PERMANENT",
+              "prompt": "Elige un Merfolk que controlas para sacrificar",
+              "constraints": {
+                "zones": ["battlefield"],
+                "controller": "YOU",
+                "cardTypes": ["Creature"],
+                "subtypes": ["Merfolk"]
+              }
+            }
+          ],
+          "effects": [
+            {
+              "type": "TARGET_SELECTION",
+              "prompt": "Elige el hechizo no criatura objetivo",
+              "constraints": {
+                "zones": ["stack"],
+                "stackKind": "SPELL",
+                "excludeCardTypes": ["Creature"]
+              },
+              "effects": [
+                {
+                  "type": "PAYMENT_BRANCH",
+                  "payer": "TARGET_CONTROLLER",
+                  "cost": {
+                    "type": "FIXED_MANA",
+                    "cost": "{1}"
+                  },
+                  "prompt": "¿El controlador paga {1}?",
+                  "ifPaid": [],
+                  "ifNotPaid": [
+                    {
+                      "type": "COUNTER_SPELL",
+                      "target": "SELECTED_STACK_OBJECT"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "supportedComposition": [
+        "PRINTED_FLASH",
+        "MODIFY_POWER_TOUGHNESS",
+        "SACRIFICE_PERMANENT",
+        "TARGET_CONTROLLER",
+        "PAYMENT_BRANCH",
+        "COUNTER_SPELL"
+      ],
+      "missingPrimitives": [],
+      "notes": [],
+      "semanticAbilitySummary": [
+        {
+          "kind": "KEYWORD",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": [],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "STATIC",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Other Merfolk you control get +1/+1."],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "ACTIVATED",
+          "trigger": null,
+          "costs": ["Sacrifice a Merfolk"],
+          "conditions": [],
+          "effects": [
+            "Counter target noncreature spell unless its controller pays {1}."
+          ],
+          "targets": ["target noncreature spell"],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Wanderwine Prophets": {
+      "deckQuantity": 1,
+      "oracleText": "Champion a Merfolk (When this enters, sacrifice it unless you exile another Merfolk you control. When this leaves the battlefield, that card returns to the battlefield.)\nWhenever this creature deals combat damage to a player, you may sacrifice a Merfolk. If you do, take an extra turn after this one.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-wanderwine-champion-enter",
+          "sourceCardName": "Wanderwine Prophets",
+          "kind": "TRIGGERED",
+          "trigger": {
+            "type": "CARD_ENTERED_BATTLEFIELD"
+          },
+          "conditions": [
+            {
+              "type": "EVENT_SUBJECT_IS_SOURCE"
+            }
+          ],
+          "automation": "ASSISTED",
+          "effects": [
+            {
+              "type": "CHOOSE_MODE",
+              "prompt": "Champion a Merfolk: exilia otro Merfolk o sacrifica Wanderwine Prophets",
+              "modes": [
+                {
+                  "id": "champion",
+                  "label": "Exiliar otro Merfolk",
+                  "effects": [
+                    {
+                      "type": "CARD_SELECTION",
+                      "prompt": "Elige otro Merfolk que controlas",
+                      "constraints": {
+                        "zones": ["battlefield"],
+                        "controller": "YOU",
+                        "cardTypes": ["Creature"],
+                        "subtypes": ["Merfolk"],
+                        "excludeSource": true
+                      },
+                      "effects": [
+                        {
+                          "type": "MOVE_ZONE",
+                          "target": "SELECTED_CARD",
+                          "destination": "exile"
+                        },
+                        {
+                          "type": "LINK_OBJECT",
+                          "target": "SELECTED_CARD",
+                          "key": "CHAMPION"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "sacrifice",
+                  "label": "Sacrificar Wanderwine Prophets",
+                  "effects": [
+                    {
+                      "type": "SACRIFICE",
+                      "target": "SOURCE"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tritones-wanderwine-champion-leave",
+          "sourceCardName": "Wanderwine Prophets",
+          "kind": "TRIGGERED",
+          "trigger": {
+            "type": "CARD_LEFT_BATTLEFIELD"
+          },
+          "conditions": [
+            {
+              "type": "EVENT_SUBJECT_IS_SOURCE"
+            }
+          ],
+          "automation": "AUTO",
+          "effects": [
+            {
+              "type": "RETURN_LINKED_OBJECTS",
+              "key": "CHAMPION",
+              "destination": "battlefield",
+              "controller": "OWNER"
+            }
+          ]
+        },
+        {
+          "id": "tritones-wanderwine-extra-turn",
+          "sourceCardName": "Wanderwine Prophets",
+          "kind": "TRIGGERED",
+          "trigger": {
+            "type": "PLAYER_DEALT_DAMAGE"
+          },
+          "conditions": [
+            {
+              "type": "EVENT_SUBJECT_IS_SOURCE"
+            },
+            {
+              "type": "EVENT_DAMAGE_KIND_IS",
+              "value": "COMBAT"
+            }
+          ],
+          "automation": "ASSISTED",
+          "effects": [
+            {
+              "type": "OPTIONAL_EFFECT",
+              "prompt": "¿Sacrificar un Merfolk para tomar un turno extra?",
+              "effects": [
+                {
+                  "type": "CARD_SELECTION",
+                  "prompt": "Elige un Merfolk que controlas para sacrificar",
+                  "constraints": {
+                    "zones": ["battlefield"],
+                    "controller": "YOU",
+                    "cardTypes": ["Creature"],
+                    "subtypes": ["Merfolk"]
+                  },
+                  "effects": [
+                    {
+                      "type": "SACRIFICE",
+                      "target": "SELECTED_CARD"
+                    },
+                    {
+                      "type": "QUEUE_EXTRA_TURN",
+                      "player": "SOURCE_CONTROLLER"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "supportedComposition": [
+        "COMBAT_DAMAGE_DEALT",
+        "OPTIONAL_EFFECT",
+        "SACRIFICE"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Extra-turn queue now stores stable PlayerId and respects N-player turnOrder."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "KEYWORD",
+          "trigger": null,
+          "costs": [],
+          "conditions": [],
+          "effects": ["Champion a Merfolk"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "TRIGGERED",
+          "trigger": "Whenever this creature deals combat damage to a player",
+          "costs": ["sacrifice a Merfolk"],
+          "conditions": [],
+          "effects": ["take an extra turn after this one"],
+          "targets": ["a player"],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    },
+    "Waterbender's Restoration": {
+      "deckQuantity": 1,
+      "oracleText": "As an additional cost to cast this spell, waterbend {X}. (While paying a waterbend cost, you can tap your artifacts and creatures to help. Each one pays for {1}.)\nExile X target creatures you control. Return those cards to the battlefield under their owner's control at the beginning of the next end step.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-waterbenders-restoration-blink-x",
+          "sourceCardName": "Waterbender's Restoration",
+          "kind": "SPELL_EFFECT",
+          "effects": [
+            {
+              "type": "TARGET_SELECTION",
+              "prompt": "Elige X criaturas que controlas",
+              "constraints": {
+                "zones": ["battlefield"],
+                "cardTypes": ["Creature"],
+                "controller": "YOU"
+              },
+              "count": {
+                "type": "VARIABLE",
+                "name": "X"
+              },
+              "effects": [
+                {
+                  "type": "FOR_EACH_SELECTED",
+                  "selection": "TARGETS",
+                  "effects": [
+                    {
+                      "type": "MOVE_ZONE",
+                      "target": "CURRENT_OBJECT",
+                      "destination": "exile"
+                    }
+                  ]
+                },
+                {
+                  "type": "DELAYED_EFFECT",
+                  "trigger": {
+                    "type": "END_STEP_STARTED"
+                  },
+                  "effects": [
+                    {
+                      "type": "FOR_EACH_SELECTED",
+                      "selection": "TARGETS",
+                      "effects": [
+                        {
+                          "type": "MOVE_ZONE",
+                          "target": "CURRENT_OBJECT",
+                          "destination": "battlefield",
+                          "controller": "OWNER"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "automation": "ASSISTED"
+        }
+      ],
+      "supportedComposition": [
+        "CAST_GENERIC_CONTRIBUTION",
+        "MOVE_ZONE",
+        "PHYSICAL_HIDDEN_ZONE_OPERATION",
+        "SEARCH_LIBRARY_CARD",
+        "TARGET_SELECTION"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Waterbend {X} is paid by generic mana and/or tapping declared artifacts/creatures; X is preserved into the spell runtime."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "SPELL_EFFECT",
+          "trigger": null,
+          "costs": ["waterbend {X}"],
+          "conditions": [],
+          "effects": [
+            "Exile X target creatures you control",
+            "Return those cards to the battlefield under their owner's control at the beginning of the next end step"
+          ],
+          "targets": ["X target creatures you control"],
+          "restrictions": [],
+          "duration": "until the beginning of the next end step"
+        }
+      ]
+    },
+    "White Lotus Tile": {
+      "deckQuantity": 1,
+      "oracleText": "This artifact enters tapped.\n{T}: Add X mana of any one color, where X is the greatest number of creatures you control that have a creature type in common.",
+      "status": "READY",
+      "runtimeAbilities": [
+        {
+          "id": "tritones-white-lotus-tile-enters",
+          "sourceCardName": "White Lotus Tile",
+          "kind": "AS_ENTERS",
+          "effects": [
+            {
+              "type": "ENTERS_TAPPED"
+            }
+          ],
+          "automation": "AUTO"
+        },
+        {
+          "id": "tritones-white-lotus-tile-mana",
+          "sourceCardName": "White Lotus Tile",
+          "kind": "ACTIVATED",
+          "costs": [
+            {
+              "type": "TAP_SOURCE"
+            }
+          ],
+          "effects": [
+            {
+              "type": "ADD_MANA_CHOICE",
+              "player": "SOURCE_CONTROLLER",
+              "allowedColors": ["W", "U", "B", "R", "G"],
+              "amount": {
+                "type": "MAX_SHARED_CREATURE_SUBTYPE_COUNT",
+                "controller": "SOURCE_CONTROLLER"
+              }
+            }
+          ],
+          "automation": "ASSISTED",
+          "isManaAbility": true
+        }
+      ],
+      "supportedComposition": [
+        "TAP_SOURCE",
+        "ADD_MANA_CHOICE",
+        "COUNT_OBJECTS"
+      ],
+      "missingPrimitives": [],
+      "notes": [
+        "Runtime DSL 2.4: executable with the current physical-table/public-known model."
+      ],
+      "semanticAbilitySummary": [
+        {
+          "kind": "REPLACEMENT",
+          "trigger": "This artifact enters",
+          "costs": [],
+          "conditions": [],
+          "effects": ["enters tapped"],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        },
+        {
+          "kind": "ACTIVATED",
+          "trigger": null,
+          "costs": ["{T}"],
+          "conditions": [],
+          "effects": [
+            "Add X mana of any one color, where X is the greatest number of creatures you control that have a creature type in common."
+          ],
+          "targets": [],
+          "restrictions": [],
+          "duration": null
+        }
+      ]
+    }
+  }
+}

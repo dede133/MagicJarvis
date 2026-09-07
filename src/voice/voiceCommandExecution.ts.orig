@@ -1,0 +1,2007 @@
+import { parseCommand } from '../commands/parser/parseCommand'
+import { parseCommandForGame } from '../commands/parser/parseCommandForGame'
+import { resolveCommand } from '../commands/resolver/resolveCommand'
+import type { ParsedCommand } from '../commands/types/commandTypes'
+import type { TabletopExecutionResult } from '../rules/implicitResolution/implicitResolution'
+import type { TabletopCommandContext } from '../observability/matchTrace'
+import type { GameState } from '../types/game'
+import {
+  getVoicePhraseHints,
+  normalizeVoiceTranscript,
+} from './contextualVocabulary'
+import {
+  DEFAULT_VOICE_LANGUAGE_PACK,
+  type VoiceLanguagePack,
+} from './languages'
+import { normalizeSpokenCommand } from './spokenCommandNormalizer'
+import {
+  VOICE_NLP_THRESHOLDS,
+  isVoiceIntentCompatibleWithCommand,
+  rescueVoiceCommandFromIntent,
+  shouldBlockAsNotAction,
+  shouldTreatAsHighConfidenceAction,
+  type VoiceNlpDecision,
+} from './nlp/voiceIntentAssistance'
+import { recoverKnownCardCommandFromIntent } from './nlp/voiceIntentCardRecovery'
+import type { VoiceIntentClassification } from './nlp/voiceIntentClassifier'
+import {
+  evaluateVoiceCommandGate,
+  type VoiceCommandGateReason,
+} from './voiceCommandGate'
+import {
+  VoiceCommandQueue,
+  type VoiceCommandQueueInput,
+} from './voiceCommandQueue'
+import { segmentVoiceCommandsForGame } from './voiceCommandContextSegmentation'
+import { VOICE_FEATURE_FLAGS } from './voiceFeatureFlags'
+import type {
+  VoiceFallbackReason,
+  VoiceRoutingTelemetry,
+  VoiceV3RoutingResult,
+} from './voiceRoutingTelemetry'
+import { tryHandleVoiceUiAction } from './voiceUiActions'
+import { matchSemanticVoiceCommand } from './v3/matcher/semanticMatcher'
+import { executeSemanticCommand } from './v3/execution/semanticCommandAdapter'
+import type {
+  SemanticCommand,
+  SemanticCommandSlotBag,
+  SemanticMatchResult,
+  SemanticTraceEvent,
+} from './v3/semanticCommand'
+import type { VoiceConversationSession } from './v3/VoiceConversationSession'
+import type {
+  SpeechToTextAlternative,
+  SpeechToTextProvider,
+  SpeechToTextResult,
+} from './types/speechToText'
+
+type VoiceCandidate = SpeechToTextAlternative & {
+  rank: number
+  resolves: boolean
+  recoverableRecognitionError: boolean
+  ignoredByGate: boolean
+}
+
+export type VoiceCommandExecutionOptions = {
+  autoExecuteVoiceCommands?: boolean
+  commandGateEnabled?: boolean
+  multiCommandEnabled?: boolean
+  nlpIntentAssistedEnabled?: boolean
+  contextualUiActionsEnabled?: boolean
+  semanticVoiceV3Enabled?: boolean
+  semanticVoiceV3ExecutionEnabled?: boolean
+  /**
+   * Continuous-voice lifecycle guard. When it becomes false, processing may
+   * finish for diagnostics but must not mutate voice/session or GameState.
+   */
+  isExecutionAllowed?: () => boolean
+  conversationSession?: VoiceConversationSession
+  languagePack?: VoiceLanguagePack
+}
+
+const commandGateEnabled = (
+  options: Pick<VoiceCommandExecutionOptions, 'commandGateEnabled'> = {},
+): boolean =>
+  options.commandGateEnabled ?? VOICE_FEATURE_FLAGS.commandGateEnabled
+
+const multiCommandEnabled = (
+  options: Pick<VoiceCommandExecutionOptions, 'multiCommandEnabled'> = {},
+): boolean =>
+  options.multiCommandEnabled ?? VOICE_FEATURE_FLAGS.multiCommandEnabled
+
+const nlpIntentAssistedEnabled = (
+  options: Pick<
+    VoiceCommandExecutionOptions,
+    'nlpIntentAssistedEnabled' | 'languagePack'
+  > = {},
+): boolean =>
+  (options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK).id === 'es' &&
+  (options.nlpIntentAssistedEnabled ??
+    VOICE_FEATURE_FLAGS.nlpIntentAssistedEnabled)
+
+const contextualUiActionsEnabled = (
+  options: Pick<
+    VoiceCommandExecutionOptions,
+    'contextualUiActionsEnabled'
+  > = {},
+): boolean =>
+  options.contextualUiActionsEnabled ??
+  VOICE_FEATURE_FLAGS.contextualUiActionsEnabled
+
+const semanticVoiceV3Enabled = (
+  options: Pick<VoiceCommandExecutionOptions, 'semanticVoiceV3Enabled'> = {},
+): boolean =>
+  options.semanticVoiceV3Enabled ?? VOICE_FEATURE_FLAGS.semanticVoiceV3Enabled
+
+const executionStillAllowed = (
+  options: Pick<
+    VoiceCommandExecutionOptions,
+    'autoExecuteVoiceCommands' | 'isExecutionAllowed'
+  >,
+): boolean =>
+  (options.autoExecuteVoiceCommands ?? true) === false ||
+  options.isExecutionAllowed?.() !== false
+
+const semanticVoiceV3ExecutionEnabled = (
+  options: Pick<
+    VoiceCommandExecutionOptions,
+    'semanticVoiceV3ExecutionEnabled'
+  > = {},
+): boolean =>
+  options.semanticVoiceV3ExecutionEnabled ??
+  VOICE_FEATURE_FLAGS.semanticVoiceV3ExecutionEnabled
+
+const classifyAssistedVoiceIntent = async (
+  transcript: string,
+): Promise<VoiceIntentClassification | undefined> => {
+  try {
+    const { classifyVoiceIntent } = await import('./nlp/voiceIntentClassifier')
+    return await classifyVoiceIntent(transcript)
+  } catch {
+    // NLP assistance is deliberately fail-open. The deterministic voice path
+    // remains usable if the optional classifier cannot load or initialize.
+    return undefined
+  }
+}
+
+const speechCandidates = (
+  speech: Extract<SpeechToTextResult, { status: 'SUCCESS' }>,
+  languagePack: VoiceLanguagePack = DEFAULT_VOICE_LANGUAGE_PACK,
+): SpeechToTextAlternative[] => {
+  const candidates = [
+    { transcript: speech.transcript, confidence: speech.confidence },
+    ...(speech.alternatives ?? []),
+  ]
+  const unique = new Map<string, SpeechToTextAlternative>()
+  for (const candidate of candidates) {
+    const transcript = candidate.transcript.trim()
+    if (!transcript) continue
+    const key = transcript.toLocaleLowerCase(languagePack.textLocale)
+    const previous = unique.get(key)
+    if (
+      !previous ||
+      (typeof candidate.confidence === 'number' &&
+        (typeof previous.confidence !== 'number' ||
+          candidate.confidence > previous.confidence))
+    )
+      unique.set(key, { ...candidate, transcript })
+  }
+  return [...unique.values()]
+}
+
+const evaluateVoiceCandidate = (
+  candidate: SpeechToTextAlternative,
+  rank: number,
+  game: VoiceExecutionTarget,
+  useCommandGate: boolean,
+  languagePack: VoiceLanguagePack,
+): VoiceCandidate => {
+  if (useCommandGate) {
+    const gate = evaluateVoiceCommandGate(candidate.transcript, languagePack)
+    if (gate.decision === 'IGNORE')
+      return {
+        ...candidate,
+        rank,
+        resolves: false,
+        recoverableRecognitionError: false,
+        ignoredByGate: true,
+      }
+  }
+
+  const normalizedTranscript = normalizeSpokenCommand(
+    normalizeVoiceTranscript(candidate.transcript, game),
+    languagePack,
+  )
+  const parsed = parseCommandForGame(normalizedTranscript, game)
+  if (parsed.status === 'error')
+    return {
+      ...candidate,
+      rank,
+      resolves: false,
+      recoverableRecognitionError: parsed.error.code === 'UNKNOWN_COMMAND',
+      ignoredByGate: false,
+    }
+
+  const resolved = resolveCommand(game, parsed.command)
+  return {
+    ...candidate,
+    rank,
+    resolves: resolved.status !== 'error',
+    recoverableRecognitionError:
+      resolved.status === 'error' && resolved.error.code === 'CARD_NOT_FOUND',
+    ignoredByGate: false,
+  }
+}
+
+/**
+ * Conservative N-best selection: a lower-ranked hypothesis may replace the
+ * provider's primary transcript only when the primary could not be understood
+ * as a command (or names a card that does not exist in the active deck) and the
+ * alternative resolves cleanly. We do not reinterpret ordinary legality errors
+ * such as ALREADY_TAPPED or INVALID_TIMING as recognition mistakes.
+ *
+ * Multi-command primaries are kept intact. Replacing a full declaration such
+ * as "bajo isla y paso" with a lower-ranked single command would silently drop
+ * player intent, which is worse than accepting a slightly less polished N-best
+ * hypothesis.
+ */
+export const selectVoiceRecognitionCandidate = (
+  speech: Extract<SpeechToTextResult, { status: 'SUCCESS' }>,
+  game: VoiceExecutionTarget,
+  options: Pick<
+    VoiceCommandExecutionOptions,
+    'commandGateEnabled' | 'multiCommandEnabled' | 'languagePack'
+  > = {},
+): SpeechToTextAlternative => {
+  const candidates = speechCandidates(
+    speech,
+    options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+  )
+  const primaryInput = candidates[0]
+  if (!primaryInput)
+    return { transcript: speech.transcript, confidence: speech.confidence }
+  if (
+    multiCommandEnabled(options) &&
+    segmentVoiceCommandsForGame(
+      primaryInput.transcript,
+      game,
+      options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+    ).length > 1
+  )
+    return primaryInput
+
+  const useCommandGate = commandGateEnabled(options)
+  const evaluated = candidates.map((candidate, rank) =>
+    evaluateVoiceCandidate(
+      candidate,
+      rank,
+      game,
+      useCommandGate,
+      options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+    ),
+  )
+  const primary = evaluated[0]
+  // Never let N-best reinterpret a phrase that the gate intentionally ignored.
+  if (primary.ignoredByGate) return primary
+  if (primary.resolves || !primary.recoverableRecognitionError) return primary
+
+  const replacement = evaluated
+    .slice(1)
+    .filter((candidate) => candidate.resolves && !candidate.ignoredByGate)
+    .sort((left, right) => {
+      const confidenceDifference =
+        (right.confidence ?? -1) - (left.confidence ?? -1)
+      return confidenceDifference || left.rank - right.rank
+    })[0]
+  return replacement ?? primary
+}
+
+export type VoiceExecutionTarget = GameState & {
+  dispatchMany: (
+    actions: import('../actions/gameActions').GameAction[],
+    context?: TabletopCommandContext,
+  ) => void
+  executeTabletopCommand: (
+    command: ParsedCommand,
+    context?: TabletopCommandContext,
+  ) => TabletopExecutionResult
+  undoLastAction: (context?: TabletopCommandContext) => void
+  resolvePendingAbility: (
+    pendingId: string,
+    context?: TabletopCommandContext,
+  ) => void
+  resolvePendingAbilityPayment: (
+    pendingId: string,
+    selection: 'PAID' | 'NOT_PAID',
+    context?: TabletopCommandContext,
+  ) => void
+  ignorePendingAbility: (
+    pendingId: string,
+    context?: TabletopCommandContext,
+  ) => void
+  resolvePendingDecision: (
+    decisionId: string,
+    selection: string,
+    context?: TabletopCommandContext,
+  ) => void
+  /**
+   * Optional live-state snapshot used by semantic multi-command execution.
+   * Zustand-backed targets provide it so every clause is matched against the
+   * GameState produced by the previous clause, not the utterance-start snapshot.
+   */
+  getCurrentGameState?: () => GameState
+}
+
+const currentVoiceExecutionTarget = (
+  target: VoiceExecutionTarget,
+): VoiceExecutionTarget => {
+  const current = target.getCurrentGameState?.()
+  if (!current) return target
+  return {
+    ...current,
+    dispatchMany: target.dispatchMany,
+    executeTabletopCommand: target.executeTabletopCommand,
+    undoLastAction: target.undoLastAction,
+    resolvePendingAbility: target.resolvePendingAbility,
+    resolvePendingAbilityPayment: target.resolvePendingAbilityPayment,
+    ignorePendingAbility: target.ignorePendingAbility,
+    resolvePendingDecision: target.resolvePendingDecision,
+    getCurrentGameState: target.getCurrentGameState,
+  }
+}
+
+export type VoiceCommandHistoryEntry = {
+  source: 'VOICE'
+  rawTranscript: string
+  normalizedTranscript: string
+  confidence?: number
+  provider: string
+  parsed: string
+  entity?: string
+  result: string
+  successful: boolean
+  durationMs: number
+  ignored?: boolean
+  gateReason?: VoiceCommandGateReason
+  nlpIntent?: string
+  nlpScore?: number
+  nlpDecision?: VoiceNlpDecision
+  semanticIntent?: string
+  semanticScore?: number
+  semanticTrace?: SemanticTraceEvent[]
+  semanticDebug?: string[]
+  semanticAmbiguitySource?: 'ENTITY' | 'ASR' | 'CONTEXT'
+  semanticDecision?:
+    | 'EXECUTED'
+    | 'SHADOW'
+    | 'AMBIGUOUS'
+    | 'UNSAFE'
+    | 'REJECTED'
+    | 'NO_MATCH'
+    | 'INCOMPLETE'
+    | 'CANCELLED'
+  v2Parsed?: string
+  /** P3.0 observational routing data. Never participates in matching/execution. */
+  routing?: VoiceRoutingTelemetry
+}
+
+const semanticRoutingFamily = (match: SemanticMatchResult): string => {
+  if (match.status === 'MATCHED') return match.command.intent
+  if (match.status === 'INCOMPLETE') return match.intent
+  if (match.status === 'REJECTED_CONTEXT') return match.intent ?? 'CONTEXT'
+  if (match.status === 'AMBIGUOUS') {
+    const intents = [
+      ...new Set(match.commands.map((command) => command.intent)),
+    ]
+    return intents.length === 1 ? intents[0] : 'MULTI_SEMANTIC'
+  }
+  if (match.status === 'UNSAFE') return 'SAFETY'
+  return 'UNKNOWN'
+}
+
+const semanticRoutingResult = (
+  match: SemanticMatchResult,
+): VoiceV3RoutingResult => match.status
+
+const routingTelemetry = (
+  source: VoiceRoutingTelemetry['source'],
+  v3Result: VoiceV3RoutingResult,
+  family: string,
+  fallbackReason?: VoiceFallbackReason,
+  legacyParsed?: string,
+): VoiceRoutingTelemetry => ({
+  source,
+  v3Result,
+  family,
+  fallbackReason,
+  legacyParsed,
+})
+
+const legacyFallbackRouting = (
+  match: SemanticMatchResult | undefined,
+  deferStructuredCast: boolean,
+  legacyParsed: string,
+  fallbackReasonOverride?: VoiceFallbackReason,
+): VoiceRoutingTelemetry =>
+  routingTelemetry(
+    'V2_FALLBACK',
+    match ? semanticRoutingResult(match) : 'DISABLED',
+    match && match.status !== 'NO_MATCH'
+      ? semanticRoutingFamily(match)
+      : legacyParsed || 'UNKNOWN',
+    fallbackReasonOverride ??
+      (deferStructuredCast ? 'STRUCTURED_CAST_DEFERRED' : 'V3_NO_MATCH'),
+    legacyParsed,
+  )
+
+const rejectedRouting = (
+  match: SemanticMatchResult | undefined,
+  legacyParsed?: string,
+): VoiceRoutingTelemetry =>
+  routingTelemetry(
+    'REJECTED',
+    match ? semanticRoutingResult(match) : 'DISABLED',
+    match && match.status !== 'NO_MATCH'
+      ? semanticRoutingFamily(match)
+      : legacyParsed && legacyParsed !== '—'
+        ? legacyParsed
+        : 'UNKNOWN',
+    undefined,
+    legacyParsed && legacyParsed !== '—' ? legacyParsed : undefined,
+  )
+
+type SemanticRecognitionCandidate = SpeechToTextAlternative & {
+  rank: number
+  match: SemanticMatchResult
+  semanticDebug?: string[]
+}
+
+const cancelledVoiceEntry = (
+  rawTranscript: string,
+  normalizedTranscript: string,
+  speech: { confidence?: number; provider: string },
+  parsed: string,
+  startedAt: number,
+  semanticIntent?: string,
+): VoiceCommandHistoryEntry => ({
+  source: 'VOICE',
+  rawTranscript,
+  normalizedTranscript,
+  confidence: speech.confidence,
+  provider: speech.provider,
+  parsed,
+  result: '↷ Cancelado: la sesión de voz ya no está activa.',
+  successful: false,
+  durationMs: Date.now() - startedAt,
+  ignored: true,
+  semanticIntent,
+  semanticDecision: semanticIntent ? 'CANCELLED' : undefined,
+})
+
+const semanticCommandKey = (candidate: SemanticCommand): string =>
+  `${candidate.intent}:${JSON.stringify(candidate.slots)}`
+
+const semanticCommandClarificationLabel = (
+  candidate: SemanticCommand,
+): string => {
+  const slots = candidate.slots as SemanticCommandSlotBag
+  if (candidate.intent === 'DECLARE_BLOCKERS') {
+    const blockers = slots.cards?.join(' y ') ?? slots.card
+    if (slots.none) return 'sin bloqueos'
+    if (slots.attacker && blockers)
+      return `bloquear ${slots.attacker} con ${blockers}`
+  }
+  if (candidate.intent === 'DECLARE_ATTACKERS') {
+    if (slots.none) return 'no atacar'
+    if (slots.all)
+      return slots.defender
+        ? `atacar a ${slots.defender} con todos`
+        : 'atacar con todos'
+    const attackers = slots.cards?.join(' y ') ?? slots.card
+    if (attackers)
+      return slots.defender
+        ? `atacar a ${slots.defender} con ${attackers}`
+        : `atacar con ${attackers}`
+  }
+  if (candidate.intent === 'PENDING_DECISION')
+    return slots.uiEntity ?? slots.selection ?? candidate.intent
+
+  const entity =
+    slots.card ??
+    slots.attacker ??
+    slots.defender ??
+    slots.uiEntity ??
+    (slots.cards?.length ? slots.cards.join(' y ') : undefined)
+  return entity ? `${candidate.intent}: ${entity}` : candidate.intent
+}
+
+const semanticInterpretations = (
+  match: SemanticMatchResult,
+): SemanticCommand[] =>
+  match.status === 'MATCHED'
+    ? [match.command]
+    : match.status === 'AMBIGUOUS'
+      ? match.commands
+      : []
+
+const matchNormalizedText = (match: SemanticMatchResult): string =>
+  match.status === 'MATCHED'
+    ? match.command.normalizedText
+    : match.normalizedText
+
+const formatAsrConfidence = (confidence: number | undefined): string =>
+  typeof confidence === 'number' ? confidence.toFixed(3) : 'n/a'
+
+const entityResolutionDebugSummary = (command: SemanticCommand): string => {
+  const event = [...(command.trace ?? [])]
+    .reverse()
+    .find(
+      (
+        entry,
+      ): entry is Extract<SemanticTraceEvent, { kind: 'ENTITY_RESOLUTION' }> =>
+        entry.kind === 'ENTITY_RESOLUTION',
+    )
+  if (!event) return 'entity=none'
+  return [
+    `entity=${event.canonical}`,
+    `method=${event.method}`,
+    event.evidenceKind ? `evidence=${event.evidenceKind}` : undefined,
+    `entityScore=${event.score.toFixed(1)}`,
+    typeof event.marginToSecond === 'number'
+      ? `entityMargin=${event.marginToSecond.toFixed(3)}`
+      : undefined,
+    typeof event.candidateCount === 'number'
+      ? `entityCandidates=${event.candidateCount}`
+      : undefined,
+  ]
+    .filter((part): part is string => Boolean(part))
+    .join(' ')
+}
+
+const semanticHypothesisDebugLines = (
+  evaluated: SemanticRecognitionCandidate[],
+): string[] =>
+  evaluated.flatMap((candidate) => {
+    const interpretations = semanticInterpretations(candidate.match)
+    if (!interpretations.length)
+      return [
+        `ASR #${candidate.rank + 1} \"${candidate.transcript}\" conf=${formatAsrConfidence(candidate.confidence)} -> ${candidate.match.status}`,
+      ]
+    return interpretations.map((command, interpretationIndex) => {
+      const label = semanticCommandClarificationLabel(command)
+      const strength = hypothesisStrength(command, candidate)
+      return `ASR #${candidate.rank + 1}.${interpretationIndex + 1} \"${candidate.transcript}\" conf=${formatAsrConfidence(candidate.confidence)} -> ${command.intent} [${label}] semantic=${command.score.toFixed(1)} ${entityResolutionDebugSummary(command)} strength=${strength.toFixed(2)}`
+    })
+  })
+
+const semanticGroupDebugLines = (
+  rankedGroups: RankedSemanticGroup[],
+): string[] =>
+  rankedGroups.map((group, index) => {
+    const supportRanks = group.supporters
+      .map((supporter) => supporter.rank + 1)
+      .join(',')
+    return `N-BEST #${index + 1} ${semanticCommandClarificationLabel(group.command)} intent=${group.command.intent} strength=${group.strength.toFixed(2)} supporters=${supportRanks || 'none'}`
+  })
+
+const N_BEST_DOMINANCE_MARGIN = 8
+const N_BEST_CONFIDENCE_WEIGHT = 12
+const N_BEST_CONSENSUS_BONUS = 2.5
+
+const entityResolutionMethodBonus = (command: SemanticCommand): number => {
+  const methods = (command.trace ?? [])
+    .filter(
+      (
+        event,
+      ): event is Extract<SemanticTraceEvent, { kind: 'ENTITY_RESOLUTION' }> =>
+        event.kind === 'ENTITY_RESOLUTION',
+    )
+    .map((event) => event.method)
+  if (!methods.length) return 0
+  const bonus: Record<string, number> = {
+    CANONICAL_EXACT: 4,
+    CANONICAL_COMPACT: 3.5,
+    ALIAS_EXACT: 3,
+    ALIAS_COMPACT: 2.5,
+    CONTEXTUAL_FRAGMENT: 1.5,
+    FUSE: 0.5,
+    COMPACT_EDIT: 0,
+  }
+  return Math.max(...methods.map((method) => bonus[method] ?? 0))
+}
+
+const entityResolutionEvidenceBonus = (command: SemanticCommand): number => {
+  const evidenceKinds = (command.trace ?? [])
+    .filter(
+      (
+        event,
+      ): event is Extract<SemanticTraceEvent, { kind: 'ENTITY_RESOLUTION' }> =>
+        event.kind === 'ENTITY_RESOLUTION',
+    )
+    .map((event) => event.evidenceKind)
+    .filter((kind): kind is string => Boolean(kind))
+  if (!evidenceKinds.length) return 0
+  const bonus: Record<string, number> = {
+    CANONICAL_NAME: 3,
+    LOCALIZED_NAME: 2.75,
+    CARD_FACE: 2.75,
+    VISUAL_LABEL: 2.5,
+    PENDING_CHOICE: 2.5,
+    ORDINAL_REFERENCE: 2.25,
+    COMPOSITE_REFERENCE: 1.5,
+    GENERIC_ALIAS: 1,
+    ROLE: 0.25,
+    TYPE: 0,
+    SUBTYPE: 0,
+  }
+  return Math.max(...evidenceKinds.map((kind) => bonus[kind] ?? 0))
+}
+
+const normalizedAsrConfidence = (confidence: number | undefined): number =>
+  typeof confidence === 'number' ? Math.max(0, Math.min(1, confidence)) : 0
+
+const hypothesisStrength = (
+  command: SemanticCommand,
+  supporter: SemanticRecognitionCandidate,
+): number =>
+  command.score +
+  entityResolutionMethodBonus(command) +
+  entityResolutionEvidenceBonus(command) +
+  normalizedAsrConfidence(supporter.confidence) * N_BEST_CONFIDENCE_WEIGHT +
+  Math.max(0, 2 - supporter.rank * 0.75)
+
+type SemanticSupport = {
+  candidate: SemanticRecognitionCandidate
+  command: SemanticCommand
+}
+
+type RankedSemanticGroup = {
+  command: SemanticCommand
+  supporters: SemanticRecognitionCandidate[]
+  bestSupporter: SemanticRecognitionCandidate
+  strength: number
+}
+
+const rankSemanticGroup = (
+  supports: SemanticSupport[],
+): RankedSemanticGroup => {
+  const rankedSupports = [...supports]
+    .map((support) => ({
+      support,
+      strength: hypothesisStrength(support.command, support.candidate),
+    }))
+    .sort(
+      (left, right) =>
+        right.strength - left.strength ||
+        left.support.candidate.rank - right.support.candidate.rank,
+    )
+  const best = rankedSupports[0]
+  return {
+    command: best.support.command,
+    supporters: supports.map(({ candidate }) => candidate),
+    bestSupporter: best.support.candidate,
+    strength:
+      best.strength + Math.max(0, supports.length - 1) * N_BEST_CONSENSUS_BONUS,
+  }
+}
+
+const appendAsrSelectionTrace = (
+  command: SemanticCommand,
+  group: RankedSemanticGroup,
+  decision: 'DOMINANT' | 'CONSENSUS' | 'AMBIGUOUS',
+  runnerUpStrength?: number,
+): SemanticCommand => ({
+  ...command,
+  trace: [
+    ...(command.trace ?? []),
+    {
+      kind: 'ASR_HYPOTHESIS',
+      rank: group.bestSupporter.rank,
+      ...(typeof group.bestSupporter.confidence === 'number'
+        ? { confidence: group.bestSupporter.confidence }
+        : {}),
+    },
+    {
+      kind: 'ASR_SELECTION',
+      decision,
+      strength: Number(group.strength.toFixed(2)),
+      ...(typeof runnerUpStrength === 'number'
+        ? { runnerUpStrength: Number(runnerUpStrength.toFixed(2)) }
+        : {}),
+      supporters: group.supporters.length,
+    },
+  ],
+})
+
+/**
+ * Global N-best semantic selection. Every provider hypothesis is interpreted
+ * against the same GameState before execution. Equivalent semantic commands
+ * collapse. Competing commands stay AMBIGUOUS unless one has a clear, explicit
+ * dominance margin from semantic/entity evidence plus ASR support; provider
+ * rank alone is never sufficient to win.
+ */
+export const selectSemanticRecognitionCandidate = (
+  speech: Extract<SpeechToTextResult, { status: 'SUCCESS' }>,
+  game: VoiceExecutionTarget,
+  languagePack: VoiceLanguagePack = DEFAULT_VOICE_LANGUAGE_PACK,
+): SemanticRecognitionCandidate => {
+  const candidates = speechCandidates(speech, languagePack)
+  const evaluated = candidates.map((candidate, rank) => ({
+    ...candidate,
+    rank,
+    match: matchSemanticVoiceCommand(candidate.transcript, game, languagePack),
+  }))
+  const primary = evaluated[0] ?? {
+    transcript: speech.transcript,
+    confidence: speech.confidence,
+    rank: 0,
+    match: matchSemanticVoiceCommand(speech.transcript, game, languagePack),
+  }
+
+  // Safety is a hard gate on the provider's primary understanding. A lower ASR
+  // hypothesis must never rescue a phrase the primary transcript makes unsafe.
+  if (primary.match.status === 'UNSAFE')
+    return {
+      ...primary,
+      semanticDebug: semanticHypothesisDebugLines(evaluated),
+    }
+
+  const bySemanticKey = new Map<string, SemanticSupport[]>()
+  for (const candidate of evaluated)
+    for (const interpreted of semanticInterpretations(candidate.match)) {
+      const key = semanticCommandKey(interpreted)
+      const support: SemanticSupport = { candidate, command: interpreted }
+      const existing = bySemanticKey.get(key)
+      if (existing) existing.push(support)
+      else bySemanticKey.set(key, [support])
+    }
+
+  const semanticDebug = [
+    `N-BEST DEBUG selector=p2.5 hypotheses=${evaluated.length} groups=${bySemanticKey.size}`,
+    ...semanticHypothesisDebugLines(evaluated),
+  ]
+  const rankedGroups = [...bySemanticKey.values()]
+    .map(rankSemanticGroup)
+    .sort(
+      (left, right) =>
+        right.strength - left.strength ||
+        left.bestSupporter.rank - right.bestSupporter.rank,
+    )
+
+  if (rankedGroups.length > 1) {
+    const [winner, runnerUp] = rankedGroups
+    const delta = winner.strength - runnerUp.strength
+    if (delta >= N_BEST_DOMINANCE_MARGIN) {
+      return {
+        ...winner.bestSupporter,
+        semanticDebug: [
+          ...semanticDebug,
+          ...semanticGroupDebugLines(rankedGroups),
+          `N-BEST DECISION DOMINANT delta=${delta.toFixed(2)} threshold=${N_BEST_DOMINANCE_MARGIN.toFixed(2)}`,
+        ],
+        match: {
+          status: 'MATCHED',
+          command: appendAsrSelectionTrace(
+            winner.command,
+            winner,
+            'DOMINANT',
+            runnerUp.strength,
+          ),
+        },
+      }
+    }
+
+    const commands = rankedGroups.map((group) =>
+      appendAsrSelectionTrace(
+        group.command,
+        group,
+        'AMBIGUOUS',
+        group === winner ? runnerUp.strength : winner.strength,
+      ),
+    )
+    const competingRanks = new Set(
+      rankedGroups.flatMap((group) =>
+        group.supporters.map((item) => item.rank),
+      ),
+    )
+    const ambiguitySource =
+      competingRanks.size > 1
+        ? 'ASR'
+        : primary.match.status === 'AMBIGUOUS'
+          ? (primary.match.ambiguitySource ?? 'CONTEXT')
+          : 'CONTEXT'
+    return {
+      ...primary,
+      semanticDebug: [
+        ...semanticDebug,
+        ...semanticGroupDebugLines(rankedGroups),
+        `N-BEST DECISION AMBIGUOUS source=${ambiguitySource} delta=${delta.toFixed(2)} threshold=${N_BEST_DOMINANCE_MARGIN.toFixed(2)}`,
+      ],
+      match: {
+        status: 'AMBIGUOUS',
+        normalizedText: matchNormalizedText(primary.match),
+        commands,
+        description:
+          ambiguitySource === 'ASR'
+            ? `Las alternativas ASR producen ${commands.length} interpretaciones semánticas fuertes sin una dominante clara.`
+            : `La frase produce ${commands.length} interpretaciones semánticas compatibles y necesita aclaración.`,
+        ambiguitySource,
+        clarification: {
+          kind: 'INTERPRETATION',
+          prompt: 'Aclara qué interpretación querías ejecutar.',
+          choices: commands.map((command, index) => ({
+            id: `asr:${index}`,
+            label: semanticCommandClarificationLabel(command),
+            aliases: [
+              semanticCommandClarificationLabel(command),
+              command.intent,
+            ],
+            command,
+          })),
+        },
+      },
+    }
+  }
+
+  if (rankedGroups.length === 1) {
+    const [group] = rankedGroups
+    return {
+      ...group.bestSupporter,
+      semanticDebug: [
+        ...semanticDebug,
+        ...semanticGroupDebugLines(rankedGroups),
+        `N-BEST DECISION CONSENSUS supporters=${group.supporters.length}`,
+      ],
+      match: {
+        status: 'MATCHED',
+        command: appendAsrSelectionTrace(group.command, group, 'CONSENSUS'),
+      },
+    }
+  }
+
+  return { ...primary, semanticDebug }
+}
+
+const v2ParsedForComparison = (
+  transcript: string,
+  game: VoiceExecutionTarget,
+  languagePack: VoiceLanguagePack,
+): string => {
+  const normalized = normalizeSpokenCommand(
+    normalizeVoiceTranscript(transcript, game),
+    languagePack,
+  )
+  const parsed = parseCommandForGame(normalized, game)
+  return parsed.status === 'parsed' ? parsed.command.type : '—'
+}
+
+/**
+ * Temporary migration guard: V2 still owns CAST_SPELL syntax that carries an
+ * inline target or an explicit library-top source. V3 must not shadow that
+ * richer syntax merely because it recognizes the leading play/cast verb.
+ */
+const shouldDeferStructuredCastToLegacy = (
+  transcript: string,
+  game: VoiceExecutionTarget,
+  languagePack: VoiceLanguagePack,
+): boolean => {
+  const normalized = normalizeSpokenCommand(
+    normalizeVoiceTranscript(transcript, game),
+    languagePack,
+  )
+  const parsed = parseCommand(normalized)
+  return (
+    parsed.status === 'parsed' &&
+    parsed.command.type === 'CAST_SPELL' &&
+    (Boolean(parsed.command.targetQuery) ||
+      parsed.command.fromZone === 'library')
+  )
+}
+
+const gameStateSemanticTrace = (
+  game: VoiceExecutionTarget,
+): SemanticTraceEvent => ({
+  kind: 'GAME_STATE',
+  activePlayerId: game.activePlayerId,
+  turn: game.turn,
+  step: game.turnState.step,
+  stackDepth: game.stack.length,
+  pendingDecisionCount: game.pendingDecisions.length,
+  cardCount: game.cards.length,
+})
+
+const semanticHistoryEntry = (
+  selected: SemanticRecognitionCandidate,
+  speech: Pick<Extract<SpeechToTextResult, { status: 'SUCCESS' }>, 'provider'>,
+  game: VoiceExecutionTarget,
+  options: VoiceCommandExecutionOptions,
+): VoiceCommandHistoryEntry | undefined => {
+  const startedAt = Date.now()
+  const { match } = selected
+  if (match.status === 'NO_MATCH') return undefined
+  if (
+    shouldDeferStructuredCastToLegacy(
+      selected.transcript,
+      game,
+      options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+    )
+  )
+    return undefined
+  if (!executionStillAllowed(options))
+    return cancelledVoiceEntry(
+      selected.transcript,
+      match.status === 'MATCHED'
+        ? match.command.normalizedText
+        : match.normalizedText,
+      { confidence: selected.confidence, provider: speech.provider },
+      'V3_CANCELLED',
+      startedAt,
+      match.status === 'MATCHED'
+        ? match.command.intent
+        : match.status === 'INCOMPLETE'
+          ? match.intent
+          : undefined,
+    )
+  // Phase-1 shadow must be observational only. When execution is disabled V3
+  // never blocks, rewrites or authorizes the V2 path.
+  if (!semanticVoiceV3ExecutionEnabled(options)) return undefined
+  if (match.status === 'INCOMPLETE') {
+    options.conversationSession?.rememberIncomplete(match, game)
+    return {
+      source: 'VOICE',
+      rawTranscript: selected.transcript,
+      normalizedTranscript: match.normalizedText,
+      confidence: selected.confidence,
+      provider: speech.provider,
+      parsed: 'V3_INCOMPLETE',
+      result: `↳ V3_INCOMPLETE: ${match.description} Puedes decir la entidad a continuación.`,
+      successful: false,
+      durationMs: Date.now() - startedAt,
+      ignored: true,
+      semanticIntent: match.intent,
+      semanticDebug: selected.semanticDebug,
+      semanticDecision: 'INCOMPLETE',
+      routing: routingTelemetry('REJECTED', 'INCOMPLETE', match.intent),
+      v2Parsed: v2ParsedForComparison(
+        selected.transcript,
+        game,
+        options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+      ),
+    }
+  }
+  if (match.status === 'REJECTED_CONTEXT')
+    return {
+      source: 'VOICE',
+      rawTranscript: selected.transcript,
+      normalizedTranscript: match.normalizedText,
+      confidence: selected.confidence,
+      provider: speech.provider,
+      parsed: 'V3_CONTEXT',
+      result: `⚠ V3_CONTEXT: ${match.description}`,
+      successful: false,
+      durationMs: Date.now() - startedAt,
+      semanticIntent: match.intent,
+      semanticTrace: [...(match.trace ?? []), gameStateSemanticTrace(game)],
+      semanticDebug: selected.semanticDebug,
+      semanticDecision: 'REJECTED',
+      routing: routingTelemetry(
+        'REJECTED',
+        'REJECTED_CONTEXT',
+        match.intent ?? 'CONTEXT',
+      ),
+      v2Parsed: v2ParsedForComparison(
+        selected.transcript,
+        game,
+        options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+      ),
+    }
+  if (match.status === 'UNSAFE')
+    return {
+      source: 'VOICE',
+      rawTranscript: selected.transcript,
+      normalizedTranscript: match.normalizedText,
+      confidence: selected.confidence,
+      provider: speech.provider,
+      parsed: '—',
+      result: `↷ Ignorado por V3 safety: ${match.reason}`,
+      successful: false,
+      durationMs: Date.now() - startedAt,
+      ignored: true,
+      semanticDebug: selected.semanticDebug,
+      semanticDecision: 'UNSAFE',
+      routing: routingTelemetry('REJECTED', 'UNSAFE', 'SAFETY'),
+      v2Parsed: v2ParsedForComparison(
+        selected.transcript,
+        game,
+        options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+      ),
+    }
+  if (match.status === 'AMBIGUOUS') {
+    options.conversationSession?.rememberAmbiguous(match, game)
+    return {
+      source: 'VOICE',
+      rawTranscript: selected.transcript,
+      normalizedTranscript: match.normalizedText,
+      confidence: selected.confidence,
+      provider: speech.provider,
+      parsed: 'V3_AMBIGUOUS',
+      result: `⚠ V3_AMBIGUOUS[${match.ambiguitySource ?? 'CONTEXT'}]: ${match.description}`,
+      successful: false,
+      durationMs: Date.now() - startedAt,
+      semanticTrace: [
+        ...match.commands.flatMap((command) => command.trace ?? []),
+        gameStateSemanticTrace(game),
+      ],
+      semanticDebug: selected.semanticDebug,
+      semanticAmbiguitySource: match.ambiguitySource ?? 'CONTEXT',
+      semanticDecision: 'AMBIGUOUS',
+      routing: routingTelemetry(
+        'REJECTED',
+        'AMBIGUOUS',
+        semanticRoutingFamily(match),
+      ),
+      v2Parsed: v2ParsedForComparison(
+        selected.transcript,
+        game,
+        options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+      ),
+    }
+  }
+
+  const semantic = match.command
+  const result = executeSemanticCommand(semantic, game, {
+    execute: options.autoExecuteVoiceCommands ?? true,
+    executionContext: {
+      source: 'VOICE',
+      rawInput: selected.transcript,
+      normalizedInput: normalizeSpokenCommand(
+        normalizeVoiceTranscript(selected.transcript, game),
+        options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+      ),
+      provider: speech.provider,
+      confidence: selected.confidence,
+    },
+  })
+  const common = {
+    source: 'VOICE' as const,
+    rawTranscript: selected.transcript,
+    // Keep the familiar debug normalization for UI/history only. V3 matching
+    // itself does not depend on the legacy spoken normalizer.
+    normalizedTranscript: normalizeSpokenCommand(
+      normalizeVoiceTranscript(selected.transcript, game),
+      options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+    ),
+    confidence: selected.confidence,
+    provider: speech.provider,
+    parsed:
+      result.parsedCommand?.type ??
+      (semantic.slots as SemanticCommandSlotBag).uiParsed ??
+      semantic.intent,
+    semanticIntent: semantic.intent,
+    semanticScore: semantic.score,
+    semanticTrace: semantic.trace,
+    semanticDebug: selected.semanticDebug,
+    semanticDecision: 'EXECUTED' as const,
+    routing: routingTelemetry(
+      semantic.intent === 'PENDING_DECISION' ? 'PENDING_DECISION' : 'V3',
+      'MATCHED',
+      semantic.intent,
+    ),
+    v2Parsed: VOICE_FEATURE_FLAGS.semanticVoiceV3ShadowCompareEnabled
+      ? v2ParsedForComparison(
+          selected.transcript,
+          game,
+          options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+        )
+      : undefined,
+    durationMs: Date.now() - startedAt,
+  }
+  if (result.status === 'error')
+    return {
+      ...common,
+      result: `⚠ ${result.error.code}: ${result.error.message}`,
+      successful: false,
+    }
+  if (result.status === 'paused')
+    return {
+      ...common,
+      result: `⚠ ${result.description}`,
+      successful: false,
+    }
+  return {
+    ...common,
+    entity:
+      ('entity' in result ? result.entity : undefined) ??
+      (semantic.slots as SemanticCommandSlotBag).card,
+    result:
+      (options.autoExecuteVoiceCommands ?? true)
+        ? `✓ ${result.description}`
+        : 'Awaiting confirmation',
+    successful: options.autoExecuteVoiceCommands ?? true,
+  }
+}
+
+const contextualUiEntry = (
+  transcript: string,
+  speech: Pick<
+    Extract<SpeechToTextResult, { status: 'SUCCESS' }>,
+    'confidence' | 'provider'
+  >,
+  game: VoiceExecutionTarget,
+  options: VoiceCommandExecutionOptions,
+): VoiceCommandHistoryEntry | undefined => {
+  if (!contextualUiActionsEnabled(options)) return undefined
+  const startedAt = Date.now()
+  if (!executionStillAllowed(options))
+    return cancelledVoiceEntry(
+      transcript.trim(),
+      normalizeSpokenCommand(
+        normalizeVoiceTranscript(transcript, game),
+        options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+      ),
+      speech,
+      'UI_ACTION_CANCELLED',
+      startedAt,
+    )
+  const contextual = tryHandleVoiceUiAction(transcript, game, {
+    execute: options.autoExecuteVoiceCommands ?? true,
+    languagePack: options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+    executionContext: {
+      source: 'VOICE',
+      rawInput: transcript.trim(),
+      provider: speech.provider,
+      confidence: speech.confidence,
+    },
+  })
+  if (contextual.status === 'NO_MATCH') return undefined
+  if (contextual.status === 'AMBIGUOUS')
+    return {
+      source: 'VOICE',
+      rawTranscript: transcript.trim(),
+      normalizedTranscript: contextual.normalizedTranscript,
+      confidence: speech.confidence,
+      provider: speech.provider,
+      parsed: contextual.parsed,
+      result: `⚠ UI_ACTION_AMBIGUOUS: ${contextual.description}`,
+      successful: false,
+      durationMs: Date.now() - startedAt,
+      routing: routingTelemetry(
+        'PENDING_DECISION',
+        'DISABLED',
+        'PENDING_DECISION',
+      ),
+    }
+
+  return {
+    source: 'VOICE',
+    rawTranscript: transcript.trim(),
+    normalizedTranscript: contextual.normalizedTranscript,
+    confidence: speech.confidence,
+    provider: speech.provider,
+    parsed: contextual.parsed,
+    entity: contextual.entity,
+    result: contextual.executed
+      ? `✓ ${contextual.description}`
+      : 'Awaiting confirmation',
+    successful: contextual.executed,
+    durationMs: Date.now() - startedAt,
+    routing: routingTelemetry(
+      'PENDING_DECISION',
+      'DISABLED',
+      'PENDING_DECISION',
+    ),
+  }
+}
+
+type PreparedVoiceCommand =
+  | { status: 'READY'; input: VoiceCommandQueueInput }
+  | { status: 'STOP'; entry: VoiceCommandHistoryEntry }
+
+const prepareVoiceCommand = (
+  rawInput: string,
+  game: VoiceExecutionTarget,
+  speech: Pick<
+    Extract<SpeechToTextResult, { status: 'SUCCESS' }>,
+    'confidence' | 'provider'
+  >,
+  options: VoiceCommandExecutionOptions,
+  allowStandalonePass = false,
+): PreparedVoiceCommand => {
+  const startedAt = Date.now()
+  const rawTranscript = rawInput.trim()
+  let normalizedTranscript = normalizeSpokenCommand(
+    normalizeVoiceTranscript(rawTranscript, game),
+    options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+  )
+
+  // "paso" alone remains deliberately unsupported. Inside an utterance that
+  // was already segmented into multiple clear commands, "... y paso" is a
+  // safe shorthand for the existing PASS/NEXT_TURN command.
+  if (allowStandalonePass && normalizedTranscript === 'paso')
+    normalizedTranscript = 'paso turno'
+
+  if (commandGateEnabled(options)) {
+    const gate = evaluateVoiceCommandGate(
+      rawTranscript,
+      options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+    )
+    if (gate.decision === 'IGNORE')
+      return {
+        status: 'STOP',
+        entry: {
+          source: 'VOICE',
+          rawTranscript,
+          normalizedTranscript,
+          confidence: speech.confidence,
+          provider: speech.provider,
+          parsed: '—',
+          result: `↷ Ignorado por Command Gate: ${gate.reason}`,
+          successful: false,
+          durationMs: Date.now() - startedAt,
+          ignored: true,
+          gateReason: gate.reason,
+        },
+      }
+  }
+
+  const parsed = parseCommandForGame(normalizedTranscript, game)
+  if (parsed.status === 'error')
+    return {
+      status: 'STOP',
+      entry: {
+        source: 'VOICE',
+        rawTranscript,
+        normalizedTranscript,
+        confidence: speech.confidence,
+        provider: speech.provider,
+        parsed: '—',
+        result: `⚠ ${parsed.error.code}: ${parsed.error.message}`,
+        successful: false,
+        durationMs: Date.now() - startedAt,
+      },
+    }
+
+  return {
+    status: 'READY',
+    input: {
+      rawTranscript,
+      normalizedTranscript,
+      parsedCommand: parsed.command,
+    },
+  }
+}
+
+const nlpEntryFields = (
+  classification: VoiceIntentClassification,
+  decision: VoiceNlpDecision,
+): Pick<
+  VoiceCommandHistoryEntry,
+  'nlpIntent' | 'nlpScore' | 'nlpDecision'
+> => ({
+  nlpIntent: classification.intent,
+  nlpScore: classification.score,
+  nlpDecision: decision,
+})
+
+const nlpNotActionEntry = (
+  transcript: string,
+  speech: Pick<
+    Extract<SpeechToTextResult, { status: 'SUCCESS' }>,
+    'confidence' | 'provider'
+  >,
+  game: VoiceExecutionTarget,
+  classification: VoiceIntentClassification,
+  languagePack: VoiceLanguagePack,
+): VoiceCommandHistoryEntry => ({
+  source: 'VOICE',
+  rawTranscript: transcript.trim(),
+  normalizedTranscript: normalizeSpokenCommand(
+    normalizeVoiceTranscript(transcript.trim(), game),
+    languagePack,
+  ),
+  confidence: speech.confidence,
+  provider: speech.provider,
+  parsed: '—',
+  result: `↷ Ignorado por NLP: NOT_ACTION ${(classification.score * 100).toFixed(1)}%`,
+  successful: false,
+  durationMs: 0,
+  ignored: true,
+  ...nlpEntryFields(classification, 'BLOCK_NOT_ACTION'),
+})
+
+/**
+ * Conservative NLP-assisted preparation layered on top of the deterministic
+ * parser. Hard Command Gate decisions always win. NLP may then:
+ * - block a very-high-confidence NOT_ACTION;
+ * - reject a high-confidence disagreement with an already parsed command;
+ * - rescue an UNKNOWN_COMMAND only when a deterministic suffix parses to the
+ *   same action family predicted by NLP.
+ *
+ * Classifier failures are fail-open and preserve the pre-NLP behaviour.
+ */
+const prepareVoiceCommandAssisted = async (
+  rawInput: string,
+  game: VoiceExecutionTarget,
+  speech: Pick<
+    Extract<SpeechToTextResult, { status: 'SUCCESS' }>,
+    'confidence' | 'provider'
+  >,
+  options: VoiceCommandExecutionOptions,
+  allowStandalonePass = false,
+): Promise<PreparedVoiceCommand> => {
+  const baseline = prepareVoiceCommand(
+    rawInput,
+    game,
+    speech,
+    options,
+    allowStandalonePass,
+  )
+  if (!nlpIntentAssistedEnabled(options)) return baseline
+
+  // A hard Gate rejection is more trustworthy than statistical assistance and
+  // must never be undone by NLP suffix extraction.
+  if (baseline.status === 'STOP' && baseline.entry.ignored) return baseline
+
+  // The deterministic parser already consumes the spoken-normalized form.
+  // Classify that same semantic text after the hard Gate has inspected the raw
+  // utterance. This prevents harmless discourse such as "y tambien voy a..."
+  // from pushing NLP toward NOT_ACTION while preserving doubt/questions/
+  // negation because normalizeSpokenCommand deliberately keeps those markers.
+  const semanticClassificationInput = normalizeSpokenCommand(
+    normalizeVoiceTranscript(rawInput, game),
+    options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+  )
+  const classificationInput =
+    allowStandalonePass && semanticClassificationInput === 'paso'
+      ? 'paso turno'
+      : semanticClassificationInput || rawInput
+  const classification = await classifyAssistedVoiceIntent(classificationInput)
+  if (!classification) return baseline
+
+  if (shouldBlockAsNotAction(classification))
+    return {
+      status: 'STOP',
+      entry: nlpNotActionEntry(
+        rawInput,
+        speech,
+        game,
+        classification,
+        options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+      ),
+    }
+
+  if (baseline.status === 'READY') {
+    if (
+      classification.intent !== 'MULTI_ACTION' &&
+      shouldTreatAsHighConfidenceAction(
+        classification,
+        VOICE_NLP_THRESHOLDS.actionConflict,
+      ) &&
+      !isVoiceIntentCompatibleWithCommand(
+        classification.intent,
+        baseline.input.parsedCommand,
+      )
+    )
+      return {
+        status: 'STOP',
+        entry: {
+          source: 'VOICE',
+          rawTranscript: baseline.input.rawTranscript,
+          normalizedTranscript: baseline.input.normalizedTranscript,
+          confidence: speech.confidence,
+          provider: speech.provider,
+          parsed: baseline.input.parsedCommand.type,
+          result: `↷ Conflicto NLP/parser: ${classification.intent} ${(classification.score * 100).toFixed(1)}% vs ${baseline.input.parsedCommand.type}`,
+          successful: false,
+          durationMs: 0,
+          ignored: true,
+          ...nlpEntryFields(classification, 'CONFLICT'),
+        },
+      }
+
+    return {
+      status: 'READY',
+      input: {
+        ...baseline.input,
+        ...nlpEntryFields(classification, 'PASS'),
+      },
+    }
+  }
+
+  if (
+    classification.intent !== 'MULTI_ACTION' &&
+    shouldTreatAsHighConfidenceAction(
+      classification,
+      VOICE_NLP_THRESHOLDS.actionRescue,
+    )
+  ) {
+    const acceptsParsedCommand = (command: ParsedCommand): boolean =>
+      resolveCommand(game, command).status !== 'error'
+    const rescued =
+      rescueVoiceCommandFromIntent(rawInput, classification.intent, {
+        acceptsParsedCommand,
+      }) ??
+      recoverKnownCardCommandFromIntent(rawInput, classification.intent, game)
+    if (rescued && acceptsParsedCommand(rescued.parsedCommand))
+      return {
+        status: 'READY',
+        input: {
+          ...rescued,
+          ...nlpEntryFields(classification, 'RESCUED'),
+        },
+      }
+  }
+
+  return {
+    status: 'STOP',
+    entry: {
+      ...baseline.entry,
+      ...nlpEntryFields(classification, 'PASS'),
+    },
+  }
+}
+
+const executePreparedVoiceCommand = (
+  input: VoiceCommandQueueInput,
+  speech: Pick<
+    Extract<SpeechToTextResult, { status: 'SUCCESS' }>,
+    'confidence' | 'provider'
+  >,
+  game: VoiceExecutionTarget,
+  options: VoiceCommandExecutionOptions,
+): VoiceCommandHistoryEntry => {
+  const startedAt = Date.now()
+  if (!executionStillAllowed(options))
+    return cancelledVoiceEntry(
+      input.rawTranscript,
+      input.normalizedTranscript,
+      speech,
+      input.parsedCommand.type,
+      startedAt,
+    )
+  const entity =
+    'cardQuery' in input.parsedCommand
+      ? input.parsedCommand.cardQuery
+      : 'colorQuery' in input.parsedCommand
+        ? input.parsedCommand.colorQuery
+        : undefined
+  const autoExecute = options.autoExecuteVoiceCommands ?? true
+  const resolved = autoExecute
+    ? game.executeTabletopCommand(input.parsedCommand, {
+        source: 'VOICE',
+        rawInput: input.rawTranscript,
+        normalizedInput: input.normalizedTranscript,
+        provider: speech.provider,
+        confidence: speech.confidence,
+      })
+    : resolveCommand(game, input.parsedCommand)
+
+  if (resolved.status === 'error')
+    return {
+      source: 'VOICE',
+      rawTranscript: input.rawTranscript,
+      normalizedTranscript: input.normalizedTranscript,
+      confidence: speech.confidence,
+      provider: speech.provider,
+      nlpIntent: input.nlpIntent,
+      nlpScore: input.nlpScore,
+      nlpDecision: input.nlpDecision,
+      parsed: input.parsedCommand.type,
+      entity,
+      result: `⚠ ${resolved.error.code}: ${resolved.error.message}`,
+      successful: false,
+      durationMs: Date.now() - startedAt,
+    }
+
+  if (autoExecute && resolved.status === 'undo')
+    game.undoLastAction({
+      source: 'VOICE',
+      rawInput: input.rawTranscript,
+      normalizedInput: input.normalizedTranscript,
+      provider: speech.provider,
+      confidence: speech.confidence,
+    })
+
+  if (autoExecute && resolved.status === 'paused')
+    return {
+      source: 'VOICE',
+      rawTranscript: input.rawTranscript,
+      normalizedTranscript: input.normalizedTranscript,
+      confidence: speech.confidence,
+      provider: speech.provider,
+      nlpIntent: input.nlpIntent,
+      nlpScore: input.nlpScore,
+      nlpDecision: input.nlpDecision,
+      parsed: input.parsedCommand.type,
+      entity,
+      result: `⚠ ${resolved.description}`,
+      successful: false,
+      durationMs: Date.now() - startedAt,
+    }
+
+  return {
+    source: 'VOICE',
+    rawTranscript: input.rawTranscript,
+    normalizedTranscript: input.normalizedTranscript,
+    confidence: speech.confidence,
+    provider: speech.provider,
+    nlpIntent: input.nlpIntent,
+    nlpScore: input.nlpScore,
+    nlpDecision: input.nlpDecision,
+    parsed: input.parsedCommand.type,
+    entity,
+    result: autoExecute ? `✓ ${resolved.description}` : 'Awaiting confirmation',
+    successful: autoExecute,
+    durationMs: Date.now() - startedAt,
+  }
+}
+
+export const executeVoiceTranscript = (
+  speech: Extract<SpeechToTextResult, { status: 'SUCCESS' }>,
+  game: VoiceExecutionTarget,
+  options: VoiceCommandExecutionOptions = {},
+): VoiceCommandHistoryEntry => {
+  const currentGame = currentVoiceExecutionTarget(game)
+  const contextual = contextualUiEntry(
+    speech.transcript,
+    speech,
+    currentGame,
+    options,
+  )
+  if (contextual) return contextual
+  const prepared = prepareVoiceCommand(
+    speech.transcript,
+    currentGame,
+    speech,
+    options,
+  )
+  return prepared.status === 'STOP'
+    ? prepared.entry
+    : executePreparedVoiceCommand(prepared.input, speech, currentGame, options)
+}
+
+export type VoiceProcessingResult =
+  | {
+      status: 'SUCCESS'
+      /** Last executed/failed/ignored entry, kept for backwards compatibility. */
+      entry: VoiceCommandHistoryEntry
+      /** One entry per command that actually reached a terminal result. */
+      entries: readonly VoiceCommandHistoryEntry[]
+    }
+  | { status: 'ERROR' | 'UNAVAILABLE'; message: string }
+
+const processMultiCommandTranscript = async (
+  speech: Extract<SpeechToTextResult, { status: 'SUCCESS' }>,
+  game: VoiceExecutionTarget,
+  options: VoiceCommandExecutionOptions,
+): Promise<Extract<VoiceProcessingResult, { status: 'SUCCESS' }>> => {
+  const segments = segmentVoiceCommandsForGame(
+    speech.transcript,
+    game,
+    options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+  )
+  const inputs: VoiceCommandQueueInput[] = []
+  const leadingIgnoredEntries: VoiceCommandHistoryEntry[] = []
+  let stopEntry: VoiceCommandHistoryEntry | undefined
+
+  for (const segment of segments) {
+    const prepared = await prepareVoiceCommandAssisted(
+      segment,
+      game,
+      speech,
+      options,
+      true,
+    )
+    if (prepared.status === 'STOP') {
+      // Clause-aware continuous speech may begin with ordinary conversation and
+      // then contain an explicit declaration. Leading ignored clauses are safe
+      // to skip. Once an executable command has started, however, an ignored or
+      // failed middle clause remains fail-fast and stops everything after it.
+      if (prepared.entry.ignored && inputs.length === 0) {
+        leadingIgnoredEntries.push(prepared.entry)
+        continue
+      }
+      stopEntry = prepared.entry
+      break
+    }
+    inputs.push(prepared.input)
+  }
+
+  if (!inputs.length) {
+    if (stopEntry) {
+      const entries = [...leadingIgnoredEntries, stopEntry]
+      return { status: 'SUCCESS', entry: stopEntry, entries }
+    }
+    if (leadingIgnoredEntries.length)
+      return {
+        status: 'SUCCESS',
+        entry: leadingIgnoredEntries.at(-1)!,
+        entries: leadingIgnoredEntries,
+      }
+    const prepared = await prepareVoiceCommandAssisted(
+      speech.transcript,
+      game,
+      speech,
+      options,
+    )
+    const entry =
+      prepared.status === 'STOP'
+        ? prepared.entry
+        : executePreparedVoiceCommand(prepared.input, speech, game, options)
+    return { status: 'SUCCESS', entry, entries: [entry] }
+  }
+
+  // Preview mode never mutates GameState, so queue serialization is unnecessary
+  // and a non-executed preview must not be mistaken for a queue failure.
+  if ((options.autoExecuteVoiceCommands ?? true) === false) {
+    const entries = [
+      ...leadingIgnoredEntries,
+      ...inputs.map((input) =>
+        executePreparedVoiceCommand(input, speech, game, options),
+      ),
+    ]
+    if (stopEntry) entries.push(stopEntry)
+    return {
+      status: 'SUCCESS',
+      entry: entries.at(-1)!,
+      entries,
+    }
+  }
+
+  const queue = new VoiceCommandQueue((queued) =>
+    executePreparedVoiceCommand(queued, speech, game, options),
+  )
+  queue.enqueueMany(inputs)
+  const snapshot = await queue.whenSettled()
+  const entries = [
+    ...leadingIgnoredEntries,
+    ...snapshot.entries.flatMap((queued) =>
+      queued.result ? [queued.result] : [],
+    ),
+  ]
+
+  // A parser/gate stop that occurs after a valid prefix is surfaced only if
+  // the executable prefix completed. If execution itself failed first, that
+  // failure is the relevant stop condition; the queue has already cancelled
+  // everything that followed that failed command in this utterance.
+  const executionFailed = snapshot.entries.some(
+    (queued) => queued.status === 'failed',
+  )
+  if (!executionFailed && stopEntry) entries.push(stopEntry)
+
+  const entry = entries.at(-1) ?? stopEntry
+  if (!entry)
+    throw new Error('Multi-command voice processing produced no result.')
+
+  return {
+    status: 'SUCCESS',
+    entry,
+    entries,
+  }
+}
+
+/**
+ * V3 multi-command execution is intentionally matched lazily, one clause at a
+ * time. This is stronger than pre-parsing the utterance: dynamic slots and
+ * PendingDecision are rebuilt from the GameState produced by the previous
+ * clause. A failed/ambiguous/unsafe middle clause cancels every later clause.
+ * Unsupported V3 families still fall back to V2 per clause during migration.
+ */
+const processSemanticMultiCommandTranscript = async (
+  speech: Extract<SpeechToTextResult, { status: 'SUCCESS' }>,
+  game: VoiceExecutionTarget,
+  options: VoiceCommandExecutionOptions,
+): Promise<Extract<VoiceProcessingResult, { status: 'SUCCESS' }>> => {
+  const segments = segmentVoiceCommandsForGame(
+    speech.transcript,
+    game,
+    options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+  )
+  const entries: VoiceCommandHistoryEntry[] = []
+  let startedExecutableSequence = false
+
+  for (const segment of segments) {
+    const current = currentVoiceExecutionTarget(game)
+    const match = matchSemanticVoiceCommand(
+      segment,
+      current,
+      options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+    )
+    let entry: VoiceCommandHistoryEntry | undefined
+    const deferStructuredCast = shouldDeferStructuredCastToLegacy(
+      segment,
+      current,
+      options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+    )
+
+    if (match.status !== 'NO_MATCH' && !deferStructuredCast) {
+      entry = semanticHistoryEntry(
+        {
+          transcript: segment,
+          confidence: speech.confidence,
+          rank: 0,
+          match,
+        },
+        speech,
+        current,
+        options,
+      )
+    } else {
+      // V3 migration remains incremental. A clause outside the semantic
+      // catalog may use the legacy deterministic parser, but it executes in
+      // the same fail-fast sequence and against the latest state.
+      const prepared = prepareVoiceCommand(
+        segment,
+        current,
+        speech,
+        options,
+        true,
+      )
+      if (prepared.status === 'STOP') {
+        // Preserve the previous continuous-speech convenience for harmless
+        // leading conversation. Semantic UNSAFE is never skipped this way.
+        if (
+          prepared.entry.ignored &&
+          !startedExecutableSequence &&
+          prepared.entry.semanticDecision !== 'UNSAFE'
+        ) {
+          entries.push({
+            ...prepared.entry,
+            routing: rejectedRouting(match, prepared.entry.parsed),
+          })
+          continue
+        }
+        entry = {
+          ...prepared.entry,
+          semanticDecision: 'NO_MATCH',
+          v2Parsed: prepared.entry.parsed,
+          routing: rejectedRouting(match, prepared.entry.parsed),
+        }
+      } else {
+        const fallback = executePreparedVoiceCommand(
+          prepared.input,
+          speech,
+          current,
+          options,
+        )
+        entry = {
+          ...fallback,
+          semanticDecision: 'NO_MATCH',
+          v2Parsed: fallback.parsed,
+          routing: legacyFallbackRouting(
+            match,
+            deferStructuredCast,
+            fallback.parsed,
+          ),
+        }
+      }
+    }
+
+    if (!entry) {
+      entry = {
+        source: 'VOICE',
+        rawTranscript: segment,
+        normalizedTranscript: normalizeSpokenCommand(
+          normalizeVoiceTranscript(segment, current),
+          options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+        ),
+        confidence: speech.confidence,
+        provider: speech.provider,
+        parsed: '—',
+        result: '⚠ UNKNOWN_COMMAND: No reconocí ese comando.',
+        successful: false,
+        durationMs: 0,
+        semanticDecision: 'NO_MATCH',
+        routing: rejectedRouting(match),
+      }
+    }
+
+    entries.push(entry)
+    const failed = entry.ignored || entry.result.startsWith('⚠')
+    if (failed) break
+    startedExecutableSequence = true
+  }
+
+  const entry = entries.at(-1)
+  if (!entry)
+    throw new Error(
+      'Semantic multi-command voice processing produced no result.',
+    )
+  return { status: 'SUCCESS', entry, entries }
+}
+
+/** Processes an already-final provider result through the shared voice pipeline. */
+export const processSpeechToTextResult = async (
+  speech: SpeechToTextResult,
+  game: VoiceExecutionTarget,
+  options: VoiceCommandExecutionOptions = {},
+): Promise<VoiceProcessingResult> => {
+  if (speech.status !== 'SUCCESS')
+    return {
+      status: speech.status,
+      message: speech.error?.message ?? 'Voice recognition failed.',
+    }
+
+  // Push-to-talk may receive a React render snapshot that became stale while
+  // the browser was listening. Always refresh from the live store adapter
+  // before semantic matching; multi-command execution refreshes again per clause.
+  const currentGame = currentVoiceExecutionTarget(game)
+
+  const commandSegments = multiCommandEnabled(options)
+    ? segmentVoiceCommandsForGame(
+        speech.transcript,
+        currentGame,
+        options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+      )
+    : [speech.transcript]
+  if (multiCommandEnabled(options) && commandSegments.length > 1) {
+    if (
+      semanticVoiceV3Enabled(options) &&
+      semanticVoiceV3ExecutionEnabled(options)
+    )
+      return processSemanticMultiCommandTranscript(speech, currentGame, options)
+    return processMultiCommandTranscript(speech, currentGame, options)
+  }
+
+  let semanticShadow:
+    Extract<SemanticMatchResult, { status: 'MATCHED' }> | undefined
+  let semanticObservation: SemanticMatchResult | undefined
+  let structuredCastDeferred = false
+  if (semanticVoiceV3Enabled(options)) {
+    const resumed = options.conversationSession?.tryResume(
+      speech.transcript,
+      currentGame,
+      options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+    )
+    const selected: SemanticRecognitionCandidate = resumed
+      ? {
+          transcript: speech.transcript,
+          confidence: speech.confidence,
+          rank: 0,
+          match: resumed.match,
+        }
+      : selectSemanticRecognitionCandidate(
+          speech,
+          currentGame,
+          options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+        )
+    semanticObservation = selected.match
+    structuredCastDeferred = shouldDeferStructuredCastToLegacy(
+      selected.transcript,
+      currentGame,
+      options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+    )
+    if (selected.match.status === 'MATCHED') semanticShadow = selected.match
+    const semanticEntry = semanticHistoryEntry(
+      selected,
+      speech,
+      currentGame,
+      options,
+    )
+    if (semanticEntry) {
+      return {
+        status: 'SUCCESS',
+        entry: semanticEntry,
+        entries: [semanticEntry],
+      }
+    }
+    // In explicit shadow-only mode V3 records its interpretation below while
+    // V2 remains the execution authority.
+  }
+
+  // Legacy contextual matching remains as a fallback while V3 rolls out. It is
+  // expected to be redundant for option-based pending decisions.
+  const contextual = contextualUiEntry(
+    speech.transcript,
+    speech,
+    currentGame,
+    options,
+  )
+  if (contextual) {
+    const entry = {
+      ...contextual,
+      ...(semanticShadow
+        ? {
+            semanticIntent: semanticShadow.command.intent,
+            semanticScore: semanticShadow.command.score,
+            semanticTrace: semanticShadow.command.trace,
+            semanticDecision: 'SHADOW' as const,
+          }
+        : {}),
+      routing: routingTelemetry(
+        'PENDING_DECISION',
+        semanticObservation
+          ? semanticRoutingResult(semanticObservation)
+          : 'DISABLED',
+        'PENDING_DECISION',
+      ),
+    }
+    return { status: 'SUCCESS', entry, entries: [entry] }
+  }
+
+  // NLP assisted is retained only as an opt-in rollback path. V3 defaults NLP
+  // to shadow mode, so it cannot block or rescue execution.
+  if (nlpIntentAssistedEnabled(options)) {
+    const hardGate = commandGateEnabled(options)
+      ? evaluateVoiceCommandGate(
+          speech.transcript,
+          options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+        )
+      : { decision: 'CONTINUE' as const }
+    if (hardGate.decision === 'CONTINUE') {
+      const primaryClassification = await classifyAssistedVoiceIntent(
+        speech.transcript,
+      )
+      if (
+        primaryClassification &&
+        shouldBlockAsNotAction(primaryClassification)
+      ) {
+        const entry = {
+          ...nlpNotActionEntry(
+            speech.transcript,
+            speech,
+            currentGame,
+            primaryClassification,
+            options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+          ),
+          routing: routingTelemetry(
+            'REJECTED',
+            semanticObservation
+              ? semanticRoutingResult(semanticObservation)
+              : 'DISABLED',
+            `NLP_${primaryClassification.intent}`,
+          ),
+        }
+        return { status: 'SUCCESS', entry, entries: [entry] }
+      }
+    }
+  }
+
+  const selected = selectVoiceRecognitionCandidate(speech, currentGame, options)
+  const selectedSpeech = {
+    ...speech,
+    transcript: selected.transcript,
+    confidence: selected.confidence,
+  }
+
+  const prepared = await prepareVoiceCommandAssisted(
+    selectedSpeech.transcript,
+    currentGame,
+    selectedSpeech,
+    options,
+  )
+  let entry =
+    prepared.status === 'STOP'
+      ? prepared.entry
+      : executePreparedVoiceCommand(
+          prepared.input,
+          selectedSpeech,
+          currentGame,
+          options,
+        )
+  if (semanticShadow)
+    entry = {
+      ...entry,
+      semanticIntent: semanticShadow.command.intent,
+      semanticScore: semanticShadow.command.score,
+      semanticTrace: semanticShadow.command.trace,
+      semanticDecision: 'SHADOW',
+      v2Parsed: entry.parsed,
+    }
+  const fallbackReason: VoiceFallbackReason = !semanticVoiceV3Enabled(options)
+    ? 'V3_DISABLED'
+    : !semanticVoiceV3ExecutionEnabled(options)
+      ? 'V3_SHADOW_ONLY'
+      : structuredCastDeferred
+        ? 'STRUCTURED_CAST_DEFERRED'
+        : 'V3_NO_MATCH'
+  entry = {
+    ...entry,
+    routing:
+      prepared.status === 'STOP'
+        ? rejectedRouting(semanticObservation, entry.parsed)
+        : legacyFallbackRouting(
+            semanticObservation,
+            structuredCastDeferred,
+            entry.parsed,
+            fallbackReason,
+          ),
+  }
+  return { status: 'SUCCESS', entry, entries: [entry] }
+}
+
+/** Runs one push-to-talk provider result through the shared voice pipeline. */
+export const processSpeechToTextCommand = async (
+  provider: SpeechToTextProvider,
+  game: VoiceExecutionTarget,
+  options: VoiceCommandExecutionOptions = {},
+): Promise<VoiceProcessingResult> => {
+  const speech = await provider.startListening({
+    maxAlternatives: 5,
+    phraseHints: getVoicePhraseHints(
+      currentVoiceExecutionTarget(game),
+      options.languagePack ?? DEFAULT_VOICE_LANGUAGE_PACK,
+    ),
+  })
+  return processSpeechToTextResult(speech, game, options)
+}

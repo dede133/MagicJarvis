@@ -1,0 +1,49 @@
+{
+  "name": "magic-jarvis",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "typecheck": "tsc -b --pretty false",
+    "test": "vitest run",
+    "abilities:analyze": "tsx scripts/compile-deck-abilities.ts",
+    "abilities:compile": "tsx scripts/compile-deck-abilities-with-ollama.ts",
+    "abilities:diagnose": "tsx scripts/diagnose-deck-abilities.ts",
+    "abilities:gemini-diagnose": "tsx scripts/diagnose-gemini-semantic-abilities.ts",
+    "abilities:gemini-analyze-deck": "tsx scripts/analyze-gemini-deck-semantic-coverage.ts",
+    "abilities:runtime-coverage": "tsx scripts/runtime-coverage.ts",
+    "abilities:runtime-mapper-diagnose": "tsx scripts/runtime-mapper-diagnose.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "@nlpjs/core": "^5.0.0-alpha.5",
+    "@nlpjs/lang-es": "^5.0.0-alpha.5",
+    "@nlpjs/nlu": "^5.0.0-alpha.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "fuse.js": "7.5.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "@google/genai": "^2.17.1",
+    "@types/node": "^22.10.5",
+    "@types/react": "^19.0.3",
+    "@types/react-dom": "^19.0.2",
+    "eslint": "^9.18.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.18",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2",
+    "tsx": "^4.19.2",
+    "typescript": "~5.7.3",
+    "typescript-eslint": "^8.20.0",
+    "vite": "^6.0.7",
+    "vitest": "^3.0.3"
+  }
+}

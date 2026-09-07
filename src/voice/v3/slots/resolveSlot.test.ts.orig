@@ -1,0 +1,47 @@
+import { describe, expect, it } from 'vitest'
+import { resolveVoiceSlot } from './resolveSlot'
+import type { VoiceSlotOption } from './slotTypes'
+
+const option = (
+  canonical: string,
+  aliases: string[] = [],
+): VoiceSlotOption => ({
+  id: canonical,
+  canonical,
+  aliases,
+})
+
+describe('Voice V3 generic slot resolution', () => {
+  it('matches merged words and one-character ASR loss without card-specific aliases', () => {
+    const options = [option('Crystal Lens'), option('Moon Engine')]
+    expect(resolveVoiceSlot('crystallens', options)).toMatchObject({
+      status: 'MATCHED',
+      option: { canonical: 'Crystal Lens' },
+    })
+    expect(resolveVoiceSlot('crystallenss', options)).toMatchObject({
+      status: 'MATCHED',
+      option: { canonical: 'Crystal Lens' },
+    })
+  })
+
+  it('keeps weak short fragments conservative when several entities remain plausible', () => {
+    const options = [option("Bender's Vessel"), option("Waterbender's Ritual")]
+    expect(resolveVoiceSlot('bender', options)).not.toMatchObject({
+      status: 'MATCHED',
+    })
+  })
+
+  it('can stop a strong slot at conjunction noise but never drops another valid slot', () => {
+    const options = [option('Crystal Lens'), option('Moon Engine')]
+    expect(
+      resolveVoiceSlot('crystal lens y hablamos luego', options),
+    ).toMatchObject({
+      status: 'MATCHED',
+      option: { canonical: 'Crystal Lens' },
+      ignoredRemainder: 'hablamos luego',
+    })
+    expect(resolveVoiceSlot('crystal lens y moon engine', options)).toEqual({
+      status: 'NO_MATCH',
+    })
+  })
+})

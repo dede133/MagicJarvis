@@ -1,0 +1,123 @@
+// COMMANDER
+1 Ishai, Ojutai Dragonspeaker (BLC) 89 *F*
+1 Yoshimaru, Ever Faithful (SLD) 794 *F*
+
+1 Aang, Swift Savior (TLA) 347
+1 Aang, the Last Airbender (TLA) 4
+1 Abandoned Air Temple (TLA) 263
+1 Aerith Gainsborough (FIN) 374
+1 Agna Qel'a (TLA) 264
+1 An Offer You Can't Refuse (SLP) 7
+1 Animal Sanctuary (PLST) M21-242
+1 Aqueous Form (CMR) 56
+1 Arcane Signet (TLE) 315
+1 Bender's Waterskin (TLA) 255
+1 Blackblade Reforged (SS2) 8
+1 Brotherhood Regalia (ACR) 71
+1 Caduceus, Staff of Hermes (ACR) 2
+1 Command Tower (SLD) 7012 *F*
+1 Counterspell (SLD) 1933 *F*
+1 Crashing Wave (TLA) 47
+1 Crumb and Get It (BLB) 8
+1 Curious Farm Animals (TLA) 14
+1 Dawn's Truce (BLB) 9
+1 Day of Destiny (BOK) 1
+1 Desynchronization (ACR) 159
+1 Dovin's Veto (FCA) 51
+1 Eiganjo Castle (SLD) 2230
+1 Eiganjo, Seat of the Empire (NEO) 502
+1 Eight-and-a-Half-Tails (CLB) 692
+1 Empty City Ruse (TLE) 3
+1 Enter the Avatar State (TLA) 18
+1 Esior, Wardwing Familiar (CMR) 67
+1 Everybody Lives! (WHO) 18
+1 Fabled Passage (BLB) 252
+1 Flaming Fist (CLB) 474 *E*
+1 Flowering of the White Tree (LTR) 15
+1 Glacial Fortress (DRC) 159
+1 Grand Arbiter Augustin IV (2X2) 221
+1 Hammer of Nazahn (2XM) 260
+1 Herald of Secret Streams (LCC) 158
+1 Heroes' Podium (DMC) 185
+1 Honest Work (TLA) 55
+1 Into the Flood Maw (BLB) 52
+7 Island (EOE) 269
+1 K-9, Mark I (WHO) 537
+1 Katara, Water Tribe's Hope (TLA) 231
+1 Kitnap (BLB) 53
+1 Kwain, Itinerant Meddler (BLC) 90
+1 Lavinia, Azorius Renegade (SLD) 1685 *F*
+1 Ledger Shredder (SPG) 55
+1 Lilypad Village (BLB) 255
+1 Long River's Pull (BLB) 58
+1 Lupinflower Village (BLB) 256
+1 Luxior, Giada's Gift (SNC) 240
+1 March of Otherworldly Light (NEO) 369
+1 March of Swirling Mist (NEO) 447
+1 Minas Tirith (LTR) 341
+1 Mithril Coat (LTR) 245
+1 Momo, Friendly Flier (TLA) 29
+1 Momo, Playful Pet (TLA) 30
+1 Narset, Parter of Veils (BLC) 76
+1 Paliano, the High City (CNS) 65
+1 Path to Redemption (TLA) 31
+1 Phelia, Exuberant Shepherd (MH3) 40
+1 Pippin, Guard of the Citadel (LTR) 326 *F*
+6 Plains (EOE) 267
+1 Prairie Stream (DRC) 167
+1 Repel Calamity (SOA) 8
+1 Resourceful Defense (NCC) 120
+1 Rivendell (LTR) 344
+1 Rosa, Resolute White Mage (FIN) 555
+1 Secret Tunnel (TLA) 278
+1 Senu, Keen-Eyed Protector (ACR) 128
+1 Sol Ring (TLE) 316
+1 Swiftfoot Boots (TLE) 317
+1 Sword Coast Sailor (CLB) 98
+1 Sygg, Wanderwine Wisdom (ECL) 288
+1 Teferi's Protection (2X2) 32
+1 Teshar, Ancestor's Apostle (SOC) 180
+1 Thalia, Heretic Cathar (INR) 300
+1 Thassa, God of the Sea (THS) 66
+1 The Grey Havens (LTR) 443
+1 The Ooze (TMT) 177
+1 Trenzalore Clocktower (WHO) 190
+1 Ty Lee, Chi Blocker (TLA) 76
+1 Unbreakable Formation (LTC) 179
+1 Urdnan, Dromoka Warrior (J25) 34
+1 Venat, Heart of Hydaelyn (FIN) 329
+1 Watery Grasp (TLA) 82
+1 Windborn Muse (C21) 111
+1 Wrecking Ball Arm (FIC) 128
+
+// SIDEBOARD
+1 Land Tax (CMM) 37
+1 Mystic Remora (TLE) 16
+
+// MAYBEBOARD
+1 Elesh Norn, Mother of Machines (ONE) 416
+1 Enlightened Tutor (TLE) 305
+1 Fierce Guardianship (TLE) 307
+1 Flagstones of Trokair (TSR) 278
+1 Force of Negation (TLE) 13
+1 Gandalf the White (LTR) 305 *F*
+1 Hallowed Fountain (ECL) 347
+1 Kor Haven (LTC) 368
+1 Michiko Konda, Truth Seeker (SLD) 259
+1 Mox Amber (BRR) 35
+1 Mystical Tutor (TLE) 308
+1 Oboro, Palace in the Clouds (SOK) 164
+1 Orim's Chant (MH3) 323
+1 Otawara, Soaring City (NEO) 271
+1 Paliano, the High City (CNS) 65
+1 Permission Denied (REX) 17
+1 Reconnaissance (ACR) 82
+1 Rikku, Resourceful Guardian (FIC) 468 *F*
+1 Shadowspear (PZA) 17
+1 Skrelv, Defector Mite (SLD) 1926
+1 Spear of Heliod (THS) 33
+1 Sword of the Animist (LTC) 355
+1 Teferi's Isle (MIR) 330
+1 Teferi, Time Raveler (BLC) 92
+1 The Ozolith (SLD) 1741
+1 Tolaria (LEG) 308

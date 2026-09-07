@@ -1,0 +1,97 @@
+// COMMANDER
+1 Namor the Sub-Mariner (MSH) 391 *F*
+
+1 Aetherize (FDN) 151
+1 Aquitect's Will (LRW) 52
+1 Arcane Signet (WHO) 239
+1 Bribery (8ED) 64
+1 Chrome Mox (2XM) 240
+1 Commandeer (CMM) 80
+1 Commander's Plate (SLD) 1733
+1 Cosi's Trickster (ZEN) 45
+1 Counterspell (MAR) 52
+1 Cyclonic Rift (CMM) 84
+1 Deepchannel Mentor (SHM) 35
+1 Deeproot Pilgrimage (LCI) 52
+1 Deeproot Waters (LCC) 152
+1 Dig Through Time (DSC) 115
+1 Emperor Mihail II (LCC) 155
+1 Empress Galina (INV) 54
+1 Fierce Guardianship (CMM) 94
+1 Force of Negation (TLE) 13
+1 Force of Will (SOA) 19
+1 Harbinger of the Seas (MAR) 55
+1 Hide on the Ceiling (SPM) 32
+1 Hour of Eternity (PHOU) 36s *F*
+1 Hydroblast (ICE) 72
+1 Inundate (EVE) 25
+30 Island (EOE) 269
+1 Kindred Discovery (WOT) 69
+1 Kiora, the Rising Tide (FDN) 309
+1 Kopala, Warden of Waves (LCC) 160
+1 Lord of Atlantis (3ED) 64
+1 Lotus Petal (MB2) 226
+1 Mana Drain (OTP) 11
+1 Master of the Pearl Trident (LCC) 162
+1 Mathemagics (SOS) 58
+1 Merfolk Looter (EXO) 39
+1 Merfolk Sovereign (DDT) 11
+1 Merrow Commerce (LRW) 72
+1 Merrow Harbinger (LRW) 73
+1 Merrow Reejerey (LCC) 165
+1 Mind Spring (C20) 116
+1 Mindspring Merfolk (DFT) 51
+1 Mist Dancer (LCC) 76
+1 Mist-Cloaked Herald (M19) 310
+1 Moonlit Meditation (EOE) 69
+1 Multiversal Incursion (MSH) 68
+1 Mystic Remora (ICE) 87
+1 Octopus Form (TLA) 66
+1 Patchwork Banner (BLB) 247
+1 Raise the Palisade (LTC) 23
+1 Reliquary Tower (CON) 143
+1 Rhystic Study (PCY) 45
+1 Sapphire Medallion (MH3) 349
+1 Secret Invasion (MSH) 72
+1 Secret of Bloodbending (TLA) 69
+1 Sol Ring (SLD) 2063
+1 Sorcerous Squall (LTC) 504 *F*
+1 Spirit Water Revival (TLA) 73
+1 Storm of Saruman (LTR) 413
+1 Svyelun of Sea and Sky (LCC) 175
+1 Tempted by the Oriq (STX) 300
+1 The Key to the Vault (POTJ) 54p
+1 Thieving Skydiver (OTC) 118
+1 Tidebinder Mage (DDT) 22
+1 Tideshaper Mystic (LRW) 93
+1 Time Reversal (M12) 77
+1 Time Stop (CHK) 97
+1 Twincast (M10) 78
+1 Vodalian Hexcatcher (DMU) 75
+1 Wanderwine Prophets (LRW) 95
+1 Waterbender's Restoration (TLE) 99
+1 White Lotus Tile (TLA) 262
+
+// SIDEBOARD
+1 Attuma, Atlantean Warlord (MSH) 47
+1 Muse Vortex (C21) 28
+1 River Merfolk (FEM) 24
+1 Saprazzan Heir (MMQ) 99
+1 Sigil Tracer (MOR) 49
+1 Tishana's Tidebinder (LCI) 81
+
+// MAYBEBOARD
+1 Cryptic Command (LRW) 56
+1 Declaration of Naught (MOR) 29
+1 Mind Over Matter (EXO) 40
+1 Mystic Sanctuary (SLD) 2143 *F*
+1 Namor, Scourge of the Seas (MSC) 631
+1 Omniscience (WOT) 70
+1 Piracy (P02) 42
+1 Reset (MB2) 170
+1 Roaming Throne (LCI) 344
+1 Tasha's Hideous Laughter (PLST) AFR-78
+1 Telekinesis (LEG) 79
+1 Temporal Trespass (FRF) 55
+1 Time Warp (TMP) 97
+1 Treachery (UDS) 50

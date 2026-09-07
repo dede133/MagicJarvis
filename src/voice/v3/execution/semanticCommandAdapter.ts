@@ -1,0 +1,611 @@
+import { resolveCommand } from '../../../commands/resolver/resolveCommand'
+import type {
+  CommandError,
+  ParsedCommand,
+} from '../../../commands/types/commandTypes'
+import type { GameAction } from '../../../actions/gameActions'
+import { effectiveAbilitiesForCard } from '../../../abilities/engine/staticEffects'
+import type { ActivatedAbilityDefinition } from '../../../abilities/types/abilityTypes'
+import type { TabletopExecutionResult } from '../../../rules/implicitResolution/implicitResolution'
+import type { TabletopCommandContext } from '../../../observability/matchTrace'
+import type { GameState } from '../../../types/game'
+import { buildVoiceActionCatalog } from '../catalog/buildVoiceActionCatalog'
+import type {
+  SemanticCommand,
+  SemanticCommandSlotBag,
+} from '../semanticCommand'
+import {
+  voiceActorPlayerId,
+  voiceBlockingPlayerId,
+  voiceStackObjectControlledByPlayer,
+} from '../context/voiceActorContext'
+import type {
+  VoiceUiActionDescriptor,
+  VoiceUiActionTarget,
+} from '../../voiceUiActions'
+
+export type SemanticExecutionTarget = GameState &
+  VoiceUiActionTarget & {
+    dispatchMany: (
+      actions: GameAction[],
+      context?: TabletopCommandContext,
+    ) => void
+    executeTabletopCommand: (
+      command: ParsedCommand,
+      context?: TabletopCommandContext,
+    ) => TabletopExecutionResult
+    undoLastAction: () => void
+  }
+
+export type SemanticExecutionResult =
+  | {
+      status: 'resolved'
+      description: string
+      parsedCommand?: ParsedCommand
+      entity?: string
+    }
+  | { status: 'paused'; description: string; parsedCommand?: ParsedCommand }
+  | { status: 'undo'; description: string; parsedCommand?: ParsedCommand }
+  | { status: 'error'; error: CommandError; parsedCommand?: ParsedCommand }
+
+const invalid = (message: string): SemanticExecutionResult => ({
+  status: 'error',
+  error: { code: 'INVALID_AMOUNT', message },
+})
+
+const executeUiAction = (
+  action: VoiceUiActionDescriptor,
+  target: SemanticExecutionTarget,
+  execute: boolean,
+  context?: TabletopCommandContext,
+): SemanticExecutionResult => {
+  if (!execute)
+    return {
+      status: 'resolved',
+      description: action.description,
+      entity: action.entity,
+    }
+  switch (action.kind) {
+    case 'PENDING_DECISION':
+      if (!action.decisionId || action.selection === undefined)
+        return invalid('La decisión contextual ya no es válida.')
+      target.resolvePendingDecision(
+        action.decisionId,
+        action.selection,
+        context,
+      )
+      break
+    case 'PENDING_ABILITY_PAYMENT':
+      if (
+        !action.pendingAbilityId ||
+        (action.selection !== 'PAID' && action.selection !== 'NOT_PAID')
+      )
+        return invalid('La elección de pago ya no es válida.')
+      target.resolvePendingAbilityPayment(
+        action.pendingAbilityId,
+        action.selection,
+        context,
+      )
+      break
+    case 'PENDING_ABILITY_RESOLVE':
+      if (!action.pendingAbilityId)
+        return invalid('La habilidad ya no es válida.')
+      target.resolvePendingAbility(action.pendingAbilityId, context)
+      break
+    case 'PENDING_ABILITY_IGNORE':
+      if (!action.pendingAbilityId)
+        return invalid('La habilidad ya no es válida.')
+      target.ignorePendingAbility(action.pendingAbilityId, context)
+      break
+  }
+  return {
+    status: 'resolved',
+    description: action.description,
+    entity: action.entity,
+  }
+}
+
+const toParsedCommand = (
+  semantic: SemanticCommand,
+  target: SemanticExecutionTarget,
+): ParsedCommand | undefined => {
+  const slots = semantic.slots as SemanticCommandSlotBag
+  switch (semantic.intent) {
+    case 'PLAY_CARD':
+      return slots.card
+        ? slots.inResponse
+          ? { type: 'CAST_SPELL', cardQuery: slots.card, inResponse: true }
+          : { type: 'DECLARE_CARD', cardQuery: slots.card }
+        : undefined
+    case 'TAP_CARD': {
+      if (!slots.card) return undefined
+      const tapCommand: ParsedCommand = {
+        type: 'TAP_CARD',
+        cardQuery: slots.card,
+        ...(slots.amount ? { count: slots.amount } : {}),
+        ...(slots.cardInstanceId ? { instanceId: slots.cardInstanceId } : {}),
+      }
+
+      // Match the battlefield UI: a bare tap on a single source whose mana
+      // activation is uniquely resolvable should activate that mana ability
+      // rather than merely changing the tapped bit.
+      if (!slots.amount) {
+        const manaCommand: ParsedCommand = {
+          type: 'ACTIVATE_MANA',
+          cardQuery: slots.card,
+          ...(slots.cardInstanceId ? { instanceId: slots.cardInstanceId } : {}),
+        }
+
+        // A freshly cast permanent may still be the top spell when the player
+        // immediately says "giro X". The normal resolver cannot validate its
+        // mana ability until the spell resolves, but executeTabletopCommand can
+        // already do the safe implicit resolve -> rebuild -> retry sequence.
+        // Preserve the UI's mana semantics by recognizing a unique printed/
+        // granted battlefield mana ability here and letting the engine validate
+        // it after resolution.
+        const topStackObject = target.stack.at(-1)
+        const topSpellInstanceId =
+          topStackObject?.kind === 'SPELL'
+            ? (topStackObject.spellInstanceId ??
+              topStackObject.sourceInstanceId)
+            : undefined
+        const deferredSource =
+          slots.cardInstanceId &&
+          topStackObject &&
+          topSpellInstanceId &&
+          voiceStackObjectControlledByPlayer(
+            target,
+            topStackObject,
+            voiceActorPlayerId(target),
+          )
+            ? target.cards.find(
+                (card) =>
+                  card.instanceId === slots.cardInstanceId &&
+                  (card.instanceId === topSpellInstanceId ||
+                    card.instanceId === topStackObject.sourceInstanceId),
+              )
+            : undefined
+        const deferredManaAbilities = deferredSource
+          ? effectiveAbilitiesForCard(target, deferredSource).filter(
+              (ability): ability is ActivatedAbilityDefinition =>
+                ability.kind === 'ACTIVATED' &&
+                ability.isManaAbility === true &&
+                (!ability.activeZones?.length ||
+                  ability.activeZones.includes('battlefield')),
+            )
+          : []
+        if (deferredManaAbilities.length === 1) return manaCommand
+
+        // On an already-present permanent, keep the real command resolver
+        // authoritative. Ambiguous/unavailable mana activations fall back to an
+        // ordinary TAP_CARD.
+        if (resolveCommand(target, manaCommand).status === 'resolved')
+          return manaCommand
+      }
+
+      return tapCommand
+    }
+    case 'UNTAP_CARD':
+      return slots.card
+        ? {
+            type: 'UNTAP_CARD',
+            cardQuery: slots.card,
+            ...(slots.amount ? { count: slots.amount } : {}),
+          }
+        : undefined
+    case 'UNTAP_ALL':
+      return { type: 'UNTAP_ALL' }
+    case 'NEXT_TURN':
+      return { type: 'NEXT_TURN' }
+    case 'ADVANCE_STEP':
+      return {
+        type: 'ADVANCE_STEP',
+        ...(slots.targetStep ? { targetStep: slots.targetStep } : {}),
+      }
+    case 'GAIN_LIFE':
+    case 'LOSE_LIFE':
+    case 'SET_LIFE':
+      return typeof slots.amount === 'number'
+        ? { type: semantic.intent, amount: slots.amount }
+        : undefined
+    case 'DRAW':
+      return typeof slots.amount === 'number'
+        ? { type: 'DRAW', amount: slots.amount }
+        : undefined
+    case 'SET_HAND_COUNT':
+      return typeof slots.amount === 'number'
+        ? { type: 'SET_HAND_COUNT', count: slots.amount }
+        : undefined
+    case 'SET_LIBRARY_COUNT':
+      return typeof slots.amount === 'number'
+        ? { type: 'SET_LIBRARY_COUNT', count: slots.amount }
+        : undefined
+    case 'ACTIVATE_ABILITY':
+      return slots.card
+        ? {
+            type: 'ACTIVATE_ABILITY',
+            cardQuery: slots.card,
+            ...(slots.cardInstanceId
+              ? { instanceId: slots.cardInstanceId }
+              : {}),
+            ...(slots.abilityHint ? { abilityHint: slots.abilityHint } : {}),
+            ...(slots.inResponse ? { inResponse: true as const } : {}),
+          }
+        : undefined
+    case 'ACTIVATE_MANA':
+      return slots.card
+        ? {
+            type: 'ACTIVATE_MANA',
+            cardQuery: slots.card,
+            ...(slots.cardInstanceId
+              ? { instanceId: slots.cardInstanceId }
+              : {}),
+            ...(slots.color ? { colorQuery: slots.color } : {}),
+          }
+        : undefined
+    case 'MOVE_ZONE':
+      return slots.card && slots.destination
+        ? {
+            type: 'MOVE_CARD',
+            cardQuery: slots.card,
+            destination: slots.destination,
+            ...(slots.cardInstanceId
+              ? { instanceId: slots.cardInstanceId }
+              : {}),
+          }
+        : undefined
+    case 'SHUFFLE_LIBRARY':
+      return { type: 'DECLARE_PLAYER_SHUFFLED', player: 'local' }
+    case 'DECLARE_ATTACKERS': {
+      const defender = {
+        ...(slots.defender ? { defenderQuery: slots.defender } : {}),
+        ...(slots.defenderInstanceId
+          ? { defenderInstanceId: slots.defenderInstanceId }
+          : {}),
+      }
+      if (slots.none)
+        return {
+          type: 'DECLARE_ATTACKERS',
+          attackerQueries: [],
+          none: true,
+        }
+      return slots.all
+        ? {
+            type: 'DECLARE_ATTACKERS',
+            attackerQueries: [],
+            all: true,
+            ...(slots.subtype ? { subtype: slots.subtype } : {}),
+            ...defender,
+          }
+        : slots.cards?.length
+          ? {
+              type: 'DECLARE_ATTACKERS',
+              attackerQueries: slots.cards,
+              ...(slots.cardInstanceIds?.length
+                ? { attackerInstanceIds: slots.cardInstanceIds }
+                : {}),
+              ...defender,
+            }
+          : undefined
+    }
+    case 'DECLARE_BLOCKERS':
+      return slots.none
+        ? { type: 'DECLARE_BLOCKERS', blockerQueries: [], none: true }
+        : slots.cards?.length
+          ? {
+              type: 'DECLARE_BLOCKERS',
+              blockerQueries: slots.cards,
+              ...(slots.cardInstanceIds?.length
+                ? { blockerInstanceIds: slots.cardInstanceIds }
+                : {}),
+              ...(slots.attacker ? { attackerQuery: slots.attacker } : {}),
+              ...(slots.attackerInstanceId
+                ? { attackerInstanceId: slots.attackerInstanceId }
+                : {}),
+            }
+          : undefined
+    case 'RESOLVE_COMBAT_DAMAGE':
+      return { type: 'RESOLVE_COMBAT_DAMAGE' }
+    case 'RESOLVE_SPELL':
+      return {
+        type: 'RESOLVE_SPELL',
+        ...(slots.card ? { cardQuery: slots.card } : {}),
+        ...(slots.cardInstanceId ? { instanceId: slots.cardInstanceId } : {}),
+      }
+    case 'UNDO':
+      return { type: 'UNDO' }
+    case 'CONCEDE':
+      return { type: 'CONCEDE' }
+    case 'DISCARD_CARD':
+      return slots.card && typeof slots.amount === 'number'
+        ? { type: 'DISCARD_CARD', cardQuery: slots.card, amount: slots.amount }
+        : undefined
+    default:
+      return undefined
+  }
+}
+
+const manaBatchForCountedTap = (
+  semantic: SemanticCommand,
+  target: SemanticExecutionTarget,
+):
+  | {
+      tapCommand: ParsedCommand
+      manaCommands: Extract<ParsedCommand, { type: 'ACTIVATE_MANA' }>[]
+    }
+  | undefined => {
+  const slots = semantic.slots as SemanticCommandSlotBag
+  if (
+    semantic.intent !== 'TAP_CARD' ||
+    !slots.card ||
+    !slots.amount ||
+    slots.amount < 2
+  )
+    return undefined
+
+  const actorPlayerId = voiceActorPlayerId(target)
+  const cardQuery = slots.card
+  const tapCommand: ParsedCommand = {
+    type: 'TAP_CARD',
+    cardQuery: slots.card,
+    count: slots.amount,
+    actorPlayerId,
+  }
+  const tapResolution = resolveCommand(target, tapCommand)
+  if (tapResolution.status !== 'resolved') return undefined
+
+  const instanceIds = tapResolution.actions.flatMap((action) =>
+    action.type === 'TAP_CARD' ? [action.instanceId] : [],
+  )
+  if (instanceIds.length !== slots.amount) return undefined
+
+  const manaCommands = instanceIds.map(
+    (instanceId): Extract<ParsedCommand, { type: 'ACTIVATE_MANA' }> => ({
+      type: 'ACTIVATE_MANA',
+      cardQuery,
+      instanceId,
+      actorPlayerId,
+    }),
+  )
+  if (
+    manaCommands.some(
+      (command) => resolveCommand(target, command).status !== 'resolved',
+    )
+  )
+    return undefined
+
+  return { tapCommand, manaCommands }
+}
+
+const executeCounter = (
+  semantic: SemanticCommand,
+  target: SemanticExecutionTarget,
+  execute: boolean,
+  context?: TabletopCommandContext,
+): SemanticExecutionResult => {
+  const { cardInstanceId, card, counter, amount } =
+    semantic.slots as SemanticCommandSlotBag
+  if (
+    !cardInstanceId ||
+    !card ||
+    !counter ||
+    !Number.isSafeInteger(amount) ||
+    !amount ||
+    amount < 1
+  )
+    return invalid('Falta objetivo, tipo o cantidad de contador.')
+  const current = target.cards.find(
+    (candidate) =>
+      candidate.instanceId === cardInstanceId &&
+      candidate.zone === 'battlefield',
+  )
+  if (!current)
+    return {
+      status: 'error',
+      error: {
+        code: 'CARD_NOT_FOUND',
+        message: `${card} ya no está en el campo de batalla.`,
+      },
+    }
+  if (
+    semantic.intent === 'REMOVE_COUNTER' &&
+    (current.counters[counter] ?? 0) < amount
+  )
+    return invalid(`${card} no tiene ${amount} contador(es) ${counter}.`)
+  const action: GameAction = {
+    type: semantic.intent === 'ADD_COUNTER' ? 'ADD_COUNTER' : 'REMOVE_COUNTER',
+    instanceId: cardInstanceId,
+    counter,
+    amount,
+    actorPlayerId: voiceActorPlayerId(target),
+  }
+  if (execute) target.dispatchMany([action], context)
+  return {
+    status: 'resolved',
+    description: `${semantic.intent === 'ADD_COUNTER' ? 'Añadir' : 'Quitar'} ${amount} contador(es) ${counter} ${semantic.intent === 'ADD_COUNTER' ? 'a' : 'de'} ${card}`,
+    entity: card,
+  }
+}
+
+/** Adapts V3 intent+slots to the same commands/actions already understood by the game. */
+export const executeSemanticCommand = (
+  semantic: SemanticCommand,
+  target: SemanticExecutionTarget,
+  options: {
+    execute?: boolean
+    executionContext?: TabletopCommandContext
+  } = {},
+): SemanticExecutionResult => {
+  const execute = options.execute ?? true
+  if (semantic.intent === 'PENDING_DECISION') {
+    const slots = semantic.slots as SemanticCommandSlotBag
+    const action = buildVoiceActionCatalog(target).pendingActions.find(
+      (candidate) => candidate.id === slots.uiActionId,
+    )
+    if (action)
+      return executeUiAction(action, target, execute, options.executionContext)
+
+    // Free-form pending decisions are synthesized by matchVoiceUiAction and do
+    // not appear in getVoiceUiActions. Carry their exact continuation data in
+    // the semantic slots instead of trying to infer it again here.
+    const { uiActionKind, decisionId, pendingAbilityId, selection } = slots
+    if (!execute)
+      return {
+        status: 'resolved',
+        description: slots.uiDescription ?? 'Resolver decisión contextual',
+        entity: slots.uiEntity,
+      }
+    if (
+      uiActionKind === 'PENDING_DECISION' &&
+      decisionId &&
+      selection !== undefined
+    ) {
+      target.resolvePendingDecision(
+        decisionId,
+        selection,
+        options.executionContext,
+      )
+      return {
+        status: 'resolved',
+        description: slots.uiDescription ?? 'Resolver decisión contextual',
+        entity: slots.uiEntity,
+      }
+    }
+    if (
+      uiActionKind === 'PENDING_ABILITY_PAYMENT' &&
+      pendingAbilityId &&
+      (selection === 'PAID' || selection === 'NOT_PAID')
+    ) {
+      target.resolvePendingAbilityPayment(
+        pendingAbilityId,
+        selection,
+        options.executionContext,
+      )
+      return {
+        status: 'resolved',
+        description: slots.uiDescription ?? 'Resolver pago',
+      }
+    }
+    if (uiActionKind === 'PENDING_ABILITY_RESOLVE' && pendingAbilityId) {
+      target.resolvePendingAbility(pendingAbilityId, options.executionContext)
+      return {
+        status: 'resolved',
+        description: slots.uiDescription ?? 'Resolver habilidad',
+      }
+    }
+    if (uiActionKind === 'PENDING_ABILITY_IGNORE' && pendingAbilityId) {
+      target.ignorePendingAbility(pendingAbilityId, options.executionContext)
+      return {
+        status: 'resolved',
+        description: slots.uiDescription ?? 'Ignorar habilidad',
+      }
+    }
+    return {
+      status: 'error',
+      error: {
+        code: 'UNKNOWN_COMMAND',
+        message: 'La decisión contextual ya no está disponible.',
+      },
+    }
+  }
+
+  if (semantic.intent === 'ADD_COUNTER' || semantic.intent === 'REMOVE_COUNTER')
+    return executeCounter(semantic, target, execute, options.executionContext)
+
+  const countedManaTap = manaBatchForCountedTap(semantic, target)
+  if (countedManaTap) {
+    if (!execute)
+      return {
+        status: 'resolved',
+        description: `Activar ${countedManaTap.manaCommands.length} fuentes de maná`,
+        parsedCommand: countedManaTap.tapCommand,
+      }
+
+    for (const command of countedManaTap.manaCommands) {
+      const result = target.executeTabletopCommand(
+        command,
+        options.executionContext,
+      )
+      if (result.status === 'error')
+        return {
+          status: 'error',
+          error: result.error as CommandError,
+          parsedCommand: countedManaTap.tapCommand,
+        }
+      if (result.status === 'paused')
+        return {
+          status: 'paused',
+          description: result.description,
+          parsedCommand: countedManaTap.tapCommand,
+        }
+      if (result.status === 'undo')
+        return {
+          status: 'undo',
+          description: result.description,
+          parsedCommand: countedManaTap.tapCommand,
+        }
+    }
+
+    return {
+      status: 'resolved',
+      description: `Activar ${countedManaTap.manaCommands.length} fuentes de maná`,
+      parsedCommand: countedManaTap.tapCommand,
+    }
+  }
+
+  const baseParsed = toParsedCommand(semantic, target)
+  if (!baseParsed)
+    return {
+      status: 'error',
+      error: {
+        code: 'UNKNOWN_COMMAND',
+        message: 'El comando semántico no tiene adaptador ejecutable.',
+      },
+    }
+  const actorPlayerId =
+    semantic.intent === 'DECLARE_BLOCKERS'
+      ? voiceBlockingPlayerId(target)
+      : voiceActorPlayerId(target)
+  const parsed: ParsedCommand = { ...baseParsed, actorPlayerId }
+  if (!execute) {
+    const result = resolveCommand(target, parsed)
+    if (result.status === 'error')
+      return { status: 'error', error: result.error, parsedCommand: parsed }
+    if (result.status === 'undo')
+      return {
+        status: 'undo',
+        description: result.description,
+        parsedCommand: parsed,
+      }
+    return {
+      status: 'resolved',
+      description: result.description,
+      parsedCommand: parsed,
+    }
+  }
+
+  const result = target.executeTabletopCommand(parsed, options.executionContext)
+  if (result.status === 'error')
+    return {
+      status: 'error',
+      error: result.error as CommandError,
+      parsedCommand: parsed,
+    }
+  if (result.status === 'paused')
+    return {
+      status: 'paused',
+      description: result.description,
+      parsedCommand: parsed,
+    }
+  if (result.status === 'undo')
+    return {
+      status: 'undo',
+      description: result.description,
+      parsedCommand: parsed,
+    }
+  return {
+    status: 'resolved',
+    description: result.description,
+    parsedCommand: parsed,
+  }
+}

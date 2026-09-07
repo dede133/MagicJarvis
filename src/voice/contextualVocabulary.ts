@@ -1,0 +1,226 @@
+import { normalizeCommandText } from '../commands/parser/normalizeText'
+import type { GameState } from '../types/game'
+import { getResolvedDeckCommanders } from '../types/deck'
+import {
+  buildVoiceActionCatalog,
+  type VoiceActionCatalog,
+} from './v3/catalog/buildVoiceActionCatalog'
+import type { VoiceSlotOption } from './v3/slots/slotTypes'
+import { voiceActorDeckDefinition } from './v3/context/voiceActorContext'
+import type { SpeechPhraseHint } from './types/speechToText'
+import {
+  DEFAULT_VOICE_LANGUAGE_PACK,
+  type VoiceLanguagePack,
+} from './languages'
+import { getVoiceUiActionPhraseHints } from './voiceUiActions'
+
+export type VoiceVocabulary = {
+  deckCards: string[]
+  battlefieldCards: string[]
+  stackCards: string[]
+  aliases: string[]
+  commonWords: string[]
+}
+
+const PHRASE_HINT_BOOST = {
+  pendingDecision: 8,
+  currentContext: 6,
+  stackCard: 5,
+  deckCard: 3,
+  commonWord: 1.5,
+} as const
+const MAX_VOICE_PHRASE_HINTS = 512
+
+const unique = (values: string[]): string[] => [
+  ...new Set(values.map((value) => value.trim()).filter(Boolean)),
+]
+
+const deckEntries = (state: GameState) => {
+  const deck = voiceActorDeckDefinition(state)
+  return deck ? [...getResolvedDeckCommanders(deck), ...deck.mainboard] : []
+}
+
+const deckAliases = (state: GameState): string[] =>
+  deckEntries(state).flatMap((entry) => [
+    ...(entry.card.localizedAliases ?? []),
+    ...(entry.card.cardFaces ?? []).map((face) => face.name),
+  ])
+
+/**
+ * Provider-neutral vocabulary for STT phrase hints.
+ * The deck recipe is allowed as vocabulary, but no hidden hand identity is ever
+ * inferred from GameState. Only public battlefield/stack identities are boosted
+ * above normal deck-card names.
+ */
+export const getVoiceVocabulary = (
+  state: GameState,
+  languagePack: VoiceLanguagePack = DEFAULT_VOICE_LANGUAGE_PACK,
+): VoiceVocabulary => ({
+  deckCards: unique(deckEntries(state).map((entry) => entry.name)),
+  battlefieldCards: unique(
+    state.cards
+      .filter((card) => card.zone === 'battlefield')
+      .map((card) => card.card.name),
+  ),
+  stackCards: unique(
+    state.cards
+      .filter((card) => card.zone === 'stack')
+      .map((card) => card.card.name),
+  ),
+  aliases: unique(deckAliases(state)),
+  commonWords: [...languagePack.recognitionTerms],
+})
+
+/**
+ * Moderate boosts on purpose: public cards are strongest, deck names remain
+ * useful vocabulary, and generic Magic words should not overpower normal speech.
+ */
+const phrasesForOptions = (options: readonly VoiceSlotOption[]): string[] =>
+  options.flatMap((option) => [option.canonical, ...option.aliases])
+
+const contextualSlotPhrases = (catalog: VoiceActionCatalog): string[] =>
+  unique([
+    ...phrasesForOptions(catalog.tappableCards),
+    ...phrasesForOptions(catalog.untappableCards),
+    ...phrasesForOptions(catalog.counterTargets),
+    ...phrasesForOptions(catalog.activatableCards),
+    ...phrasesForOptions(catalog.manaSources),
+    ...phrasesForOptions(catalog.channelSources),
+    ...phrasesForOptions(catalog.equipSources),
+    ...phrasesForOptions(catalog.waterbendSources),
+    ...phrasesForOptions(catalog.movableCards),
+    ...phrasesForOptions(catalog.attackableCards),
+    ...phrasesForOptions(catalog.defendingTargets),
+    ...phrasesForOptions(catalog.blockingAttackers),
+    ...phrasesForOptions(catalog.blockerCards),
+    ...phrasesForOptions(catalog.stackSpells),
+  ])
+
+const mergePhraseHints = (
+  hints: readonly SpeechPhraseHint[],
+  languagePack: VoiceLanguagePack,
+): SpeechPhraseHint[] => {
+  const bestByPhrase = new Map<string, SpeechPhraseHint>()
+  for (const hint of hints) {
+    const phrase = hint.phrase.trim()
+    if (!phrase) continue
+    const key = normalizeCommandText(phrase)
+    if (!key) continue
+    const previous = bestByPhrase.get(key)
+    if (!previous || (hint.boost ?? 0) > (previous.boost ?? 0))
+      bestByPhrase.set(key, { phrase, boost: hint.boost })
+  }
+  return [...bestByPhrase.values()]
+    .sort((left, right) => {
+      const boostDifference = (right.boost ?? 0) - (left.boost ?? 0)
+      if (boostDifference !== 0) return boostDifference
+      return normalizeCommandText(left.phrase).localeCompare(
+        normalizeCommandText(right.phrase),
+        languagePack.textLocale,
+      )
+    })
+    .slice(0, MAX_VOICE_PHRASE_HINTS)
+}
+
+export const getVoicePhraseHints = (
+  state: GameState,
+  languagePack: VoiceLanguagePack = DEFAULT_VOICE_LANGUAGE_PACK,
+): SpeechPhraseHint[] => {
+  const vocabulary = getVoiceVocabulary(state, languagePack)
+  const catalog = buildVoiceActionCatalog(state)
+  const contextualPhrases = contextualSlotPhrases(catalog)
+  const deckPhrases = unique(phrasesForOptions(catalog.playableCards))
+
+  return mergePhraseHints(
+    [
+      ...getVoiceUiActionPhraseHints(state).map((phrase) => ({
+        phrase,
+        boost: PHRASE_HINT_BOOST.pendingDecision,
+      })),
+      ...contextualPhrases.map((phrase) => ({
+        phrase,
+        boost: PHRASE_HINT_BOOST.currentContext,
+      })),
+      ...vocabulary.stackCards.map((phrase) => ({
+        phrase,
+        boost: PHRASE_HINT_BOOST.stackCard,
+      })),
+      ...deckPhrases.map((phrase) => ({
+        phrase,
+        boost: PHRASE_HINT_BOOST.deckCard,
+      })),
+      ...vocabulary.commonWords.map((phrase) => ({
+        phrase,
+        boost: PHRASE_HINT_BOOST.commonWord,
+      })),
+    ],
+    languagePack,
+  )
+}
+
+const editDistance = (left: string, right: string): number => {
+  const values = Array.from({ length: right.length + 1 }, (_, index) => index)
+  for (let leftIndex = 1; leftIndex <= left.length; leftIndex += 1) {
+    let previous = values[0]
+    values[0] = leftIndex
+    for (let rightIndex = 1; rightIndex <= right.length; rightIndex += 1) {
+      const current = Math.min(
+        values[rightIndex] + 1,
+        values[rightIndex - 1] + 1,
+        previous + (left[leftIndex - 1] === right[rightIndex - 1] ? 0 : 1),
+      )
+      previous = values[rightIndex]
+      values[rightIndex] = current
+    }
+  }
+  return values[right.length]
+}
+
+const canonical = (value: string): string =>
+  normalizeCommandText(value).replaceAll("'", '')
+
+/**
+ * Corrects only a clear whole-card-name segment. Command words and unrelated
+ * prose are intentionally left alone, so the regular parser remains decisive.
+ */
+export const normalizeVoiceTranscript = (
+  transcript: string,
+  state: GameState,
+): string => {
+  const normalized = normalizeCommandText(transcript)
+  const deck = voiceActorDeckDefinition(state)
+  if (!deck) return normalized
+  const names = [
+    deck.commander.name,
+    ...deck.mainboard.map((entry) => entry.name),
+  ]
+  const words = normalized.split(' ')
+  for (let size = Math.min(5, words.length); size >= 1; size -= 1) {
+    // Single words are deliberately left to the command/card resolver. It
+    // avoids changing ordinary game language such as “islas” inside prose.
+    if (size === 1) continue
+    for (let start = 0; start + size <= words.length; start += 1) {
+      const segment = words.slice(start, start + size).join(' ')
+      const segmentCanonical = canonical(segment)
+      if (segmentCanonical.length < 5) continue
+      const ranked = names
+        .map((name) => ({
+          name,
+          distance: editDistance(segmentCanonical, canonical(name)),
+        }))
+        .sort((left, right) => left.distance - right.distance)
+      const best = ranked[0]
+      const second = ranked[1]
+      const threshold = Math.max(1, Math.floor(segmentCanonical.length * 0.2))
+      if (
+        best &&
+        best.distance <= threshold &&
+        (!second || best.distance < second.distance)
+      ) {
+        words.splice(start, size, best.name)
+        return words.join(' ')
+      }
+    }
+  }
+  return normalized
+}

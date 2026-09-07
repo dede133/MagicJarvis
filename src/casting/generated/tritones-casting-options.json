@@ -1,0 +1,299 @@
+{
+  "schemaVersion": 1,
+  "definitions": {
+    "Fierce Guardianship": [
+      {
+        "id": "fierce-free-with-commander",
+        "label": "Cast without paying its mana cost",
+        "kind": "ALTERNATIVE",
+        "manaCost": "{0}",
+        "condition": {
+          "type": "CONTROLS_COMMANDER"
+        },
+        "setVariables": {
+          "ALTERNATIVE_COST_PAID": true,
+          "CAST_OPTION": "fierce-free-with-commander"
+        }
+      }
+    ],
+    "Cyclonic Rift": [
+      {
+        "id": "cyclonic-overload",
+        "label": "Overload {6}{U}",
+        "kind": "ALTERNATIVE",
+        "manaCost": "{6}{U}",
+        "setVariables": {
+          "OVERLOAD": true,
+          "ALTERNATIVE_COST_PAID": true,
+          "CAST_OPTION": "cyclonic-overload"
+        }
+      }
+    ],
+    "Thieving Skydiver": [
+      {
+        "id": "skydiver-kicker",
+        "label": "Kicker {X}",
+        "kind": "ADDITIONAL",
+        "manaCost": "{X}",
+        "variable": {
+          "name": "X",
+          "min": 1
+        },
+        "setVariables": {
+          "KICKED": true,
+          "ADDITIONAL_COST_PAID": true,
+          "CAST_OPTION": "skydiver-kicker"
+        }
+      }
+    ],
+    "Force of Will": [
+      {
+        "id": "force-will-pitch",
+        "label": "Pay 1 life and exile a blue card",
+        "kind": "ALTERNATIVE",
+        "manaCost": "{0}",
+        "nonManaCosts": [
+          {
+            "type": "PAY_LIFE",
+            "amount": 1
+          },
+          {
+            "type": "EXILE_CARD_FROM_HAND",
+            "count": 1,
+            "colors": [
+              "U"
+            ],
+            "excludeSource": true
+          }
+        ],
+        "setVariables": {
+          "ALTERNATIVE_COST_PAID": true,
+          "CAST_OPTION": "force-will-pitch"
+        }
+      }
+    ],
+    "Force of Negation": [
+      {
+        "id": "force-negation-pitch",
+        "label": "Exile a blue card from hand",
+        "kind": "ALTERNATIVE",
+        "manaCost": "{0}",
+        "condition": {
+          "type": "NOT_YOUR_TURN"
+        },
+        "nonManaCosts": [
+          {
+            "type": "EXILE_CARD_FROM_HAND",
+            "count": 1,
+            "colors": [
+              "U"
+            ],
+            "excludeSource": true
+          }
+        ],
+        "setVariables": {
+          "ALTERNATIVE_COST_PAID": true,
+          "CAST_OPTION": "force-negation-pitch"
+        }
+      }
+    ],
+    "Commandeer": [
+      {
+        "id": "commandeer-pitch",
+        "label": "Exile two blue cards from hand",
+        "kind": "ALTERNATIVE",
+        "manaCost": "{0}",
+        "nonManaCosts": [
+          {
+            "type": "EXILE_CARD_FROM_HAND",
+            "count": 2,
+            "colors": [
+              "U"
+            ],
+            "excludeSource": true
+          }
+        ],
+        "setVariables": {
+          "ALTERNATIVE_COST_PAID": true,
+          "CAST_OPTION": "commandeer-pitch"
+        }
+      }
+    ],
+    "Waterbender's Restoration": [
+      {
+        "id": "waterbenders-restoration-waterbend-x",
+        "label": "Waterbend {X}",
+        "kind": "ADDITIONAL",
+        "manaCost": "{X}",
+        "required": true,
+        "variable": {
+          "name": "X",
+          "min": 0
+        },
+        "genericContribution": {
+          "type": "TAP_PERMANENTS",
+          "cardTypesAnyOf": [
+            "Artifact",
+            "Creature"
+          ],
+          "max": {
+            "variable": "X"
+          }
+        },
+        "setVariables": {
+          "ADDITIONAL_COST_PAID": 1,
+          "WATERBEND_PAID": 1,
+          "CAST_OPTION": "waterbenders-restoration-waterbend-x"
+        }
+      }
+    ],
+    "Spirit Water Revival": [
+      {
+        "id": "spirit-water-revival-waterbend-6",
+        "label": "Waterbend {6}",
+        "kind": "ADDITIONAL",
+        "manaCost": "{6}",
+        "genericContribution": {
+          "type": "TAP_PERMANENTS",
+          "cardTypesAnyOf": [
+            "Artifact",
+            "Creature"
+          ],
+          "max": 6
+        },
+        "setVariables": {
+          "ADDITIONAL_COST_PAID": 1,
+          "WATERBEND_PAID": 1,
+          "CAST_OPTION": "spirit-water-revival-waterbend-6"
+        }
+      }
+    ],
+    "Dig Through Time": [
+      {
+        "id": "dig-through-time-delve",
+        "label": "Delve",
+        "kind": "PAYMENT_MODIFIER",
+        "manaCost": "",
+        "genericContribution": {
+          "type": "EXILE_CARDS_FROM_GRAVEYARD"
+        },
+        "setVariables": {
+          "DELVE_USED": 1,
+          "CAST_OPTION": "delve"
+        }
+      }
+    ],
+    "Sorcerous Squall": [
+      {
+        "id": "sorcerous-squall-delve",
+        "label": "Delve",
+        "kind": "PAYMENT_MODIFIER",
+        "manaCost": "",
+        "genericContribution": {
+          "type": "EXILE_CARDS_FROM_GRAVEYARD"
+        },
+        "setVariables": {
+          "DELVE_USED": 1,
+          "CAST_OPTION": "delve"
+        }
+      }
+    ],
+    "Secret of Bloodbending": [
+      {
+        "id": "secret-bloodbending-waterbend-10",
+        "label": "Waterbend {10}",
+        "kind": "ADDITIONAL",
+        "manaCost": "{10}",
+        "genericContribution": {
+          "type": "TAP_PERMANENTS",
+          "cardTypesAnyOf": [
+            "Artifact",
+            "Creature"
+          ],
+          "max": 10
+        },
+        "setVariables": {
+          "ADDITIONAL_COST_PAID": 1,
+          "WATERBEND_PAID": 1,
+          "CAST_OPTION": "secret-bloodbending-waterbend-10"
+        }
+      }
+    ],
+    "March of Otherworldly Light": [
+      {
+        "id": "march-otherworldly-light-pitch",
+        "label": "{X}{W} + exiliar cartas blancas declaradas de la mano",
+        "kind": "PAYMENT_MODIFIER",
+        "manaCost": "",
+        "required": true,
+        "variable": {
+          "name": "X",
+          "min": 0
+        },
+        "genericContribution": {
+          "type": "EXILE_DECLARED_CARDS_FROM_HAND",
+          "colors": [
+            "W"
+          ],
+          "excludeSource": true,
+          "genericReductionPerCard": 2
+        },
+        "setVariables": {
+          "CAST_OPTION": "march-otherworldly-light-pitch"
+        }
+      }
+    ],
+    "March of Swirling Mist": [
+      {
+        "id": "march-swirling-mist-pitch",
+        "label": "{X}{U} + exiliar cartas azules declaradas de la mano",
+        "kind": "PAYMENT_MODIFIER",
+        "manaCost": "",
+        "required": true,
+        "variable": {
+          "name": "X",
+          "min": 0
+        },
+        "genericContribution": {
+          "type": "EXILE_DECLARED_CARDS_FROM_HAND",
+          "colors": [
+            "U"
+          ],
+          "excludeSource": true,
+          "genericReductionPerCard": 2
+        },
+        "setVariables": {
+          "CAST_OPTION": "march-swirling-mist-pitch"
+        }
+      }
+    ],
+    "Crashing Wave": [
+      {
+        "id": "crashing-wave-waterbend-x",
+        "label": "Waterbend {X}",
+        "kind": "ADDITIONAL",
+        "manaCost": "{X}",
+        "required": true,
+        "variable": {
+          "name": "X",
+          "min": 0
+        },
+        "genericContribution": {
+          "type": "TAP_PERMANENTS",
+          "cardTypesAnyOf": [
+            "Artifact",
+            "Creature"
+          ],
+          "max": {
+            "variable": "X"
+          }
+        },
+        "setVariables": {
+          "ADDITIONAL_COST_PAID": 1,
+          "WATERBEND_PAID": 1,
+          "CAST_OPTION": "crashing-wave-waterbend-x"
+        }
+      }
+    ]
+  }
+}

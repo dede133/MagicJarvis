@@ -1,0 +1,299 @@
+import { useState } from 'react'
+import { parseCommandForGame } from '../commands/parser/parseCommandForGame'
+import { useGameStore } from '../store/gameStore'
+import { VoiceCommandControls } from './VoiceCommandControls'
+import type { VoiceCommandHistoryEntry } from '../voice/voiceCommandExecution'
+import { VOICE_FEATURE_FLAGS } from '../voice/voiceFeatureFlags'
+import { tryHandleVoiceUiAction } from '../voice/voiceUiActions'
+import { getVoiceLanguagePack, type VoiceLanguageId } from '../voice/languages'
+import { normalizeSpokenCommand } from '../voice/spokenCommandNormalizer'
+import {
+  formatVoiceRoutingEntry,
+  formatVoiceRoutingSummary,
+  summarizeVoiceRouting,
+  type VoiceRoutingTelemetry,
+} from '../voice/voiceRoutingTelemetry'
+
+type CommandLog = {
+  input: string
+  parsed: string
+  result: string
+  successful: boolean
+  source?: 'VOICE' | 'TEXT'
+  normalized?: string
+  entity?: string
+  ignored?: boolean
+  debug?: string[]
+}
+
+export function CommandConsole({
+  voiceLanguageId,
+}: {
+  voiceLanguageId: VoiceLanguageId
+}) {
+  const game = useGameStore()
+  const languagePack = getVoiceLanguagePack(voiceLanguageId)
+  const [input, setInput] = useState('')
+  const [logs, setLogs] = useState<CommandLog[]>([])
+  const [voiceArchive, setVoiceArchive] = useState<string[]>([])
+  const [voiceRoutingArchive, setVoiceRoutingArchive] = useState<
+    VoiceRoutingTelemetry[]
+  >([])
+  const voiceRoutingSummary = summarizeVoiceRouting(voiceRoutingArchive)
+
+  const appendVoiceArchive = (entry: CommandLog) => {
+    setVoiceArchive((history) => [
+      ...history,
+      [
+        `VOICE: ${entry.input}`,
+        `Normalized: ${entry.normalized ?? entry.input}`,
+        `Parsed: ${entry.parsed}`,
+        entry.entity ? `Entity: ${entry.entity}` : undefined,
+        ...(entry.debug ?? []).map((line) => `Debug: ${line}`),
+        entry.result,
+      ]
+        .filter((line): line is string => Boolean(line))
+        .join('\n'),
+    ])
+  }
+
+  const downloadVoiceArchive = () => {
+    const routingSummary = formatVoiceRoutingSummary(voiceRoutingSummary)
+    const commandHistory = voiceArchive.join('\n\n')
+    const content = commandHistory
+      ? `${routingSummary}\n\n${commandHistory}`
+      : routingSummary
+    const blob = new Blob([content || 'VOICE: (sin entradas)\n'], {
+      type: 'text/plain;charset=utf-8',
+    })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'VOICE.txt'
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const execute = () => {
+    const original = input.trim()
+    if (!original) return
+
+    if (VOICE_FEATURE_FLAGS.contextualUiActionsEnabled) {
+      const contextual = tryHandleVoiceUiAction(original, game, {
+        languagePack,
+        executionContext: { source: 'TEXT', rawInput: original },
+      })
+      if (contextual.status === 'HANDLED') {
+        setLogs((history) =>
+          [
+            {
+              input: original,
+              parsed: contextual.parsed,
+              result: `✓ ${contextual.description}`,
+              successful: true,
+              source: 'TEXT' as const,
+              entity: contextual.entity,
+            },
+            ...history,
+          ].slice(0, 8),
+        )
+        setInput('')
+        return
+      }
+      if (contextual.status === 'AMBIGUOUS') {
+        setLogs((history) =>
+          [
+            {
+              input: original,
+              parsed: contextual.parsed,
+              result: `⚠ UI_ACTION_AMBIGUOUS: ${contextual.description}`,
+              successful: false,
+              source: 'TEXT' as const,
+            },
+            ...history,
+          ].slice(0, 8),
+        )
+        return
+      }
+    }
+
+    const normalized = normalizeSpokenCommand(original, languagePack)
+    const parsed = parseCommandForGame(normalized, game)
+    if (parsed.status === 'error') {
+      setLogs((history) =>
+        [
+          {
+            input: original,
+            parsed: '—',
+            result: `⚠ ${parsed.error.code}: ${parsed.error.message}`,
+            successful: false,
+          },
+          ...history,
+        ].slice(0, 8),
+      )
+      return
+    }
+    const entity =
+      'cardQuery' in parsed.command
+        ? parsed.command.cardQuery
+        : 'colorQuery' in parsed.command
+          ? parsed.command.colorQuery
+          : undefined
+    const execution = game.executeTabletopCommand(parsed.command, {
+      source: 'TEXT',
+      rawInput: original,
+      normalizedInput: normalized,
+    })
+    if (execution.status === 'error') {
+      setLogs((history) =>
+        [
+          {
+            input: original,
+            parsed: parsed.command.type,
+            result: `⚠ ${execution.error.code}: ${execution.error.message}`,
+            successful: false,
+            entity,
+          },
+          ...history,
+        ].slice(0, 8),
+      )
+      return
+    }
+    if (execution.status === 'undo')
+      game.undoLastAction({
+        source: 'TEXT',
+        rawInput: original,
+        normalizedInput: normalized,
+      })
+    setLogs((history) =>
+      [
+        {
+          input: original,
+          parsed: parsed.command.type,
+          result:
+            execution.status === 'paused'
+              ? `⚠ ${execution.description}`
+              : `✓ ${execution.description}`,
+          successful: execution.status !== 'paused',
+          entity,
+        },
+        ...history,
+      ].slice(0, 8),
+    )
+    setInput('')
+  }
+
+  const appendVoiceLog = (entry: VoiceCommandHistoryEntry) => {
+    const semanticDebug = [
+      ...(entry.routing
+        ? [`ROUTING ${formatVoiceRoutingEntry(entry.routing)}`]
+        : []),
+      ...(entry.semanticDebug ?? []),
+      ...(entry.semanticTrace ?? []).map(
+        (trace) => `TRACE ${JSON.stringify(trace)}`,
+      ),
+    ]
+    if (entry.routing)
+      setVoiceRoutingArchive((history) => [...history, entry.routing!])
+    const archiveEntry: CommandLog = {
+      input: entry.rawTranscript,
+      normalized: entry.normalizedTranscript,
+      parsed: entry.parsed,
+      result: entry.result,
+      successful: entry.successful,
+      source: 'VOICE',
+      entity: entry.entity,
+      ignored: entry.ignored,
+      debug: semanticDebug.length ? semanticDebug : undefined,
+    }
+    appendVoiceArchive(archiveEntry)
+    setLogs((history) => [archiveEntry, ...history].slice(0, 8))
+  }
+
+  return (
+    <section className="command-console">
+      <h2>Comandos de desarrollo</h2>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault()
+          execute()
+        }}
+      >
+        <input
+          value={input}
+          onChange={(event) => setInput(event.target.value)}
+          placeholder="Ej. giro la isla 3"
+          aria-label="Comando de juego"
+        />
+        <button type="submit" className="primary">
+          Execute
+        </button>
+      </form>
+      <VoiceCommandControls
+        voiceLanguageId={voiceLanguageId}
+        onVoiceResult={appendVoiceLog}
+        onVoiceError={(message, transcript) => {
+          const errorEntry: CommandLog = {
+            input: transcript ?? '—',
+            parsed: '—',
+            result: `⚠ ${message}`,
+            successful: false,
+            source: 'VOICE',
+          }
+          appendVoiceArchive(errorEntry)
+          setLogs((history) => [errorEntry, ...history].slice(0, 8))
+        }}
+        onEditTranscript={(transcript) => setInput(transcript)}
+      />
+      <button type="button" onClick={downloadVoiceArchive}>
+        Descargar VOICE.txt ({voiceArchive.length})
+      </button>
+      {voiceRoutingSummary.total ? (
+        <details className="voice-debug">
+          <summary>Voice routing ({voiceRoutingSummary.total})</summary>
+          <pre>{formatVoiceRoutingSummary(voiceRoutingSummary)}</pre>
+        </details>
+      ) : null}
+      <div className="command-history">
+        {logs.length ? (
+          logs.map((log, index) => (
+            <article
+              key={`${log.input}-${index}`}
+              className={
+                log.ignored
+                  ? undefined
+                  : log.successful
+                    ? 'command-success'
+                    : 'command-error'
+              }
+            >
+              <small>
+                {log.source ?? 'TEXT'}: {log.input}
+              </small>
+              {log.normalized ? (
+                <small>Normalized: {log.normalized}</small>
+              ) : null}
+              <small>Parsed: {log.parsed}</small>
+              {log.entity ? <small>Entity: {log.entity}</small> : null}
+              {log.debug?.length ? (
+                <details className="voice-debug">
+                  <summary>Semantic debug ({log.debug.length})</summary>
+                  <ol>
+                    {log.debug.map((line, debugIndex) => (
+                      <li key={`${debugIndex}-${line}`}>{line}</li>
+                    ))}
+                  </ol>
+                </details>
+              ) : null}
+              <strong>{log.result}</strong>
+            </article>
+          ))
+        ) : (
+          <p className="empty">
+            Escribe una declaración de juego para probar el parser.
+          </p>
+        )}
+      </div>
+    </section>
+  )
+}

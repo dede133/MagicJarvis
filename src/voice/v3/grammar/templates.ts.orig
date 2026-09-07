@@ -1,0 +1,14 @@
+import { ACTIVE_VOICE_LANGUAGE_PACK } from '../../languages'
+
+const grammar = ACTIVE_VOICE_LANGUAGE_PACK.v3
+
+export const TURN_STEP_PHRASES = grammar.turnStepPhrases
+
+/** Covers conjugation families instead of growing one phrase at a time. */
+export const matchesNextTurnPhrase = (input: string): boolean =>
+  grammar.nextTurnColloquial.has(input) || grammar.nextTurnPattern.test(input)
+
+export const UNTAP_ALL_PHRASES = grammar.untapAllPhrases
+export const MOVE_ZONE_PHRASES = grammar.moveZonePhrases
+export const SHUFFLE_LIBRARY_PHRASES = grammar.shuffleLibraryPhrases
+export const COMBAT_DAMAGE_PHRASES = grammar.combatDamagePhrases

@@ -1,0 +1,257 @@
+import type { ActivatedAbilityHint } from '../../commands/types/commandTypes'
+import type { Zone } from '../../types/card'
+import type { TurnStep } from '../../types/turn'
+
+export type SemanticIntent =
+  | 'PLAY_CARD'
+  | 'TAP_CARD'
+  | 'UNTAP_CARD'
+  | 'UNTAP_ALL'
+  | 'NEXT_TURN'
+  | 'ADVANCE_STEP'
+  | 'GAIN_LIFE'
+  | 'LOSE_LIFE'
+  | 'SET_LIFE'
+  | 'DRAW'
+  | 'DISCARD_CARD'
+  | 'SET_HAND_COUNT'
+  | 'SET_LIBRARY_COUNT'
+  | 'ADD_COUNTER'
+  | 'REMOVE_COUNTER'
+  | 'ACTIVATE_ABILITY'
+  | 'ACTIVATE_MANA'
+  | 'MOVE_ZONE'
+  | 'SHUFFLE_LIBRARY'
+  | 'DECLARE_ATTACKERS'
+  | 'DECLARE_BLOCKERS'
+  | 'RESOLVE_COMBAT_DAMAGE'
+  | 'RESOLVE_SPELL'
+  | 'UNDO'
+  | 'CONCEDE'
+  | 'PENDING_DECISION'
+
+type NoSemanticSlots = Record<never, never>
+type CardSlot = { card: string; cardInstanceId?: string }
+type CountedCardSlot = CardSlot & { amount?: number }
+type AmountSlot = { amount: number }
+type DefenderSlot = { defender?: string; defenderInstanceId?: string }
+
+export type PendingDecisionSlots = {
+  uiActionId: string
+  uiActionKind:
+    | 'PENDING_DECISION'
+    | 'PENDING_ABILITY_PAYMENT'
+    | 'PENDING_ABILITY_RESOLVE'
+    | 'PENDING_ABILITY_IGNORE'
+  decisionId?: string
+  pendingAbilityId?: string
+  selection?: string
+  uiDescription?: string
+  uiParsed?: string
+  uiEntity?: string
+}
+
+/**
+ * Slot schema is discriminated by intent. This keeps impossible combinations
+ * (for example GAIN_LIFE + destination) out of the semantic API while still
+ * allowing the matcher to share generic entity-resolution helpers.
+ */
+export type SemanticSlotsByIntent = {
+  PLAY_CARD: CardSlot & { inResponse?: true }
+  TAP_CARD: CountedCardSlot
+  UNTAP_CARD: CountedCardSlot
+  UNTAP_ALL: NoSemanticSlots
+  NEXT_TURN: NoSemanticSlots
+  ADVANCE_STEP: { targetStep?: TurnStep }
+  GAIN_LIFE: AmountSlot
+  LOSE_LIFE: AmountSlot
+  SET_LIFE: AmountSlot
+  DRAW: AmountSlot
+  DISCARD_CARD: CardSlot & { amount: number }
+  SET_HAND_COUNT: AmountSlot
+  SET_LIBRARY_COUNT: AmountSlot
+  ADD_COUNTER: CardSlot & { amount: number; counter: string }
+  REMOVE_COUNTER: CardSlot & { amount: number; counter: string }
+  ACTIVATE_ABILITY: CardSlot & {
+    abilityHint?: ActivatedAbilityHint
+    inResponse?: true
+  }
+  ACTIVATE_MANA: CardSlot & { color?: string }
+  MOVE_ZONE: CardSlot & { destination: Zone }
+  SHUFFLE_LIBRARY: NoSemanticSlots
+  DECLARE_ATTACKERS: DefenderSlot & {
+    cards?: string[]
+    cardInstanceIds?: string[]
+    all?: true
+    subtype?: string
+    none?: true
+  }
+  DECLARE_BLOCKERS: {
+    cards?: string[]
+    cardInstanceIds?: string[]
+    attacker?: string
+    attackerInstanceId?: string
+    none?: true
+  }
+  RESOLVE_COMBAT_DAMAGE: NoSemanticSlots
+  RESOLVE_SPELL: { card?: string; cardInstanceId?: string }
+  UNDO: NoSemanticSlots
+  CONCEDE: NoSemanticSlots
+  PENDING_DECISION: PendingDecisionSlots
+}
+
+export type SemanticCommandSlotsFor<I extends SemanticIntent> =
+  SemanticSlotsByIntent[I]
+
+/** Union retained for generic helpers; execution should narrow by intent. */
+export type SemanticCommandSlots = SemanticSlotsByIntent[SemanticIntent]
+
+/**
+ * Transitional read-only bag for generic logging/adapters that cannot preserve
+ * discriminated-union correlation after destructuring. New semantic producers
+ * must use SemanticCommandSlotsFor<I>, never this bag.
+ */
+export type SemanticCommandSlotBag = {
+  card?: string
+  cardInstanceId?: string
+  cards?: string[]
+  cardInstanceIds?: string[]
+  amount?: number
+  counter?: string
+  abilityHint?: ActivatedAbilityHint
+  color?: string
+  destination?: Zone
+  all?: true
+  subtype?: string
+  defender?: string
+  defenderInstanceId?: string
+  attacker?: string
+  attackerInstanceId?: string
+  none?: true
+  inResponse?: true
+  targetStep?: TurnStep
+  uiActionId?: string
+  uiActionKind?: PendingDecisionSlots['uiActionKind']
+  decisionId?: string
+  pendingAbilityId?: string
+  selection?: string
+  uiDescription?: string
+  uiParsed?: string
+  uiEntity?: string
+}
+
+export type SemanticTraceEvent =
+  | {
+      kind: 'ENTITY_RESOLUTION'
+      query: string
+      canonical: string
+      method: string
+      evidenceKind?: string
+      score: number
+      candidateCount?: number
+      marginToSecond?: number
+    }
+  | {
+      kind: 'ACTION_SPEC'
+      specId: string
+      intent: SemanticIntent
+      verbFamily?: string
+    }
+  | {
+      kind: 'PENDING_CONTEXT'
+      uiActionId: string
+      decisionId?: string
+    }
+  | {
+      kind: 'ASR_HYPOTHESIS'
+      rank: number
+      confidence?: number
+    }
+  | {
+      kind: 'ASR_SELECTION'
+      decision: 'DOMINANT' | 'CONSENSUS' | 'AMBIGUOUS'
+      strength: number
+      runnerUpStrength?: number
+      supporters: number
+    }
+  | {
+      kind: 'CONTEXT_CANDIDATES'
+      intent: SemanticIntent
+      query: string
+      candidateCount: number
+      candidates: string[]
+    }
+  | {
+      kind: 'GAME_STATE'
+      activePlayerId: string
+      turn: number
+      step: string
+      stackDepth: number
+      pendingDecisionCount: number
+      cardCount: number
+    }
+  | {
+      kind: 'CONTEXT'
+      detail: string
+    }
+
+export type SemanticCommand<I extends SemanticIntent = SemanticIntent> = {
+  intent: I
+  slots: SemanticSlotsByIntent[I]
+  normalizedText: string
+  /** Deterministic confidence: structural grammar + contextual slot evidence. */
+  score: number
+  evidence: string[]
+  /** Structured, optional diagnostics. It never participates in execution. */
+  trace?: SemanticTraceEvent[]
+}
+
+export type SemanticClarificationChoice = {
+  id: string
+  label: string
+  aliases: readonly string[]
+  command: SemanticCommand
+}
+
+export type SemanticClarification = {
+  kind: 'ENTITY' | 'INTERPRETATION'
+  prompt: string
+  choices: readonly SemanticClarificationChoice[]
+}
+
+
+export type SemanticAmbiguitySource = 'ENTITY' | 'ASR' | 'CONTEXT'
+
+export type SemanticMatchResult =
+  | { status: 'NO_MATCH'; normalizedText: string }
+  | {
+      status: 'INCOMPLETE'
+      normalizedText: string
+      intent: SemanticIntent
+      resumePrefix: string
+      missingSlot?: 'card' | 'attacker' | 'blocker' | 'target' | 'amount'
+      description: string
+    }
+  | {
+      status: 'REJECTED_CONTEXT'
+      normalizedText: string
+      /** Optional intent proves that V3 recognized the family but rejected its context. */
+      intent?: SemanticIntent
+      description: string
+      trace?: SemanticTraceEvent[]
+    }
+  | {
+      status: 'UNSAFE'
+      normalizedText: string
+      reason: 'QUESTION' | 'UNCERTAINTY' | 'NEGATED_ACTION' | 'PAST_REFERENCE'
+    }
+  | {
+      status: 'AMBIGUOUS'
+      normalizedText: string
+      commands: SemanticCommand[]
+      description: string
+      clarification?: SemanticClarification
+      /** Diagnostic origin of the competing interpretations; never authorizes execution. */
+      ambiguitySource?: SemanticAmbiguitySource
+    }
+  | { status: 'MATCHED'; command: SemanticCommand }
