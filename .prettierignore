@@ -1,0 +1,8 @@
+node_modules
+dist
+coverage
+.magicjarvis
+tmp
+*.orig
+*.zip
+*.tsbuildinfo
