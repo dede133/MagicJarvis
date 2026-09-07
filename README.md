@@ -1,138 +1,83 @@
 # MagicJarvis
 
-MagicJarvis es un asistente para partidas físicas de **Magic: The Gathering**.
-La partida física es la fuente de verdad: la aplicación mantiene un estado
-digital paralelo y ayuda a registrar, validar y resolver las consecuencias
-deterministas de las decisiones del jugador.
+Proyecto personal de un asistente para partidas físicas de Magic: The Gathering,
+empezando por un mazo Commander y un jugador local. La idea es registrar acciones
+por voz, texto o botones y mantener un estado digital de apoyo. La mesa sigue
+siendo la referencia cuando ese estado no coincide con la partida real.
 
-El proyecto está pensado para empezar con un mazo Commander, un jugador local
-y una interacción principalmente guiada por voz, botones y comandos de texto.
-La base está preparada para ampliar el modelo a varios jugadores sin perder la
-compatibilidad con el modo local inicial.
+Es un prototipo en desarrollo, no un simulador completo ni un árbitro de reglas.
+Este repositorio permite consultar el código y la arquitectura; no ofrece una
+demo desplegada.
 
-## Principios de diseño
+## Arquitectura
 
-- El jugador declara las decisiones del juego. La aplicación no inventa
-  objetivos, cartas ocultas, bloqueos ni elecciones ambiguas.
-- Todas las acciones pasan por un motor central de estado mediante
-  `GameAction`.
-- Voz, botones y comandos de texto deben producir las mismas acciones.
-- Las reglas de Magic viven en el motor, los tipos y los módulos de reglas, no
-  en los componentes React.
-- El estado debe ser serializable, tipado y fácil de probar.
-- Cuando una interacción física no puede conocerse con seguridad, el sistema
-  pide una decisión o la mantiene como asistencia manual.
-
-## Arquitectura resumida
+React y Zustand para la interfaz y el estado, TypeScript para el motor y Vitest
+para las pruebas. Las entradas terminan en acciones tipadas; las reglas no
+dependen de los componentes React.
 
 ```text
-Entrada de voz / botones / texto
-              ↓
-      parser y command resolver
-              ↓
-          GameAction
-              ↓
-       gameEngine / gameStore
-              ↓
-       GameState + GameEvent
-              ↓
-  reglas, stack, habilidades, UI y undo
+Voz / texto / botones
+        ↓
+Resolución del comando → GameAction
+        ↓
+gameStore / gameEngine → GameState + GameEvent
+        ↓
+Interfaz e historial de la partida
 ```
 
-Las piezas principales son:
+- `src/engine/`, `src/actions/` y `src/events/`: cambios de estado y sus eventos.
+- `src/rules/`: turnos, maná, legalidad, combate y resolución implícita.
+- `src/abilities/`: definiciones, compilación y ejecución de habilidades.
+- `src/commands/` y `src/voice/`: interpretación de entradas y referencias a cartas.
+- `src/store/` y `src/components/`: estado compartido, historial, undo e interfaz.
+- `scripts/`: herramientas de análisis de cartas y cobertura del motor.
 
-- `src/engine/`: motor central que aplica `GameAction` y produce el siguiente
-  `GameState`.
-- `src/store/`: store de Zustand, historial y operaciones de undo.
-- `src/actions/`: unión tipada de las acciones que puede ejecutar el motor.
-- `src/events/`: eventos derivados del cambio de estado.
-- `src/rules/`: legalidad, turnos, combate, costes, maná, acciones basadas en
-  estado y jugadores.
-- `src/abilities/`: definiciones, compilación, validación, runtime y catálogo
-  precompilado de habilidades.
-- `src/casting/`: costes y opciones de lanzamiento que requieren interacción.
-- `src/commands/`: parser de lenguaje natural y resolución de comandos.
-- `src/components/`: interfaz React; debe orquestar y mostrar estado, no
-  contener reglas de Magic.
+El objetivo es automatizar consecuencias deterministas, no elegir objetivos o
+reconstruir información oculta por el jugador. Las interacciones no soportadas
+requieren intervención manual. Los límites de reglas están en
+[CORE1_LIMITS](src/rules/CORE1_LIMITS.md) y
+[CORE2_LIMITS](src/rules/combat/CORE2_LIMITS.md).
 
-## Modelo de estado
+## Estado y comprobaciones
 
-`GameState` contiene el estado serializable de la partida: cartas conocidas,
-zonas, stack, turno, maná, jugadores, decisiones pendientes, habilidades,
-combate, historial y datos de seguimiento de zonas ocultas.
+Hay implementaciones de turnos, pila, costes, combate, habilidades y comandos de
+voz, pero todavía existen regresiones. En la revisión del 7 de septiembre de 2026,
+la suite completa tiene **1.040 pruebas correctas y 94 fallidas de 1.134**.
+Los fallos incluyen reconocimiento y ambigüedad de comandos, contexto de jugador,
+resolución implícita e interacciones de combate. No se han desactivado esas pruebas.
 
-El estado canónico de jugadores vive en `players[]`, con identificadores
-estables y `activePlayerId`. Algunos campos legacy como `life`, `manaPool` y
-`opponentLife` se conservan como proyección de compatibilidad con el modelo
-local y con snapshots existentes.
-
-Las zonas ocultas no se reconstruyen por inferencia. El sistema solo usa cartas
-conocidas, contadores declarados o información revelada explícitamente.
-
-## Habilidades y automatización
-
-Las habilidades pueden proceder de definiciones explícitas, compilación
-determinista o catálogos precompilados. El runtime solo ejecuta definiciones
-validadas y soportadas por el modelo actual.
-
-La automatización distingue entre consecuencias deterministas y decisiones del
-jugador. Una carta puede ser `READY`, `PARTIAL` o `MANUAL` según cuánto de su
-texto sea ejecutable sin inventar información.
-
-La cobertura actual de Tritones se consulta con:
+Para reproducir las comprobaciones con Node.js 22:
 
 ```bash
-npm run abilities:runtime-coverage
-```
-
-Los límites detallados del motor están documentados en:
-
-- [`src/rules/CORE1_LIMITS.md`](src/rules/CORE1_LIMITS.md)
-- [`src/rules/combat/CORE2_LIMITS.md`](src/rules/combat/CORE2_LIMITS.md)
-
-## Desarrollo
-
-Instalar dependencias y arrancar el entorno:
-
-```bash
-npm install
-npm run dev
-```
-
-Checks principales:
-
-```bash
-npm run format:check
+npm ci
 npm run typecheck
 npm run lint
-npm test -- --run
+npm test
 npm run build
 ```
 
-El formatter del proyecto se ejecuta con:
+`npm test` devuelve un código de error mientras sigan pendientes esas regresiones.
+Compilar no implica que todas las reglas o flujos de voz funcionen correctamente.
+En esta revisión pasan tipos, lint y build; este último avisa del tamaño del bundle.
+`npm run format:check` todavía detecta diferencias de estilo en archivos no
+modificados en esta revisión. El chequeo de tipos cubre `src/` y la configuración
+de Vite, no todos los scripts auxiliares.
 
-```bash
-npm run format
-```
+## Servicios y configuración
 
-## Decisiones y límites importantes
+La consulta de cartas usa Scryfall. El reconocimiento de voz depende del navegador
+y de su servicio de voz; no se garantiza funcionamiento sin conexión.
 
-- El juego físico sigue siendo la autoridad cuando el estado digital y la
-  mesa difieren.
-- El modo single-player local debe seguir funcionando aunque el modelo interno
-  soporte jugadores con IDs estables.
-- El motor no debe escoger automáticamente entre varias líneas legales si la
-  elección pertenece al jugador.
-- El modelo actual prioriza una mesa física asistida y verificable sobre una
-  simulación completa de Magic Online.
-- Multiplayer completo, APNAP, capas universales, efectos de reemplazo,
-  información oculta y ciertas interacciones de combate permanecen limitados o
-  asistidos. Las fronteras concretas están en los documentos `CORE*_LIMITS`.
+Los scripts opcionales de análisis incluyen proveedores Gemini y Ollama. Se usan
+para estudiar y compilar habilidades, no para delegar las decisiones de la partida
+a un modelo. Los comandos `abilities:gemini-*` leen `GEMINI_API_KEY` desde el entorno
+o `.env.local`; `.env.example` contiene solo una plantilla. Las llamadas a Gemini
+pueden consumir cuota y tener coste. No hacen falta para ejecutar los checks anteriores.
 
-## Estado del proyecto
+`abilities:runtime-coverage` necesita una caché semántica local en `.magicjarvis/`;
+no funciona directamente en un clon limpio. Los archivos de entorno, cachés,
+exports temporales y copias de trabajo quedan fuera del seguimiento de Git.
+No se deben añadir claves con prefijo `VITE_`: acabarían expuestas al navegador.
 
-La aplicación dispone de un motor central de acciones, turnos, stack, costes de
-maná, combate, decisiones pendientes, habilidades runtime y una interfaz React.
-El trabajo futuro debe extender estas capas manteniendo la misma regla:
-**primero una decisión explícita del jugador; después, solo consecuencias que
-el motor pueda justificar de forma determinista**.
+Magic: The Gathering pertenece a Wizards of the Coast. Este proyecto personal
+no está afiliado a Wizards of the Coast.
