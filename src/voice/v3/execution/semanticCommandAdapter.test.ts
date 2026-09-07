@@ -111,8 +111,11 @@ describe('Voice V3 activated ability adapter', () => {
 
     const matched = matchSemanticVoiceCommand('giro sol ring', state)
     expect(matched).toMatchObject({ status: 'MATCHED' })
-    if (matched.status !== 'MATCHED') throw new Error('Expected stack-ring match')
-    expect(executeSemanticCommand(matched.command, state, { execute: true })).toMatchObject({
+    if (matched.status !== 'MATCHED')
+      throw new Error('Expected stack-ring match')
+    expect(
+      executeSemanticCommand(matched.command, state, { execute: true }),
+    ).toMatchObject({
       status: 'resolved',
     })
     expect(executeTabletopCommand).toHaveBeenCalledWith({
@@ -260,8 +263,9 @@ describe('Voice V3 activated ability adapter', () => {
   it('marks explicit stack responses so implicit resolution cannot consume the previous stack object first', () => {
     const state = target()
     const executeTabletopCommand = vi.fn(() => ({
-      status: 'resolved' as const,
+      status: 'executed' as const,
       description: 'ok',
+      implicitResolutions: [],
     }))
     state.executeTabletopCommand = executeTabletopCommand
 

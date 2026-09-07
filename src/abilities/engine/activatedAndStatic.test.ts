@@ -256,12 +256,11 @@ describe('activated abilities and derived static effects', () => {
     })
     const withLegend = createInitialGameState([
       source,
-      instance(
-        'legend',
-        card('Legend', 'Legendary Creature — Human Wizard'),
-      ),
+      instance('legend', card('Legend', 'Legendary Creature — Human Wizard')),
     ])
-    expect(resolveActivatedAbility(withLegend, 'source', ability)).toMatchObject({
+    expect(
+      resolveActivatedAbility(withLegend, 'source', ability),
+    ).toMatchObject({
       ok: true,
     })
   })
@@ -338,6 +337,11 @@ describe('activated abilities and derived static effects', () => {
         wardModifiers: [],
         protectionModifiers: [],
         targetingCostModifiers: [],
+        protectionCardTypeModifiers: [],
+        protectionEverythingModifiers: [],
+        basePowerToughnessSetters: [],
+        characteristicModifiers: [],
+        damagePreventionModifiers: [],
       },
     })
     expect(total.generic).toBe(3)

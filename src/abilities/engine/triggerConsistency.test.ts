@@ -80,6 +80,7 @@ describe('trigger consistency', () => {
         cardTypes: ['creature'],
         subtypes: ['Merfolk'],
         isToken: false,
+        counters: victim.counters,
       },
       previous,
       getAbilities,

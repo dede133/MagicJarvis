@@ -6,12 +6,18 @@ import {
   type VoiceCommandQueueInput,
 } from './voiceCommandQueue'
 
-const command = (type: ParsedCommand['type']): ParsedCommand =>
-  ({ type }) as ParsedCommand
+type QueueCommandType =
+  'PLAY_CARD' | 'CAST_SPELL' | 'TAP_CARD' | 'NEXT_TURN' | 'DRAW'
+
+const command = (type: QueueCommandType): ParsedCommand => {
+  if (type === 'NEXT_TURN') return { type }
+  if (type === 'DRAW') return { type, amount: 1 }
+  return { type, cardQuery: 'test card' }
+}
 
 const input = (
   label: string,
-  type: ParsedCommand['type'],
+  type: QueueCommandType,
 ): VoiceCommandQueueInput => ({
   rawTranscript: label,
   normalizedTranscript: label,
@@ -48,9 +54,9 @@ describe('VoiceCommandQueue', () => {
     })
 
     queue.enqueueMany([
-      input('bajo isla', 'PLAY_LAND'),
+      input('bajo isla', 'PLAY_CARD'),
       input('giro sol ring', 'TAP_CARD'),
-      input('paso turno', 'PASS_TURN'),
+      input('paso turno', 'NEXT_TURN'),
     ])
 
     await Promise.resolve()
@@ -85,10 +91,10 @@ describe('VoiceCommandQueue', () => {
     })
 
     queue.enqueueMany([
-      input('bajo isla', 'PLAY_LAND'),
+      input('bajo isla', 'PLAY_CARD'),
       input('giro sol ring', 'TAP_CARD'),
       input('bajo remora', 'CAST_SPELL'),
-      input('paso turno', 'PASS_TURN'),
+      input('paso turno', 'NEXT_TURN'),
     ])
 
     const settled = await queue.whenSettled()
@@ -112,7 +118,7 @@ describe('VoiceCommandQueue', () => {
     queue.enqueueMany([
       input('one', 'DRAW'),
       input('bad', 'TAP_CARD'),
-      input('cancel me', 'PASS_TURN'),
+      input('cancel me', 'NEXT_TURN'),
     ])
     await queue.whenSettled()
 
@@ -142,9 +148,9 @@ describe('VoiceCommandQueue', () => {
     })
 
     queue.enqueueMany([
-      input('bajo isla', 'PLAY_LAND'),
+      input('bajo isla', 'PLAY_CARD'),
       input('bajo remora', 'CAST_SPELL'),
-      input('paso turno', 'PASS_TURN'),
+      input('paso turno', 'NEXT_TURN'),
     ])
     await Promise.resolve()
 
