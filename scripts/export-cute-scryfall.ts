@@ -1,10 +1,10 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { parseDeckList } from '../src/data/deckParser'
 import { resolveDeckList } from '../src/services/deckResolver'
-import { getDeckCommanders } from '../src/types/deck'
 
-const projectRoot = resolve(new URL('..', import.meta.url).pathname)
+const projectRoot = fileURLToPath(new URL('..', import.meta.url))
 const deckPath = resolve(projectRoot, 'src/data/decks/cute.txt')
 const outputPath = resolve(projectRoot, 'tmp/cute-scryfall.json')
 
