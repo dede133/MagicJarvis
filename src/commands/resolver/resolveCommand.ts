@@ -58,7 +58,6 @@ import {
   planCombatDamage,
   validateAttackDeclaration,
   validateAttackRequirements,
-  validateBlockDeclaration,
 } from '../../rules/combat/combatRules'
 import { getCastOptionsForCard } from '../../casting/generated/castingOptionLoader'
 import type {

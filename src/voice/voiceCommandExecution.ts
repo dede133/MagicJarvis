@@ -545,12 +545,12 @@ const semanticHypothesisDebugLines = (
     const interpretations = semanticInterpretations(candidate.match)
     if (!interpretations.length)
       return [
-        `ASR #${candidate.rank + 1} \"${candidate.transcript}\" conf=${formatAsrConfidence(candidate.confidence)} -> ${candidate.match.status}`,
+        `ASR #${candidate.rank + 1} "${candidate.transcript}" conf=${formatAsrConfidence(candidate.confidence)} -> ${candidate.match.status}`,
       ]
     return interpretations.map((command, interpretationIndex) => {
       const label = semanticCommandClarificationLabel(command)
       const strength = hypothesisStrength(command, candidate)
-      return `ASR #${candidate.rank + 1}.${interpretationIndex + 1} \"${candidate.transcript}\" conf=${formatAsrConfidence(candidate.confidence)} -> ${command.intent} [${label}] semantic=${command.score.toFixed(1)} ${entityResolutionDebugSummary(command)} strength=${strength.toFixed(2)}`
+      return `ASR #${candidate.rank + 1}.${interpretationIndex + 1} "${candidate.transcript}" conf=${formatAsrConfidence(candidate.confidence)} -> ${command.intent} [${label}] semantic=${command.score.toFixed(1)} ${entityResolutionDebugSummary(command)} strength=${strength.toFixed(2)}`
     })
   })
 

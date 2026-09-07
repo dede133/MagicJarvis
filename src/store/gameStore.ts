@@ -2247,7 +2247,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
                 requiresAttentionAfterImplicitResolution(
                   beforeResolution,
                   current,
-                  implicit.stackObjectId,
                 )
               ) {
                 execution = {
@@ -2473,7 +2472,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
                 requiresAttentionAfterImplicitResolution(
                   beforeResolution,
                   current,
-                  implicit.stackObjectId,
                 )
               ) {
                 execution = {

@@ -113,10 +113,12 @@ describe('tabletop implicit resolution', () => {
       .getState()
       .replaceGame(gameWithStack([stackSpell('sol-ring', solRing)]))
 
-    const result = useGameStore.getState().executeTabletopCommand(
-      { type: 'TAP_CARD', cardQuery: 'sol ring' },
-      { source: 'VOICE', rawInput: 'gira sol ring' },
-    )
+    const result = useGameStore
+      .getState()
+      .executeTabletopCommand(
+        { type: 'TAP_CARD', cardQuery: 'sol ring' },
+        { source: 'VOICE', rawInput: 'gira sol ring' },
+      )
 
     expect(result).toMatchObject({
       status: 'executed',
@@ -135,13 +137,18 @@ describe('tabletop implicit resolution', () => {
       implicitResolutions: ['Sol Ring'],
       status: 'EXECUTED',
     })
-    expect(transaction?.actions.map((action) => action.type)).toContain('TAP_CARD')
+    expect(transaction?.actions.map((action) => action.type)).toContain(
+      'TAP_CARD',
+    )
   })
 
   it('defaults legacy states without stackResolutionMode to tabletop implicit resolution', () => {
     const legacy = gameWithStack([stackSpell('sol-ring-legacy-mode', solRing)])
-    delete (legacy as unknown as { stackResolutionMode?: GameState['stackResolutionMode'] })
-      .stackResolutionMode
+    delete (
+      legacy as unknown as {
+        stackResolutionMode?: GameState['stackResolutionMode']
+      }
+    ).stackResolutionMode
     useGameStore.getState().replaceGame(legacy)
 
     const result = useGameStore
@@ -222,9 +229,7 @@ describe('tabletop implicit resolution', () => {
         },
       ],
     }
-    expect(
-      requiresAttentionAfterImplicitResolution(before, after, 'stack-remora'),
-    ).toBe(false)
+    expect(requiresAttentionAfterImplicitResolution(before, after)).toBe(false)
   })
 
   it('keeps strict mode explicit', () => {

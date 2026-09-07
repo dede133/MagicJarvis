@@ -1,7 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type {
   ContinuousSpeechToTextCallbacks,
-  SpeechToTextListenOptions,
   SpeechToTextProvider,
   SpeechToTextResult,
 } from './types/speechToText'
@@ -22,15 +21,12 @@ const makeProvider = (): FakeProvider => {
   return {
     provider: 'fake',
     isAvailable: () => true,
-    startListening: vi.fn((_options?: SpeechToTextListenOptions) =>
+    startListening: vi.fn<SpeechToTextProvider['startListening']>(() =>
       Promise.resolve(result),
     ),
-    startContinuousListening: vi.fn(
-      (
-        _options: SpeechToTextListenOptions,
-        _callbacks: ContinuousSpeechToTextCallbacks,
-      ) => undefined,
-    ),
+    startContinuousListening: vi.fn<
+      NonNullable<SpeechToTextProvider['startContinuousListening']>
+    >(() => undefined),
     stopListening: vi.fn(),
   }
 }
@@ -264,10 +260,13 @@ describe('VoiceListeningController', () => {
       restartDelayMs: 100,
     })
     controller.setMode('continuous')
-    controller.startContinuousListening({}, {
-      onResult: vi.fn(),
-      onError: vi.fn(),
-    })
+    controller.startContinuousListening(
+      {},
+      {
+        onResult: vi.fn(),
+        onError: vi.fn(),
+      },
+    )
     const oldCallbacks = continuousCallbacksAt(provider, 0)
 
     expect(controller.recoverContinuousListening('tab-visible')).toBe(true)

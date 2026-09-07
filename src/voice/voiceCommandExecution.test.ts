@@ -455,8 +455,8 @@ describe('voice command execution', () => {
     expect(selected.semanticDebug).toEqual(
       expect.arrayContaining([
         expect.stringContaining('N-BEST DEBUG selector=p2.5'),
-        expect.stringContaining('ASR #1.1 \"giro sol ring\"'),
-        expect.stringContaining('ASR #2.1 \"giro island\"'),
+        expect.stringContaining('ASR #1.1 "giro sol ring"'),
+        expect.stringContaining('ASR #2.1 "giro island"'),
         expect.stringContaining('N-BEST DECISION AMBIGUOUS'),
       ]),
     )
@@ -534,7 +534,10 @@ describe('voice command execution', () => {
 
   it('aggregates support across N-best before allowing a one-off ambiguous alternative to block execution', () => {
     const mysticRemora = definition('Mystic Remora', 'Enchantment')
-    const tideshaperMystic = definition('Tideshaper Mystic', 'Creature — Merfolk Wizard')
+    const tideshaperMystic = definition(
+      'Tideshaper Mystic',
+      'Creature — Merfolk Wizard',
+    )
     const ambiguityDeck: DeckDefinition = {
       ...deck,
       mainboard: [

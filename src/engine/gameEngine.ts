@@ -2737,9 +2737,6 @@ export const applyGameAction = (
         action.blockers,
       )
       if ((action.genericTaxPaid ?? 0) !== requiredTax) return state
-      const blockerIds = new Set(
-        action.blockers.map((blocker) => blocker.blockerInstanceId),
-      )
       const blockedBy = new Map<string, string[]>()
       action.blockers.forEach((blocker) =>
         blocker.blocking.forEach((attackerId) =>

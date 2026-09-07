@@ -199,41 +199,6 @@ const preferStrongestEvidence = (
   )
 }
 
-const EVIDENCE_NEAR_TIE_MARGIN = 0.03
-
-/**
- * Fuzzy/edit ranking remains primarily about textual quality. Evidence kind is
- * only allowed to break a near-tie: a slightly worse canonical/localized name
- * may beat a generic descriptive reference, but strong evidence never rescues
- * a materially worse text match.
- */
-const evidenceAwareContenders = <T>(
-  candidates: readonly T[],
-  metric: (candidate: T) => number,
-  kind: (candidate: T) => VoiceSlotEvidenceKind,
-  ambiguityMargin: number,
-): T[] => {
-  if (!candidates.length) return []
-  const bestMetric = Math.min(...candidates.map(metric))
-  const ordinary = candidates.filter(
-    (candidate) => metric(candidate) - bestMetric <= ambiguityMargin,
-  )
-  if (ordinary.length <= 1) return ordinary
-
-  const nearBest = ordinary.filter(
-    (candidate) => metric(candidate) - bestMetric <= EVIDENCE_NEAR_TIE_MARGIN,
-  )
-  const strongest = Math.max(
-    ...nearBest.map((candidate) => EVIDENCE_PRECEDENCE[kind(candidate)]),
-  )
-  // Evidence only suppresses weaker semantic descriptions. Candidates with the
-  // same (or stronger) provenance still respect the normal ambiguity margin.
-  const preferred = ordinary.filter(
-    (candidate) => EVIDENCE_PRECEDENCE[kind(candidate)] >= strongest,
-  )
-  return preferred.length ? preferred : ordinary
-}
-
 const aliasRecords = (option: VoiceSlotOption): PreparedAlias[] => {
   const rawEvidence: VoiceSlotAliasEvidence[] = option.aliasEvidence?.length
     ? [...option.aliasEvidence]

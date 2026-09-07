@@ -20,7 +20,6 @@ import type {
 } from '../../types/combat'
 import type { GameState } from '../../types/game'
 import { isPresentPermanent } from '../phasing/phasingRules'
-import { effectiveCardDefinition } from '../copy/copyCharacteristics'
 import {
   activePlayerIdOf,
   localPlayerIdOf,
@@ -176,7 +175,8 @@ export const validateAttackRequirements = (
         return {
           legal: false,
           code: 'INVALID_DEFENDING_TARGET',
-          message: 'El planeswalker defensor debe existir y estar controlado por un oponente.',
+          message:
+            'El planeswalker defensor debe existir y estar controlado por un oponente.',
         }
     } else if (attacker.defendingTarget.kind === 'BATTLE') {
       return {
@@ -194,16 +194,24 @@ export const validateAttackRequirements = (
     if (!creature || !canAttack(state, creature).legal) continue
     const attacker = declared.get(requirement.attackerInstanceId)
     if (!attacker) {
-      const requiredAttack = [{
-        attackerInstanceId: creature.instanceId,
-        defendingTarget: {
-          kind: 'PLAYER' as const,
-          id: 'opponent',
-          playerId: requirement.defendingPlayerId,
+      const requiredAttack = [
+        {
+          attackerInstanceId: creature.instanceId,
+          defendingTarget: {
+            kind: 'PLAYER' as const,
+            id: 'opponent',
+            playerId: requirement.defendingPlayerId,
+          },
         },
-      }]
+      ]
       // "If able" never forces a player to pay an optional cost to attack.
-      if (attackTaxForDeclaration(state, creature.controllerId ?? activePlayerIdOf(state), requiredAttack) > 0)
+      if (
+        attackTaxForDeclaration(
+          state,
+          creature.controllerId ?? activePlayerIdOf(state),
+          requiredAttack,
+        ) > 0
+      )
         continue
       return {
         legal: false,
@@ -425,7 +433,9 @@ export const validateBlockDeclaration = (
       code: 'INVALID_TIMING',
       message: 'No estás declarando bloqueadores.',
     }
-  const blockerIds = new Set(blockers.map((blocker) => blocker.blockerInstanceId))
+  const blockerIds = new Set(
+    blockers.map((blocker) => blocker.blockerInstanceId),
+  )
   if (blockerIds.size !== blockers.length)
     return {
       legal: false,
@@ -495,7 +505,8 @@ export const validateBlockRequirements = (
   const requirements = (state.blockRequirements ?? []).filter(
     (requirement) =>
       requirement.turn === state.turn &&
-      (!requirement.combatId || requirement.combatId === state.combatState.combatId),
+      (!requirement.combatId ||
+        requirement.combatId === state.combatState.combatId),
   )
   if (!requirements.length) return { legal: true }
 
@@ -503,7 +514,10 @@ export const validateBlockRequirements = (
     blockers.map((blocker) => [blocker.blockerInstanceId, blocker]),
   )
   const attackingById = new Map(
-    state.combatState.attackers.map((attacker) => [attacker.attackerInstanceId, attacker]),
+    state.combatState.attackers.map((attacker) => [
+      attacker.attackerInstanceId,
+      attacker,
+    ]),
   )
 
   for (const requirement of requirements) {
@@ -516,24 +530,43 @@ export const validateBlockRequirements = (
       : [...attackingById.values()]
     const legalCandidates = candidates.filter(
       (attacker): attacker is CombatAttacker =>
-        Boolean(attacker && canBlock({ ...state, combatState: { ...state.combatState, blockers: [] } }, attacker, blocker).legal),
+        Boolean(
+          attacker &&
+          canBlock(
+            { ...state, combatState: { ...state.combatState, blockers: [] } },
+            attacker,
+            blocker,
+          ).legal,
+        ),
     )
     if (!legalCandidates.length) continue
 
     const declaration = declaredByBlocker.get(blocker.instanceId)
     const satisfies = declaration?.blocking.some((attackerId) =>
-      legalCandidates.some((attacker) => attacker.attackerInstanceId === attackerId),
+      legalCandidates.some(
+        (attacker) => attacker.attackerInstanceId === attackerId,
+      ),
     )
     if (satisfies) continue
 
-    const blockingPlayerId = blocker.controllerId ?? opponentPlayerIds(state, activePlayerIdOf(state))[0]
-    const cheapestRequiredDeclaration = [{
-      blockerInstanceId: blocker.instanceId,
-      blocking: [legalCandidates[0].attackerInstanceId],
-    }]
+    const blockingPlayerId =
+      blocker.controllerId ??
+      opponentPlayerIds(state, activePlayerIdOf(state))[0]
+    const cheapestRequiredDeclaration = [
+      {
+        blockerInstanceId: blocker.instanceId,
+        blocking: [legalCandidates[0].attackerInstanceId],
+      },
+    ]
     // As with attack requirements, a player is never forced to pay an optional
     // cost merely to satisfy "blocks if able".
-    if (blockTaxForDeclaration(state, blockingPlayerId, cheapestRequiredDeclaration) > 0)
+    if (
+      blockTaxForDeclaration(
+        state,
+        blockingPlayerId,
+        cheapestRequiredDeclaration,
+      ) > 0
+    )
       continue
 
     return {
@@ -657,9 +690,9 @@ export const planCombatDamage = (state: GameState): CombatDamagePlan => {
     const source = state.cards.find((card) => card.instanceId === instanceId)
     return Boolean(
       source &&
-        source.zone === 'battlefield' &&
-        (hasEffectiveKeyword(state, source, 'FIRST_STRIKE') ||
-          hasEffectiveKeyword(state, source, 'DOUBLE_STRIKE')),
+      source.zone === 'battlefield' &&
+      (hasEffectiveKeyword(state, source, 'FIRST_STRIKE') ||
+        hasEffectiveKeyword(state, source, 'DOUBLE_STRIKE')),
     )
   })
   const hasFirstStrike =
@@ -771,9 +804,7 @@ export const planCombatDamage = (state: GameState): CombatDamagePlan => {
             ),
           )
           .filter((record) => record.amount > 0)
-        const defendingDamage = trample
-          ? (allocation[blockers.length] ?? 0)
-          : 0
+        const defendingDamage = trample ? (allocation[blockers.length] ?? 0) : 0
         if (defendingDamage > 0)
           assigned.push(
             damage(
@@ -803,15 +834,12 @@ export const planCombatDamage = (state: GameState): CombatDamagePlan => {
 
     if (!blockers.length && !attacker.externalBlockedBy.length) {
       const wasBlocked = attacker.blockedBy.length > 0
-      if ((!wasBlocked || hasEffectiveKeyword(state, source, 'TRAMPLE')) && power > 0)
+      if (
+        (!wasBlocked || hasEffectiveKeyword(state, source, 'TRAMPLE')) &&
+        power > 0
+      )
         records.push(
-          damage(
-            state,
-            source,
-            defendingDamageTarget(attacker),
-            power,
-            group,
-          ),
+          damage(state, source, defendingDamageTarget(attacker), power, group),
         )
       continue
     }

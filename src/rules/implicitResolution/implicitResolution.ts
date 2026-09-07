@@ -132,7 +132,6 @@ export const shouldResolveTopBeforeCommand = (
 export const requiresAttentionAfterImplicitResolution = (
   before: GameState,
   after: GameState,
-  _resolvedStackObjectId: string,
 ): boolean => {
   const newDecision = after.pendingDecisions.some(
     (item) =>

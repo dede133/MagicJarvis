@@ -38,7 +38,7 @@ const permanent = (id: string, definition: CardDefinition): CardInstance => ({
 
 describe('VoiceConversationSession', () => {
   it('fills a missing entity from the next Web Speech final', () => {
-    let now = 1_000
+    const now = 1_000
     const game = state()
     const session = new VoiceConversationSession(5_000, () => now)
     const incomplete = matchSemanticVoiceCommand('juego', game)

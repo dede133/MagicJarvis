@@ -2,12 +2,12 @@ import { describe, expect, it } from 'vitest'
 import { validateAbilityDefinitions } from '../compiler/validators/abilityDefinitionValidator'
 import { getAbilitiesForCard } from '../definitions/abilityRegistry'
 import { evaluateAbilities } from './abilityEngine'
-import {
-  castRestrictionViolation,
-  drawLimitForPlayer,
-} from './staticEffects'
+import { castRestrictionViolation, drawLimitForPlayer } from './staticEffects'
 import { calculateSpellManaCost } from '../../rules/costs/manaCost'
-import { applyGameAction, createInitialGameState } from '../../engine/gameEngine'
+import {
+  applyGameAction,
+  createInitialGameState,
+} from '../../engine/gameEngine'
 import type { CardDefinition, CardInstance } from '../../types/card'
 import type { GameState } from '../../types/game'
 import type { PlayerState } from '../../types/player'
@@ -85,7 +85,9 @@ describe('Cute patch 10 - restrictions and permissions', () => {
       ).toMatchObject({ valid: true })
 
     expect(
-      getAbilitiesForCard(card('Narset, Parter of Veils', 'Legendary Planeswalker — Narset')),
+      getAbilitiesForCard(
+        card('Narset, Parter of Veils', 'Legendary Planeswalker — Narset'),
+      ),
     ).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -108,7 +110,11 @@ describe('Cute patch 10 - restrictions and permissions', () => {
       'lavinia',
       card('Lavinia, Azorius Renegade', 'Legendary Creature — Human Soldier'),
     )
-    const opponentLand = permanent('land-1', card('Island', 'Basic Land — Island'), 'player-2')
+    const opponentLand = permanent(
+      'land-1',
+      card('Island', 'Basic Land — Island'),
+      'player-2',
+    )
     const state = multiplayerState([lavinia, opponentLand])
     const noncreature = card('Big Instant', 'Instant', {
       manaCost: '{1}{U}',
@@ -126,8 +132,12 @@ describe('Cute patch 10 - restrictions and permissions', () => {
     expect(castRestrictionViolation(state, noncreature, 'player-2')).toContain(
       'mayor que las 1 tierras',
     )
-    expect(castRestrictionViolation(state, creature, 'player-2')).toBeUndefined()
-    expect(castRestrictionViolation(state, noncreature, 'player-1')).toBeUndefined()
+    expect(
+      castRestrictionViolation(state, creature, 'player-2'),
+    ).toBeUndefined()
+    expect(
+      castRestrictionViolation(state, noncreature, 'player-1'),
+    ).toBeUndefined()
   })
 
   it('Lavinia only triggers on an opposing spell known to have spent zero mana', () => {
@@ -162,7 +172,10 @@ describe('Cute patch 10 - restrictions and permissions', () => {
       ]),
     )
     expect(evaluateAbilities(state, { ...event, manaSpent: 1 })).toHaveLength(0)
-    const { manaSpent: _unknown, ...unknownManaEvent } = event
+    const unknownManaEvent: Omit<typeof event, 'manaSpent'> & {
+      manaSpent?: number
+    } = { ...event }
+    delete unknownManaEvent.manaSpent
     expect(evaluateAbilities(state, unknownManaEvent)).toHaveLength(0)
   })
 
@@ -176,7 +189,9 @@ describe('Cute patch 10 - restrictions and permissions', () => {
     expect(drawLimitForPlayer(state, 'player-1')).toBeUndefined()
 
     state = applyGameAction(state, { type: 'DRAW_CARD', playerId: 'player-2' })
-    expect(state.players.find((entry) => entry.id === 'player-2')).toMatchObject({
+    expect(
+      state.players.find((entry) => entry.id === 'player-2'),
+    ).toMatchObject({
       libraryCount: 19,
       handCount: 1,
     })
@@ -186,7 +201,9 @@ describe('Cute patch 10 - restrictions and permissions', () => {
       type: 'DRAW_CARD',
       playerId: 'player-2',
     })
-    expect(afterSecond.players.find((entry) => entry.id === 'player-2')).toMatchObject({
+    expect(
+      afterSecond.players.find((entry) => entry.id === 'player-2'),
+    ).toMatchObject({
       libraryCount: 19,
       handCount: 1,
     })
